@@ -77,23 +77,24 @@ fun TotalDendaDetail() {
             .background(color = Color.Red)
             .fillMaxWidth()
     ) {
-        // Check if detailDenda is not null
-        if (detailDenda != null) {
-            // Calculate total nominal only if detailDenda is not null and not empty
-            if (detailDenda.isNotEmpty()) {
-                // Calculate total nominal
-                val totalNominal = detailDenda.sumOf { it.nominal.toIntOrNull() ?: 0 }
-
-                // Display the total nominal
-                Text(text = "Total Nominal: $totalNominal")
-            } else {
-                // Handle the case where detailDenda is empty
-                Text(text = "Detail Denda is empty")
-            }
-        } else {
-            // Handle the case where detailDenda is null
-            Text(text = "Detail Denda is null")
-        }
+//        // Check if detailDenda is not null
+//        if (detailDenda != null) {
+//            // Calculate total nominal only if detailDenda is not null and not empty
+//            if (detailDenda.isNotEmpty()) {
+//                // Calculate total nominal
+//                val totalNominal = detailDenda.sumOf { it.nominal.toIntOrNull() ?: 0 }
+//
+//                // Display the total nominal
+//                Text(text = "Total Nominal: $totalNominal")
+//            } else {
+//                // Handle the case where detailDenda is empty
+//                Text(text = "Detail Denda is empty")
+//            }
+//        } else {
+//            // Handle the case where detailDenda is null
+//            Text(text = "Detail Denda is null")
+//        }
+        Text(text = "total dendanya segini mas")
     }
 }
 @Composable
@@ -131,49 +132,52 @@ data class Denda(val hari: String, val desc: String, val nominal: String)
 
 data class DendasApiResponse(val members: List<Denda>)
 @Composable
-fun DendaCard(denda: Denda) {
-    // Display details for each member in a card
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { /* Handle card click if needed */ }
-            .padding(5.dp)
-    ) {
-        Column(
+fun DendaCard(denda: Denda?) {
+    if (denda != null) {
+        // Display details for each member in a card
+        Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .fillMaxWidth()
+                .clickable { /* Handle card click if needed */ }
+                .padding(5.dp)
         ) {
-            Text(text = "Hari: ${denda.hari}")
-            Text(text = "Description: ${denda.desc}")
-            Text(text = "Nominal: ${denda.nominal}")
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.End
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                // Eye icon
-                Icon(
-                    Icons.Filled.Search,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(28.dp)
-                        .padding(end = 8.dp)
-                )
+                Text(text = "Hari: ${denda.hari}")
+                Text(text = "Description: ${denda.desc}")
+                Text(text = "Nominal: ${denda.nominal}")
 
-                // Trash icon
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
+                Row(
                     modifier = Modifier
-                        .size(24.dp)
-                )
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    // Eye icon
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .padding(end = 8.dp)
+                    )
+
+                    // Trash icon
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
         }
     }
 }
+
 @Composable
 @Preview(showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL,
