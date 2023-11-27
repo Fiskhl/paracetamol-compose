@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.AdminMemberListScreen
+import com.example.paracetamol.AdminMemberDetailsScreen
 import com.example.paracetamol.LandingScreen
 import com.example.paracetamol.LoginScreen
 import com.example.paracetamol.RegisterScreen
@@ -26,6 +27,11 @@ fun Navigation() {
         }
         composable(route = Screen.AdminMemberListScreen.route){
             AdminMemberListScreen(navController = navController)
+        }
+        composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
+            val name = navBackStackEntry.arguments?.getString("name") ?: ""
+            val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
+            AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
         }
     }
 }

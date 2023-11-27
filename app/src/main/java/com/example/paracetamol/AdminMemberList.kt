@@ -42,7 +42,7 @@ fun AdminMemberListScreen(navController: NavController) {
             Text(text = "UMN ECO 2023", fontSize = 36.sp)
         }
         TotalDendaSection()
-        MembersSection()
+        MembersSection(navController)
     }
 }
 
@@ -80,7 +80,7 @@ fun AddDendaSection() {
 }
 
 @Composable
-fun MembersSection() {
+fun MembersSection(navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .background(color = Color.Green)
@@ -105,7 +105,7 @@ fun MembersSection() {
         val members = Gson().fromJson(jsonString, MembersApiResponse::class.java).members
 
         items(members) { member ->
-            MemberCard(member = member)
+            MemberCard(member = member, navController = navController)
             Spacer(modifier = Modifier.height(3.dp))
         }
     }
@@ -117,11 +117,13 @@ data class Student(val name: String, val studentid: String)
 data class MembersApiResponse(val members: List<Student>)
 
 @Composable
-fun MemberCard(member: Student) {
+fun MemberCard(member: Student, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle card click if needed */ }
+            .clickable {
+                navController.navigate("admin_member_detail/${member.name}/${member.studentid}")
+            }
             .padding(5.dp)
     ) {
         Column(
