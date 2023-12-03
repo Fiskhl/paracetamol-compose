@@ -15,7 +15,7 @@ import com.example.paracetamol.screen.Screen
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.AdminMemberListScreen.route){
+    NavHost(navController = navController, startDestination = Screen.LoginScreen.route){
         composable(route = Screen.LandingScreen.route){
             LandingScreen(navController = navController)
         }
