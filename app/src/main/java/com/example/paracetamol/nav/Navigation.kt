@@ -9,13 +9,14 @@ import com.example.paracetamol.AdminMemberListScreen
 import com.example.paracetamol.AdminMemberDetailsScreen
 import com.example.paracetamol.LandingScreen
 import com.example.paracetamol.LoginScreen
+import com.example.paracetamol.ProfileScreen
 import com.example.paracetamol.RegisterScreen
 import com.example.paracetamol.screen.Screen
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.LoginScreen.route){
+    NavHost(navController = navController, startDestination = Screen.ProfileScreen.route){
         composable(route = Screen.LandingScreen.route){
             LandingScreen(navController = navController)
         }
@@ -32,6 +33,9 @@ fun Navigation() {
             val name = navBackStackEntry.arguments?.getString("name") ?: ""
             val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
             AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
+        }
+        composable(route = Screen.ProfileScreen.route){
+            ProfileScreen(navController = navController)
         }
     }
 }
