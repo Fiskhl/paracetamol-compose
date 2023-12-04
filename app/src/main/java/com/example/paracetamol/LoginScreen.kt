@@ -39,12 +39,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
 
     val context = LocalContext.current
 
@@ -188,7 +189,7 @@ fun LoginScreen(navController: NavController) {
                 contentColor = Color.White
             ),
             onClick = {
-//                context.startActivity(Intent(context, HomeActivity::class.java))
+                onLoginSuccess.invoke()
             }
         ) {
             Text("Sign in",
@@ -218,5 +219,7 @@ fun LoginScreen(navController: NavController) {
 @Composable
 @Preview(showBackground = true)
 fun LoginScreenPreview() {
-    LoginScreen(navController = NavController(LocalContext.current))
+    val context = LocalContext.current
+    val navController = rememberNavController()
+    LoginScreen(navController = navController, onLoginSuccess = {})
 }
