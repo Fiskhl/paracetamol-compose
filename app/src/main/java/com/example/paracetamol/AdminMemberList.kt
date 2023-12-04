@@ -16,10 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.paracetamol.ui.theme.poppinsFamily
 import com.google.gson.Gson
 
 @Composable
@@ -28,18 +30,26 @@ fun AdminMemberListScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFFFFF))
-            .padding(horizontal = 48.dp)
-            .padding(top = 20.dp, bottom = 20.dp),
+            .padding(horizontal = 25.dp)
+            .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier
-                .background(color = Color.Red)
+                .background(color = Color.White)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "UMN ECO 2023", fontSize = 36.sp)
+//            Text(text = "UMN ECO 2023", fontSize = 36.sp)
+            Text("UMN ECO 2023",
+                fontSize = 32.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 30.dp)
+            )
         }
         TotalDendaSection()
         MembersSection(navController)
@@ -50,19 +60,32 @@ fun AdminMemberListScreen(navController: NavController) {
 fun TotalDendaSection() {
     Row(
         modifier = Modifier
-            .background(color = Color.Yellow)
+//            .background(color = Color.Yellow)
             .fillMaxWidth()
-            .height(100.dp),
+            .height(50.dp),
         verticalAlignment = Alignment.Bottom,
     ) {
         Box(
             modifier = Modifier
-                .background(color = Color.LightGray)
+//                .background(color = Color.LightGray)
                 .size(150.dp, 50.dp)
         ){
             Column {
-                Text(text = "Total denda")
-                Text(text = "Rp. 100.000,00")
+                Text("Total denda",
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                )
+                Text("Rp. 100.000,00",
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                )
+
             }
         }
     }
@@ -83,9 +106,9 @@ fun AddDendaSection() {
 fun MembersSection(navController: NavController) {
     LazyColumn(
         modifier = Modifier
-            .background(color = Color.Green)
+//            .background(color = Color.Green)
             .fillMaxWidth()
-            .height(500.dp)
+            .height(680.dp)
             .padding(horizontal = 16.dp)
     ) {
         val jsonString = """
@@ -129,10 +152,17 @@ fun MemberCard(member: Student, navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFFFFF1))
                 .padding(16.dp)
         ) {
-            Text(text = "Name: ${member.name}", fontWeight = FontWeight.Bold)
-            Text(text = "Student ID: ${member.studentid}", Modifier.padding(top = 4.dp))
+            Text(text = "Name: ${member.name}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFamily)
+            Text(text = "Student ID: ${member.studentid}",
+                Modifier.padding(top = 4.dp),
+                fontSize = 14.sp,
+                fontFamily = poppinsFamily)
         }
     }
 }
