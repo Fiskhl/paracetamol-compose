@@ -28,6 +28,8 @@ import com.example.paracetamol.nav_screen.SearchScreen
 import com.example.paracetamol.screen.Screen
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.example.paracetamol.CreateScreen
+import com.example.paracetamol.JoinScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,6 +98,12 @@ fun Navigation() {
                 }
                 composable(route = Screen.AdminMemberListScreen.route){
                     AdminMemberListScreen(navController = navController)
+                }
+                composable(route = Screen.CreateScreen.route){
+                    CreateScreen(navController = navController)
+                }
+                composable(route = Screen.JoinScreen.route){
+                    JoinScreen(navController = navController)
                 }
                 composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
                     val name = navBackStackEntry.arguments?.getString("name") ?: ""
