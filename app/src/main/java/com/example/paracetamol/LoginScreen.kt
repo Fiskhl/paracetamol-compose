@@ -1,5 +1,6 @@
 package com.example.paracetamol
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,15 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.LoginRequest
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.network.createApiService
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
-
-    val context = LocalContext.current
-
+fun LoginScreen(navController: NavController) {
     var emailTextState by rememberSaveable {
         mutableStateOf("")
     }
@@ -57,11 +60,15 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
         mutableStateOf("")
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFFFFFF))
-            .padding(horizontal =  48.dp),
+            .padding(horizontal = 48.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -189,7 +196,23 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
                 contentColor = Color.White
             ),
             onClick = {
-                onLoginSuccess.invoke()
+                // Perform Login Logic (call api)
+                val apiService = createApiService()
+                val loginRequest = LoginRequest(email = emailTextState, password = passwordTextState)
+
+                coroutineScope.launch {
+                    try {
+                        val response = apiService.login(loginRequest)
+                        if (response.isSuccessful) {
+                            val body = response.body()
+                            Log.d("LoginScreen", "$body")
+                        } else {
+                            showToast(context, "Invalid Credentials!")
+                        }
+                    } catch (e: Exception) {
+                        showToast(context, "Network Error!")
+                    }
+                }
             }
         ) {
             Text("Sign in",
@@ -219,7 +242,6 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
 @Composable
 @Preview(showBackground = true)
 fun LoginScreenPreview() {
-    val context = LocalContext.current
     val navController = rememberNavController()
-    LoginScreen(navController = navController, onLoginSuccess = {})
+    LoginScreen(navController = navController)
 }
