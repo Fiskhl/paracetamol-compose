@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
     var emailTextState by rememberSaveable {
         mutableStateOf("")
     }
@@ -196,23 +196,25 @@ fun LoginScreen(navController: NavController) {
                 contentColor = Color.White
             ),
             onClick = {
-                // Perform Login Logic (call api)
-                val apiService = createApiService()
-                val loginRequest = LoginRequest(email = emailTextState, password = passwordTextState)
-
-                coroutineScope.launch {
-                    try {
-                        val response = apiService.login(loginRequest)
-                        if (response.isSuccessful) {
-                            val body = response.body()
-                            Log.d("LoginScreen", "$body")
-                        } else {
-                            showToast(context, "Invalid Credentials!")
-                        }
-                    } catch (e: Exception) {
-                        showToast(context, "Network Error!")
-                    }
-                }
+//                // Perform Login Logic (call api)
+//                val apiService = createApiService()
+//                val loginRequest = LoginRequest(email = emailTextState, password = passwordTextState)
+//
+//                coroutineScope.launch {
+//                    try {
+//                        val response = apiService.login(loginRequest)
+//                        if (response.isSuccessful) {
+//                            val body = response.body()
+//                            Log.d("LoginScreen", "$body")
+//                        } else {
+//                            showToast(context, "Invalid Credentials!")
+//                        }
+//                    } catch (e: Exception) {
+//                        showToast(context, "Network Error!")
+//                    }
+//                }
+                onLoggedIn.invoke()
+//                navController.navigate(Screen.HomeScreen.route)
             }
         ) {
             Text("Sign in",
@@ -239,9 +241,9 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun LoginScreenPreview() {
-    val navController = rememberNavController()
-    LoginScreen(navController = navController)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun LoginScreenPreview() {
+//    val navController = rememberNavController()
+//    LoginScreen(navController = navController)
+//}

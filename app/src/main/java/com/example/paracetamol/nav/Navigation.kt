@@ -81,7 +81,7 @@ fun Navigation() {
                 LandingScreen(navController = navController)
             }
             composable(route = Screen.LoginScreen.route) {
-                LoginScreen(navController = navController)
+                LoginScreen(navController = navController, onLoggedIn = { isLoggedIn = true })
             }
             composable(route = Screen.RegisterScreen.route){
                 RegisterScreen(navController = navController)
