@@ -27,19 +27,28 @@ import com.example.paracetamol.RegisterScreen
 import com.example.paracetamol.nav_screen.SearchScreen
 import com.example.paracetamol.screen.Screen
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.CreateScreen
 import com.example.paracetamol.JoinScreen
+import com.example.paracetamol.model.LoginViewModel
+import com.example.paracetamol.preferences.PreferenceManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    var isLoggedIn by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
+    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
+    val isLoggedIn by loginViewModel.loginSuccess.observeAsState()
+    val sessionExist = PreferenceManager.getIsLoggedIn(context)
+
+    if(sessionExist == true) loginViewModel.setLoginSuccess()
 
     Scaffold(
         bottomBar = {
-            if(isLoggedIn){
+            if(isLoggedIn == true){
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
@@ -74,44 +83,43 @@ fun Navigation() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = if (isLoggedIn) Screen.HomeScreen.route else Screen.LandingScreen.route,
+            startDestination =
+                if(isLoggedIn == true) Screen.HomeScreen.route
+                else Screen.LandingScreen.route,
             modifier = Modifier.padding(paddingValues)
         ){
             composable(route = Screen.LandingScreen.route){
                 LandingScreen(navController = navController)
             }
             composable(route = Screen.LoginScreen.route) {
-                LoginScreen(navController = navController, onLoggedIn = { isLoggedIn = true })
+                LoginScreen(navController = navController)
             }
             composable(route = Screen.RegisterScreen.route){
                 RegisterScreen(navController = navController)
             }
-            if(isLoggedIn){
-                composable(route = Screen.HomeScreen.route){
-                    HomeScreen(navController = navController)
-                }
-                composable(route = Screen.SearchScreen.route){
-                    SearchScreen(navController = navController)
-                }
-                composable(route = Screen.ProfileScreen.route){
-                    ProfileScreen(navController = navController)
-                }
-                composable(route = Screen.AdminMemberListScreen.route){
-                    AdminMemberListScreen(navController = navController)
-                }
-                composable(route = Screen.CreateScreen.route){
-                    CreateScreen(navController = navController)
-                }
-                composable(route = Screen.JoinScreen.route){
-                    JoinScreen(navController = navController)
-                }
-                composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
-                    val name = navBackStackEntry.arguments?.getString("name") ?: ""
-                    val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
-                    AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
-                }
+            composable(route = Screen.HomeScreen.route){
+                HomeScreen(navController = navController)
             }
-
+            composable(route = Screen.SearchScreen.route){
+                SearchScreen(navController = navController)
+            }
+            composable(route = Screen.ProfileScreen.route){
+                ProfileScreen(navController = navController)
+            }
+            composable(route = Screen.AdminMemberListScreen.route){
+                AdminMemberListScreen(navController = navController)
+            }
+            composable(route = Screen.CreateScreen.route){
+                CreateScreen(navController = navController)
+            }
+            composable(route = Screen.JoinScreen.route){
+                JoinScreen(navController = navController)
+            }
+            composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
+                val name = navBackStackEntry.arguments?.getString("name") ?: ""
+                val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
+                AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
+            }
         }
     }
 

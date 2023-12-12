@@ -1,6 +1,5 @@
 package com.example.paracetamol
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +24,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,21 +35,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.paracetamol.api.data.LoginRequest
 import com.example.paracetamol.component.showToast
-import com.example.paracetamol.network.createApiService
+import com.example.paracetamol.model.LoginViewModel
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
+fun LoginScreen(navController: NavController) {
+    val context = LocalContext.current
+
+    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
+
     var emailTextState by rememberSaveable {
         mutableStateOf("")
     }
@@ -60,9 +60,17 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         mutableStateOf("")
     }
 
-    val coroutineScope = rememberCoroutineScope()
+    val loginResult by loginViewModel.loginSuccess.observeAsState()
+    loginResult?.let { success ->
+        if (success) {
+            navController.navigate(Screen.HomeScreen.route)
+        }
+    }
 
-    val context = LocalContext.current
+    val errorMessage by loginViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Column(
         modifier = Modifier
@@ -196,25 +204,11 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                 contentColor = Color.White
             ),
             onClick = {
-//                // Perform Login Logic (call api)
-//                val apiService = createApiService()
-//                val loginRequest = LoginRequest(email = emailTextState, password = passwordTextState)
-//
-//                coroutineScope.launch {
-//                    try {
-//                        val response = apiService.login(loginRequest)
-//                        if (response.isSuccessful) {
-//                            val body = response.body()
-//                            Log.d("LoginScreen", "$body")
-//                        } else {
-//                            showToast(context, "Invalid Credentials!")
-//                        }
-//                    } catch (e: Exception) {
-//                        showToast(context, "Network Error!")
-//                    }
-//                }
-                onLoggedIn.invoke()
-//                navController.navigate(Screen.HomeScreen.route)
+                if (emailTextState.isNotBlank() && passwordTextState.isNotBlank()) {
+                    loginViewModel.login(emailTextState, passwordTextState)
+                } else {
+                    showToast(context, "Email or password cannot be empty.")
+                }
             }
         ) {
             Text("Sign in",
@@ -240,10 +234,3 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         }
     }
 }
-
-//@Composable
-//@Preview(showBackground = true)
-//fun LoginScreenPreview() {
-//    val navController = rememberNavController()
-//    LoginScreen(navController = navController)
-//}
