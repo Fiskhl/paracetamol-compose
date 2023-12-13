@@ -1,14 +1,20 @@
 package com.example.paracetamol
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -51,15 +57,33 @@ fun RegisterScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 25.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                "Register Account",
-                fontSize = 32.sp,
+                "CHAMPBERLAIN",
+                fontSize = 20.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+            )
+            Text("Register",
+                modifier = Modifier
+                    .padding(bottom = 5.dp),
+                fontSize = 25.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+            )
+            Text("Register your Champberlain account",
+                modifier = Modifier
+                    .padding(bottom = 30.dp),
+                fontSize = 16.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
                 color = Color.Black,
             )
@@ -70,7 +94,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Your Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -89,7 +113,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("NIM") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -105,10 +129,10 @@ fun RegisterScreen(navController: NavController) {
             TextField(
                 value = prodi,
                 onValueChange = { prodi = it },
-                label = { Text("Prodi") },
+                label = { Text("Major") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -124,10 +148,10 @@ fun RegisterScreen(navController: NavController) {
             TextField(
                 value = angkatan,
                 onValueChange = { angkatan = it },
-                label = { Text("Angkatan") },
+                label = { Text("Class Of Year") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -146,7 +170,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -159,18 +183,15 @@ fun RegisterScreen(navController: NavController) {
                 singleLine = true,
             )
 
+            var showPassword by remember { mutableStateOf(value = false) }
+
             TextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -181,20 +202,39 @@ fun RegisterScreen(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
+                visualTransformation = if (showPassword) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    if (showPassword) {
+                        IconButton(onClick = { showPassword = false }) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility,
+                                contentDescription = "hide_password"
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            onClick = { showPassword = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = "hide_password"
+                            )
+                        }
+                    }
+                },
             )
 
             TextField(
                 value = repassword,
                 onValueChange = { repassword = it },
                 label = { Text("Re-enter Password") },
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -205,6 +245,30 @@ fun RegisterScreen(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
+                visualTransformation = if (showPassword) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    if (showPassword) {
+                        IconButton(onClick = { showPassword = false }) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility,
+                                contentDescription = "hide_password"
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            onClick = { showPassword = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = "hide_password"
+                            )
+                        }
+                    }
+                },
             )
 
             Button(
@@ -212,33 +276,47 @@ fun RegisterScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 16.dp)
                     .height(55.dp),
+                border = BorderStroke(2.dp, Color(0xFF47A7FF)),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xFF47A7FF),
                     contentColor = Color.White
                 ),
                 onClick = { /*TODO*/ }
             ) {
                 Text(
                     "Sign up",
-                    fontSize = 24.sp,
-                    fontFamily = poppinsFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                )
-            }
-            TextButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = { navController.navigate(Screen.LoginScreen.route) }
-            ) {
-                Text("Already have an account?",
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
+                    color = Color.DarkGray,
+                )
+            }
+
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Already have an account?",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
                     color = Color(0xFF000000),
                 )
+                TextButton(
+                    modifier = Modifier,
+                    onClick = { navController.navigate(Screen.LoginScreen.route) }
+                ) {
+                    Text(
+                        "Sign In here",
+                        fontSize = 16.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF47A7FF),
+                    )
+                }
             }
         }
     }

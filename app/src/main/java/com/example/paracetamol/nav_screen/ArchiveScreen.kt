@@ -1,5 +1,6 @@
 package com.example.paracetamol.nav_screen
 
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
@@ -7,3 +8,4 @@ import androidx.navigation.NavController
 fun ArchiveScreen(navController: NavController) {
 
 }
+

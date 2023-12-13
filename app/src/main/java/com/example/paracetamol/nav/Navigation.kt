@@ -20,7 +20,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.AdminMemberListScreen
 import com.example.paracetamol.AdminMemberDetailsScreen
 import com.example.paracetamol.nav_screen.HomeScreen
-import com.example.paracetamol.LandingScreen
 import com.example.paracetamol.LoginScreen
 import com.example.paracetamol.nav_screen.ProfileScreen
 import com.example.paracetamol.RegisterScreen
@@ -85,15 +84,15 @@ fun Navigation() {
             navController = navController,
             startDestination =
                 if(isLoggedIn == true) Screen.HomeScreen.route
-                else Screen.LandingScreen.route,
+                else Screen.LoginScreen.route,
             modifier = Modifier.padding(paddingValues)
         ){
-            composable(route = Screen.LandingScreen.route){
-                LandingScreen(navController = navController)
-            }
-            composable(route = Screen.LoginScreen.route) {
+            composable(route = Screen.LoginScreen.route){
                 LoginScreen(navController = navController)
             }
+//            composable(route = Screen.LoginScreen.route) {
+//                LoginScreen(navController = navController)
+//            }
             composable(route = Screen.RegisterScreen.route){
                 RegisterScreen(navController = navController)
             }

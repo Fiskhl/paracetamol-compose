@@ -1,6 +1,7 @@
 package com.example.paracetamol.nav
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -23,6 +24,11 @@ val listOfNavItems = listOf(
         icon = Icons.Default.Search,
         label = "Search",
         route = Screen.SearchScreen.route
+    ),
+    NavItem(
+        icon = Icons.Default.Archive,
+        label = "Archive",
+        route = Screen.ArchiveScreen.route
     ),
     NavItem(
         icon = Icons.Default.Person,
