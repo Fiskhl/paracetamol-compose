@@ -42,49 +42,57 @@ import com.google.gson.Gson
 
 
 @Composable
-fun UserGroupScreen(title: String, description: String, navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(0xFFFFFFFF))
-        .padding(horizontal = 16.dp)
-        .padding(top = 10.dp),
+fun UserGroupScreen(
+    title: String,
+    description: String,
+    navController: NavController
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFFFFF))
+            .padding(horizontal = 16.dp)
+            .padding(top = 18.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconButton(
-            onClick = { navController.navigateUp() }, // Back
-            modifier = Modifier
-                .padding(start = 1.dp),
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            IconButton(
+                onClick = { navController.navigateUp() }, // Back
+                modifier = Modifier
+                    .padding(start = 1.dp),
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ){
-            Text(text = "$title",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,)
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ){
-            Text(text = "Nama Profile",
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,)
-        }
+        Text(
+            text = title,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.White)
-        ){
-            Text(text = "$description", Modifier.padding(top = 4.dp), fontSize = 16.sp)
+                .background(color = Color.White),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = description,
+                modifier = Modifier.padding(top = 4.dp),
+                fontSize = 16.sp
+            )
         }
+        Text(
+            text = "Nama Profile",
+            fontSize = 16.sp
+        )
         Spacer(modifier = Modifier.height(100.dp))
-
     }
 }
+
+
 
 @Composable
 @Preview(showBackground = true)
