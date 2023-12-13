@@ -57,10 +57,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
-    val context = LocalContext.current
-
-    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
-
     var emailTextState by rememberSaveable {
         mutableStateOf("")
     }
@@ -69,8 +65,12 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         mutableStateOf("")
     }
 
-    val loginResult by loginViewModel.loginSuccess.observeAsState()
-    loginResult?.let { success ->
+    val context = LocalContext.current
+
+    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
+
+    val loginSuccess by loginViewModel.loginSuccess.observeAsState()
+    loginSuccess?.let { success ->
         if (success) {
             onLoggedIn()
         }

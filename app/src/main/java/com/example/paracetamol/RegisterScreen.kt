@@ -1,5 +1,6 @@
 package com.example.paracetamol
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,10 +31,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.component.DialogUI
 import com.example.paracetamol.component.showToast
 import com.example.paracetamol.model.RegisterViewModel
 import com.example.paracetamol.screen.Screen
@@ -41,10 +46,6 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
-    val context = LocalContext.current
-
-    val registerViewModel: RegisterViewModel = viewModel { RegisterViewModel(context) }
-
     var name by remember { mutableStateOf("") }
     var nim by remember { mutableStateOf("") }
     var prodi by remember { mutableStateOf("") }
@@ -53,6 +54,26 @@ fun RegisterScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var repassword by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    val registerViewModel: RegisterViewModel = viewModel { RegisterViewModel(context) }
+
+    val registerSuccess by registerViewModel.registerSuccess.observeAsState()
+    registerSuccess?.let { success ->
+        if (success) {
+            Log.d("RegisterScreen", "Register Success!")
+            DialogUI(
+                title = "Registration Successful",
+                desc = "Your account has been successfully registered."
+            )
+        }
+    }
+
+    val errorMessage by registerViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Surface(
         modifier = Modifier
@@ -334,4 +355,11 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun RegisterScreenPreview() {
+    val navController = rememberNavController()
+    RegisterScreen(navController = navController)
 }

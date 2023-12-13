@@ -51,7 +51,7 @@ class RegisterViewModel(private val context: Context): ViewModel() {
 
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {
-            401 -> _errorMessage.postValue("Unauthorized")
+            404 -> _errorMessage.postValue("Bad Request")
             404 -> _errorMessage.postValue("Not Found")
             else -> _errorMessage.postValue("Unexpected error: $responseCode")
         }
