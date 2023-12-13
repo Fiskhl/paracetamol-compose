@@ -52,7 +52,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -238,7 +240,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         ) {
             Text(
                 "Don’t have an account?",
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -249,8 +251,8 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                 onClick = { navController.navigate(Screen.RegisterScreen.route) }
             ) {
                 Text(
-                    "Sign Up here",
-                    fontSize = 16.sp,
+                    "Sign Up",
+                    fontSize = 14.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF47A7FF),
@@ -260,3 +262,12 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
 
     }
 }
+
+
+//@Composable
+//@Preview(showBackground = true)
+//fun LoginScreenPreview() {
+//    val context = LocalContext.current
+//    val navController = rememberNavController()
+//    LoginScreen(navController = navController)
+//}

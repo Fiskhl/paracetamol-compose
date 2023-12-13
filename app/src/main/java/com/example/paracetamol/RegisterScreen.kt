@@ -345,7 +345,7 @@ fun RegisterScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.LoginScreen.route) }
                 ) {
                     Text(
-                        "Sign In here",
+                        "Sign In",
                         fontSize = 16.sp,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,

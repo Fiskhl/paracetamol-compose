@@ -136,7 +136,7 @@ fun SearchScreen(navController: NavController){
 
 @Composable
 @Preview(showBackground = true)
-fun CreateScreenPreview() {
+fun SearchScreenPreview() {
     val context = LocalContext.current
     val navController = rememberNavController()
     SearchScreen(navController = navController)

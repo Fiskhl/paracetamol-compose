@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.CreateScreen
 import com.example.paracetamol.JoinScreen
+import com.example.paracetamol.UserGroupScreen
 import com.example.paracetamol.model.LoginViewModel
 import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
@@ -124,6 +125,12 @@ fun Navigation() {
                 val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
                 AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
             }
+            composable(route = Screen.UserGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+                UserGroupScreen(navController = navController, title = title, description = description)
+            }
+
         }
     }
 
