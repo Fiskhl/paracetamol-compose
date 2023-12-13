@@ -1,4 +1,4 @@
-package com.example.paracetamol
+package com.example.paracetamol.screen
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -39,8 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.component.DialogUI
 import com.example.paracetamol.component.showToast
-import com.example.paracetamol.model.RegisterViewModel
-import com.example.paracetamol.screen.Screen
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,9 +56,9 @@ fun RegisterScreen(navController: NavController) {
 
     val context = LocalContext.current
 
-    val registerViewModel: RegisterViewModel = viewModel { RegisterViewModel(context) }
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
-    val registerSuccess by registerViewModel.registerSuccess.observeAsState()
+    val registerSuccess by userViewModel.registerSuccess.observeAsState()
     registerSuccess?.let { success ->
         if (success) {
             Log.d("RegisterScreen", "Register Success!")
@@ -70,7 +69,7 @@ fun RegisterScreen(navController: NavController) {
         }
     }
 
-    val errorMessage by registerViewModel.errorMessage.observeAsState()
+    val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
     }
@@ -310,7 +309,7 @@ fun RegisterScreen(navController: NavController) {
                     val condition = name.isNotBlank() && nim.isNotBlank() && password.isNotBlank() && repassword.isNotBlank() && email.isNotBlank() && prodi.isNotBlank() && angkatan.isNotBlank()
 
                     if (condition){
-                        if (password == repassword) registerViewModel.register(name, nim, password, email, prodi, angkatan)
+                        if (password == repassword) userViewModel.register(name, nim, password, email, prodi, angkatan)
                         else showToast(context, "Password and Confirmation Password do not match")
                     } else {
                         showToast(context, "Please fill all required fields.")

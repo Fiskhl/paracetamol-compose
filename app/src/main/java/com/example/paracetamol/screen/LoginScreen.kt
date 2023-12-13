@@ -1,6 +1,5 @@
-package com.example.paracetamol
+package com.example.paracetamol.screen
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,16 +44,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.paracetamol.component.showToast
-import com.example.paracetamol.model.LoginViewModel
-import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.R
+import com.example.paracetamol.model.UserViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,16 +67,16 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
 
     val context = LocalContext.current
 
-    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
-    val loginSuccess by loginViewModel.loginSuccess.observeAsState()
+    val loginSuccess by userViewModel.loginSuccess.observeAsState()
     loginSuccess?.let { success ->
         if (success) {
             onLoggedIn()
         }
     }
 
-    val errorMessage by loginViewModel.errorMessage.observeAsState()
+    val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
     }
@@ -219,7 +217,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
             ),
             onClick = {
                 if (emailTextState.isNotBlank() && passwordTextState.isNotBlank()) {
-                    loginViewModel.login(emailTextState, passwordTextState)
+                    userViewModel.login(emailTextState, passwordTextState)
                 } else {
                     showToast(context, "Email or password cannot be empty.")
                 }
@@ -262,12 +260,3 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
 
     }
 }
-
-
-//@Composable
-//@Preview(showBackground = true)
-//fun LoginScreenPreview() {
-//    val context = LocalContext.current
-//    val navController = rememberNavController()
-//    LoginScreen(navController = navController)
-//}
