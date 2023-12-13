@@ -1,21 +1,22 @@
 package com.example.paracetamol
 
-<<<<<<< Updated upstream
-=======
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
->>>>>>> Stashed changes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,7 +49,12 @@ import com.example.paracetamol.model.LoginViewModel
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,32 +91,33 @@ fun LoginScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Login here",
+        Text("CHAMPBERLAIN",
             fontSize = 32.sp,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             color = Color.Black,
         )
-        Text("It's good to see you again! Welcome back!",
-            fontSize = 20.sp,
+        Image(
+            modifier = Modifier
+                .width(150.dp)
+                .height(150.dp),
+            painter = painterResource(id = R.drawable.ic_mainscreen),
+            contentDescription = stringResource(id = R.string.content_description),
+        )
+        Text("Log in to your Champberlain account",
+            modifier = Modifier
+                .padding(bottom = 30.dp),
+            fontSize = 16.sp,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
             color = Color.Black,
         )
-        Image(
-            modifier = Modifier
-                .padding(top = 30.dp, bottom = 30.dp)
-                .width(200.dp)
-                .height(200.dp),
-            painter = painterResource(id = R.drawable.ic_mainscreen),
-            contentDescription = stringResource(id = R.string.content_description),
-        )
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 14.dp),
             value = emailTextState,
             onValueChange = {
                 emailTextState = it
@@ -118,7 +125,7 @@ fun LoginScreen(navController: NavController) {
             placeholder = {
                 Text(
                     text = "Email",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -145,6 +152,9 @@ fun LoginScreen(navController: NavController) {
                 }
             }
         )
+
+        var showPassword by remember { mutableStateOf(value = false) }
+
         TextField(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -155,7 +165,7 @@ fun LoginScreen(navController: NavController) {
             placeholder = {
                 Text(
                     text = "Password",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -171,34 +181,33 @@ fun LoginScreen(navController: NavController) {
             ),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (showPassword) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                if (passwordTextState.isNotEmpty()) {
-                    IconButton(onClick = { passwordTextState = "" }) {
+                if (showPassword) {
+                    IconButton(onClick = { showPassword = false }) {
                         Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Visibility,
+                            contentDescription = "hide_password"
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = { showPassword = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.VisibilityOff,
+                            contentDescription = "hide_password"
                         )
                     }
                 }
             }
         )
 
-//        TextButton(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            onClick = { /*TODO*/ }
-//        ) {
-//            Text("Forgot password?",
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                fontSize = 16.sp,
-//                fontFamily = poppinsFamily,
-//                fontWeight = FontWeight.SemiBold,
-//                textAlign = TextAlign.End,
-//                color = Color(0xFF000000),
-//            )
-//        }
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,18 +233,41 @@ fun LoginScreen(navController: NavController) {
                 textAlign = TextAlign.Center,
             )
         }
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            onClick = { navController.navigate(Screen.RegisterScreen.route) }
+        Row(
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Create new account",
+            Text(
+                "Don’t have an account?",
                 fontSize = 16.sp,
                 fontFamily = poppinsFamily,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = Color(0xFF000000),
             )
+            TextButton(
+                modifier = Modifier,
+                onClick = { navController.navigate(Screen.RegisterScreen.route) }
+            ) {
+                Text(
+                    "Sign Up",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF47A7FF),
+                )
+            }
         }
+
     }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun LoginScreenPreview() {
+    val context = LocalContext.current
+    val navController = rememberNavController()
+    LoginScreen(navController = navController)
 }
