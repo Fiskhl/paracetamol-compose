@@ -98,7 +98,7 @@ fun CreateScreen(navController: NavController) {
             },
             placeholder = {
                 Text(
-                    text = "Full Name",
+                    text = "Organization Name",
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
@@ -127,7 +127,7 @@ fun CreateScreen(navController: NavController) {
             },
             placeholder = {
                 Text(
-                    text = "Organization",
+                    text = "Description",
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,

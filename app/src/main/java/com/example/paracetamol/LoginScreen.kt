@@ -1,5 +1,10 @@
 package com.example.paracetamol
 
+<<<<<<< Updated upstream
+=======
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
+>>>>>>> Stashed changes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -179,28 +184,28 @@ fun LoginScreen(navController: NavController) {
             }
         )
 
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            onClick = { /*TODO*/ }
-        ) {
-            Text("Forgot password?",
-                modifier = Modifier
-                    .fillMaxWidth(),
-                fontSize = 16.sp,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.End,
-                color = Color(0xFF000000),
-            )
-        }
+//        TextButton(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            onClick = { /*TODO*/ }
+//        ) {
+//            Text("Forgot password?",
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                fontSize = 16.sp,
+//                fontFamily = poppinsFamily,
+//                fontWeight = FontWeight.SemiBold,
+//                textAlign = TextAlign.End,
+//                color = Color(0xFF000000),
+//            )
+//        }
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, bottom = 16.dp)
                 .height(55.dp),
+            border = BorderStroke(2.dp, Color(0xFF47A7FF)),
             colors = ButtonDefaults.elevatedButtonColors(
-                containerColor = Color(0xFF47A7FF),
                 contentColor = Color.White
             ),
             onClick = {
@@ -212,11 +217,11 @@ fun LoginScreen(navController: NavController) {
             }
         ) {
             Text("Sign in",
-                fontSize = 24.sp,
+                color = Color.DarkGray,
+                fontSize = 16.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                color = Color.White,
             )
         }
         TextButton(
