@@ -52,13 +52,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
     val context = LocalContext.current
 
     val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
@@ -74,7 +72,7 @@ fun LoginScreen(navController: NavController) {
     val loginResult by loginViewModel.loginSuccess.observeAsState()
     loginResult?.let { success ->
         if (success) {
-            navController.navigate(Screen.HomeScreen.route)
+            onLoggedIn()
         }
     }
 
@@ -261,13 +259,4 @@ fun LoginScreen(navController: NavController) {
         }
 
     }
-}
-
-
-@Composable
-@Preview(showBackground = true)
-fun LoginScreenPreview() {
-    val context = LocalContext.current
-    val navController = rememberNavController()
-    LoginScreen(navController = navController)
 }

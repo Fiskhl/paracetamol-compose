@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paracetamol.api.ApiService
-import com.example.paracetamol.api.data.LoginRequest
+import com.example.paracetamol.api.data.login.LoginRequest
 import com.example.paracetamol.preferences.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ class LoginViewModel(private val context: Context): ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    fun setLoginSuccess() {
+    private fun setLoginSuccess() {
         _loginSuccess.postValue(true)
     }
 

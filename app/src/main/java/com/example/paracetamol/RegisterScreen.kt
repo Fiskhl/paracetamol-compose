@@ -25,21 +25,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.RegisterViewModel
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
+    val context = LocalContext.current
+
+    val registerViewModel: RegisterViewModel = viewModel { RegisterViewModel(context) }
+
     var name by remember { mutableStateOf("") }
     var nim by remember { mutableStateOf("") }
     var prodi by remember { mutableStateOf("") }
@@ -280,7 +285,16 @@ fun RegisterScreen(navController: NavController) {
                 colors = ButtonDefaults.elevatedButtonColors(
                     contentColor = Color.White
                 ),
-                onClick = { /*TODO*/ }
+                onClick = {
+                    val condition = name.isNotBlank() && nim.isNotBlank() && password.isNotBlank() && repassword.isNotBlank() && email.isNotBlank() && prodi.isNotBlank() && angkatan.isNotBlank()
+
+                    if (condition){
+                        if (password == repassword) registerViewModel.register(name, nim, password, email, prodi, angkatan)
+                        else showToast(context, "Password and Confirmation Password do not match")
+                    } else {
+                        showToast(context, "Please fill all required fields.")
+                    }
+                }
             ) {
                 Text(
                     "Sign up",
@@ -320,10 +334,4 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(navController = NavController(LocalContext.current))
 }

@@ -27,11 +27,13 @@ import com.example.paracetamol.nav_screen.SearchScreen
 import com.example.paracetamol.screen.Screen
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.CreateScreen
 import com.example.paracetamol.JoinScreen
 import com.example.paracetamol.model.LoginViewModel
+import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,15 +41,14 @@ import com.example.paracetamol.preferences.PreferenceManager
 fun Navigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
-    val loginViewModel: LoginViewModel = viewModel { LoginViewModel(context) }
-    val isLoggedIn by loginViewModel.loginSuccess.observeAsState()
+    var isLoggedIn by rememberSaveable{ mutableStateOf(false) }
     val sessionExist = PreferenceManager.getIsLoggedIn(context)
 
-    if(sessionExist == true) loginViewModel.setLoginSuccess()
+    if(sessionExist == true) isLoggedIn = true
 
     Scaffold(
         bottomBar = {
-            if(isLoggedIn == true){
+            if(isLoggedIn){
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
@@ -83,16 +84,15 @@ fun Navigation() {
         NavHost(
             navController = navController,
             startDestination =
-                if(isLoggedIn == true) Screen.HomeScreen.route
+                if(isLoggedIn) Screen.HomeScreen.route
                 else Screen.LoginScreen.route,
             modifier = Modifier.padding(paddingValues)
         ){
             composable(route = Screen.LoginScreen.route){
-                LoginScreen(navController = navController)
+                LoginScreen(navController = navController){
+                    isLoggedIn = true
+                }
             }
-//            composable(route = Screen.LoginScreen.route) {
-//                LoginScreen(navController = navController)
-//            }
             composable(route = Screen.RegisterScreen.route){
                 RegisterScreen(navController = navController)
             }
@@ -102,8 +102,13 @@ fun Navigation() {
             composable(route = Screen.SearchScreen.route){
                 SearchScreen(navController = navController)
             }
+            composable(route = Screen.ArchiveScreen.route){
+                ArchiveScreen(navController = navController)
+            }
             composable(route = Screen.ProfileScreen.route){
-                ProfileScreen(navController = navController)
+                ProfileScreen(navController = navController){
+                    isLoggedIn = false
+                }
             }
             composable(route = Screen.AdminMemberListScreen.route){
                 AdminMemberListScreen(navController = navController)

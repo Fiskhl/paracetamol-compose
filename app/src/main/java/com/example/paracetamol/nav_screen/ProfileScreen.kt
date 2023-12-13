@@ -25,19 +25,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.paracetamol.R
+import com.example.paracetamol.model.LoginViewModel
+import com.example.paracetamol.model.LogoutViewModel
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(navController: NavController, onLoggedOut:() -> Unit) {
+    val context = LocalContext.current
+    val logoutViewModel: LogoutViewModel = viewModel { LogoutViewModel(context) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -163,7 +169,8 @@ fun ProfileScreen(navController: NavController) {
                 contentColor = androidx.compose.ui.graphics.Color.White
             ),
             onClick = {
-                navController.navigate(Screen.LoginScreen.route)
+                logoutViewModel.logout()
+                onLoggedOut()
             }
         ) {
             Icon(
