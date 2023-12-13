@@ -1,5 +1,6 @@
 package com.example.paracetamol
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,7 +56,8 @@ fun RegisterScreen(navController: NavController) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(horizontal = 25.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -92,7 +94,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Your Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -111,7 +113,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("NIM") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -130,7 +132,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Major") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -149,7 +151,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Class Of Year") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -168,7 +170,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -189,7 +191,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -232,7 +234,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Re-enter Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp)
+                    .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFF1F8FF),
@@ -274,33 +276,47 @@ fun RegisterScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 16.dp)
                     .height(55.dp),
+                border = BorderStroke(2.dp, Color(0xFF47A7FF)),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xFF47A7FF),
                     contentColor = Color.White
                 ),
                 onClick = { /*TODO*/ }
             ) {
                 Text(
                     "Sign up",
-                    fontSize = 24.sp,
-                    fontFamily = poppinsFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                )
-            }
-            TextButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = { navController.navigate(Screen.LoginScreen.route) }
-            ) {
-                Text("Already have an account?",
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
+                    color = Color.DarkGray,
+                )
+            }
+
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Already have an account?",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
                     color = Color(0xFF000000),
                 )
+                TextButton(
+                    modifier = Modifier,
+                    onClick = { navController.navigate(Screen.LoginScreen.route) }
+                ) {
+                    Text(
+                        "Sign In here",
+                        fontSize = 16.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF47A7FF),
+                    )
+                }
             }
         }
     }
