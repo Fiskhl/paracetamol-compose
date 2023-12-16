@@ -33,6 +33,8 @@ import com.example.paracetamol.screen.CreateScreen
 import com.example.paracetamol.screen.JoinScreen
 import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
+import com.example.paracetamol.screen.ArchiveAdminGroupDetail
+import com.example.paracetamol.screen.MemberGroupScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,6 +119,11 @@ fun Navigation() {
             composable(route = Screen.JoinScreen.route){
                 JoinScreen(navController = navController)
             }
+            composable(route = Screen.MemberGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+                MemberGroupScreen(navController = navController, title = title, description = description)
+            }
             composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
                 val studentId = navBackStackEntry.arguments?.getString("studentId") ?: ""
@@ -125,7 +132,12 @@ fun Navigation() {
             composable(route = Screen.UserGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                UserGroupScreen(navController = navController, title = title, description = description)
+                UserGroupScreen(navController = navController, titleA = title, descriptionA = description)
+            }
+            composable(route = Screen.ArchiveAdminGroupDetail.route + "/{title}/{description}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+                ArchiveAdminGroupDetail(navController = navController, title = title, description = description)
             }
 
         }

@@ -2,6 +2,7 @@ package com.example.paracetamol.nav_screen
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -40,23 +41,15 @@ import com.example.paracetamol.model.UserViewModel
 //import com.example.paracetamol.Student
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppToolbar(navController: NavController) {
-    Scaffold() { innerPadding ->
-        ScrollContent(innerPadding, navController)
-    }
-}
-
+import androidx.compose.ui.Alignment
 
 data class GroupData(val title: String, val description: String)
 
 // ganti api
+//val sampleItems = emptyList<GroupData>()
 val sampleItems = listOf(
     GroupData("MAXIMA 2023", "Explore The World Reach New Potentials"),
-    GroupData("UMN ECO 2023", "We Act for The Better Earth"),
-    GroupData("UMN Festival 2023", "Devote Yourself to be a True Spartan"),
+//    GroupData("UMN ECO 2023", "We Act for The Better Ear.ue Spartan"),
     GroupData("STARLIGHT 2023", "With us you can be a Star"),
 )
 
@@ -67,9 +60,8 @@ fun CardItem(group: GroupData, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(2.dp, Color(0xFF8E99A2)),
+        border = BorderStroke(2.dp, Color(0xFF1F628E)),
         shape = RoundedCornerShape(12.dp),
-        color = Color.White,
         onClick = {
             navController.navigate("${Screen.UserGroupScreen.route}/${group.title}/${group.description}")
         }
@@ -114,6 +106,7 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+    val hasData = sampleItems.isNotEmpty()
 
     // Local variable to store profile data
 //    var groupList by rememberSaveable { mutableStateOf<Profile?>(null) }
@@ -133,8 +126,32 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(sampleItems) { item ->
-            CardItem(group = item, navController = navController)
+        if (hasData) {
+            items(sampleItems) { item ->
+                CardItem(group = item, navController = navController)
+            }
+        } else {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        "No Group",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 280.dp),
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                    )
+                }
+
+            }
         }
     }
 }
@@ -157,7 +174,8 @@ fun HomeScreen(navController: NavController) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
-        AppToolbar(navController = navController)
+//        AppToolbar(navController = navController)
+        ScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }
 
