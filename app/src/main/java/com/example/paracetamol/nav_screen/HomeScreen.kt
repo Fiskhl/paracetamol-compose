@@ -17,6 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -27,8 +33,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.paracetamol.Student
+import com.example.paracetamol.api.data.profile.Profile
+import com.example.paracetamol.model.UserViewModel
+//import com.example.paracetamol.Student
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 
@@ -102,6 +111,24 @@ fun CardItem(group: GroupData, navController: NavController) {
 
 @Composable
 fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
+    val context = LocalContext.current
+
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+
+    // Local variable to store profile data
+//    var groupList by rememberSaveable { mutableStateOf<Profile?>(null) }
+
+    // LaunchedEffect to fetch profile data before building the UI
+    LaunchedEffect(userViewModel) {
+        // Fetch profile data
+        userViewModel.getJoinedGroup()
+    }
+
+//    // Observe the LiveData and update the local variable
+//    userViewModel.profileData.observeAsState().value?.let {
+//        profileData = it
+//    }
+
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
