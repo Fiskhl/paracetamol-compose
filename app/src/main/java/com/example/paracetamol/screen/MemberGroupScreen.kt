@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,121 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+
+
+data class MemberGroup(val Name: String, val status: Int)
+
+
+val memberItems = listOf(
+    MemberGroup("Joshua", 1),
+    MemberGroup("Kafi", 0),
+    MemberGroup("Jaya", 0),
+    MemberGroup("Muhammad", 0),
+    MemberGroup("Gre", 0),
+    MemberGroup("Rici", 1),
+    MemberGroup("Kalyana", 0),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CardMember(member: MemberGroup, navController: NavController) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 25.dp, vertical = 7.dp),
+        border = BorderStroke(1.5f.dp, Color.Red),
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Kolom Kiri
+            Column(
+                modifier = Modifier.width(180.dp), // Lebar tetap untuk kolom kiri
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    text = member.Name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Start,
+                )
+            }
+
+            // Kolom Tengah
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Kolom Kanan
+            Column(
+                modifier = Modifier.width(180.dp)
+                    .padding(end = 0.dp)
+                    .padding(8.dp), // Padding di kanan diatur menjadi 0.dp
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.End
+            ) {
+                // Text pakai status
+                val memberOrAdmin = if (member.status == 1) "Admin" else ""
+
+                Text(
+                    text = memberOrAdmin,
+                    fontSize = 10.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.End,
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MemberScrollContent(innerPadding: PaddingValues, navController: NavController) {
+    val hasData = memberItems.isNotEmpty()
+
+    // Urutkan berdasarkan status
+    val sortedMembers = memberItems.sortedByDescending { it.status }
+
+    LazyColumn(
+        contentPadding = innerPadding,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        if (hasData) {
+            items(sortedMembers) { item ->
+                CardMember(member = item, navController = navController)
+            }
+        } else {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        "No Members",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 280.dp),
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
 
 
 @Composable
@@ -107,6 +223,7 @@ fun MemberGroupScreen(
                 fontSize = 12.sp
             )
         }
+        MemberScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }
 
