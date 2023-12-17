@@ -1,207 +1,191 @@
 package com.example.paracetamol.nav_screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
-import com.example.paracetamol.api.data.profile.Profile
-import com.example.paracetamol.model.UserViewModel
-import com.example.paracetamol.ui.theme.poppinsFamily
 
+
+data class Profile(
+    val name: String,
+    val nim: String,
+    val major: String,
+    val email: String
+)
 
 @Composable
 fun ProfileScreen(navController: NavController, onLoggedOut:() -> Unit) {
-    val context = LocalContext.current
 
-    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+    //    val context = LocalContext.current
+
+//    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
     // Local variable to store profile data
-    var profileData by rememberSaveable { mutableStateOf<Profile?>(null) }
+//    var profileData by rememberSaveable { mutableStateOf<Profile?>(null) }
 
     // LaunchedEffect to fetch profile data before building the UI
-    LaunchedEffect(userViewModel) {
-        // Fetch profile data
-        userViewModel.getProfile()
-    }
+//    LaunchedEffect(userViewModel) {
+//        // Fetch profile data
+//        userViewModel.getProfile()
+//    }
 
     // Observe the LiveData and update the local variable
-    userViewModel.profileData.observeAsState().value?.let {
-        profileData = it
-    }
+//    userViewModel.profileData.observeAsState().value?.let {
+//        profileData = it
+//    }
+// Local variable to store profile data
 
-    if(profileData != null){
+    val profile = Profile(
+        name = "Joshua",
+        nim = "56899",
+        major = "Informatika (2021)",
+        email = "joshua@gmail.com"
+    )
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
+                .fillMaxWidth()
+                .padding(top = 35.dp, start = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Profile",
-                fontSize = 36.sp,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.Bold,
+                "Profile",
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 25.sp,
                 textAlign = TextAlign.Center,
-                color = Black,
+                fontWeight = FontWeight.Bold
+            )
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-            // Profile Picture
-            Image(
-                painter = painterResource(id = R.drawable.profile_picture),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(240.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .padding(bottom = 16.dp)
-                    .align(Alignment.CenterHorizontally),
-                contentScale = ContentScale.Crop
-            )
-
-            Text(
-                text = "Biodata",
-                fontWeight = FontWeight.Bold,
-                fontFamily = poppinsFamily,
-                fontSize = 32.sp,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-            )
-
-            // User Name
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Black,
+                Column(
                     modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp)
-                )
-                Text(
-                    text = profileData!!.nama,
-                    fontFamily = poppinsFamily,
-                    fontSize = 18.sp,
-                )
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_profile),
+                        contentDescription = "Profile Image",
+                        modifier = Modifier
+                            .size(150.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+
+                    Text(
+                        text = "Biodata",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .padding(top = 8.dp, bottom = 8.dp)
+                            .padding(horizontal = 4.dp)
+                    )
+
+                    ProfileItem(profile.name, profile.nim, profile.major, profile.email,)
+//                    ProfileItem(profile.nim)
+//                    ProfileItem(profile.major)
+//                    ProfileItem(profile.email)
+                }
             }
 
-            // Student ID
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_card),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp)
-                )
-                Text(
-                    text = profileData!!.nim,
-                    fontFamily = poppinsFamily,
-                    fontSize = 18.sp,
-                )
-            }
-            // Program and Year
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_college),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp)
-                )
-                Text(
-                    text = "${profileData?.prodi} (${profileData?.angkatan})",
-                    fontFamily = poppinsFamily,
-                    fontSize = 18.sp,
-                )
-            }
-
-            // Email
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = null,
-                    tint = Black,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp)
-                )
-                Text(
-                    text = profileData!!.email,
-                    fontFamily = poppinsFamily,
-                    fontSize = 18.sp,
-                )
-            }
-
-            // Logout Button
             Button(
+                onClick = { /* Handle logout */ },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 16.dp)
-                    .height(55.dp),
+                    .padding(25.dp),
+                border = BorderStroke(1.dp, Color.Red),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xFF47A7FF),
                     contentColor = Color.White
                 ),
-                onClick = {
-                    userViewModel.logout()
-                    onLoggedOut()
-                }
             ) {
-                Icon(
-                    imageVector = Icons.Default.ExitToApp,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 4.dp)
+                Text(
+                    text = "Logout",
+                    color = Color.Black
                 )
-                Text(text = "Logout")
             }
         }
     }
+}
+
+@Composable
+fun ProfileItem(name: String, nim: String, major: String, email: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp)
+            .background(Color.White)
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .padding(8.dp) // Padding untuk memberi jarak dari border ke dalam
+    ) {
+        Text(
+            text = name,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Divider(color = Color.Gray, thickness = 1.dp)
+        Text(
+            text = nim,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Divider(color = Color.Gray, thickness = 1.dp)
+        Text(
+            text = major,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Divider(color = Color.Gray, thickness = 1.dp)
+        Text(
+            text = email,
+            fontSize = 16.sp
+        )
+    }
+}
+
+
+
+
+
+@Composable
+@Preview(showBackground = true)
+fun ProfileScreenPreview() {
+    val navController = rememberNavController()
+    ProfileScreen(navController = navController, onLoggedOut = {})
 }

@@ -166,10 +166,10 @@ fun HomeScreen(navController: NavController) {
             .fillMaxSize()
     ) {
         Text(
-            "HOME",
+            "Home",
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
-                .padding(vertical = 35.dp),
+                .padding(vertical = 30.dp),
             fontSize = 25.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold

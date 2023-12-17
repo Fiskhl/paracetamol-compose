@@ -153,10 +153,10 @@ fun ArchiveScreen(navController: NavController) {
             .fillMaxSize()
     ) {
         Text(
-            "ARCHIVE",
+            "Archive",
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
-                .padding(vertical = 35.dp),
+                .padding(vertical = 30.dp),
             fontSize = 25.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
