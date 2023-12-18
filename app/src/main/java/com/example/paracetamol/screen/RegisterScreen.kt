@@ -64,7 +64,7 @@ fun RegisterScreen(navController: NavController) {
             Log.d("RegisterScreen", "Register Success!")
             DialogUI(
                 title = "Registration Successful",
-                desc = "Your account has been successfully registered."
+                desc = "Your account has been successfully created."
             )
         }
     }
