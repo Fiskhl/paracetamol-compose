@@ -49,8 +49,8 @@ fun CardArchiveItem(group: ArchiveGroupData, navController: NavController) {
         border = BorderStroke(2.dp, Color(0xFF8E99A2)),
         shape = RoundedCornerShape(12.dp),
         color = Color.White.copy(alpha = 0.7f),
-        onClick = {
-            navController.navigate("${Screen.ArchiveAdminGroupDetail.route}/${group.title}/${group.description}")
+        onClick = { //masuknya ke AdminMemberList ya
+            navController.navigate("${Screen.AdminMemberListScreen.route}/${group.title}/${group.description}")
         }
 
     ) {

@@ -60,7 +60,7 @@ import java.util.Locale
 
 
 
-data class MemberGroupAdmin(val Name: String, val total: Int)
+data class MemberGroupAdmin(val name: String, val total: Int)
 
 
 val memberItemsAdmin = listOf(
@@ -159,6 +159,9 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
             .padding(horizontal = 25.dp, vertical = 7.dp),
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
+        onClick = {
+            navController.navigate("${Screen.UserGroupScreen.route}/${member.name}")
+        }
     ) {
         Row(
             modifier = Modifier
@@ -173,7 +176,7 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member.Name,
+                    text = member.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -307,7 +310,7 @@ fun AdminMemberListScreen(
             MemberScrollContentAdmin(innerPadding = PaddingValues(16.dp), navController = navController)
 
             FloatingActionButton(
-                onClick = { /* Action saat tombol ditekan */ },
+                onClick = { navController.navigate(Screen.AdminNewDendaScreen.route) },
                 modifier = Modifier
                     .padding(fabMargin)
                     .size(fabSize)

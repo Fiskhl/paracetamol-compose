@@ -113,25 +113,29 @@ fun CardDenda(denda: DendaData, navController: NavController) {
                     textAlign = TextAlign.End,
                 )
                 // Button pakai status
-                val buttonText = if (denda.status == 1) "Paid" else "Pay"
-                val buttonEnabled = denda.status == 0
+                val buttonText = if (denda.status == 1) "Edit" else "Pay"
+                val buttonEnabled = true
 
                 Button(
-                    onClick = { /* */ },
+                    onClick = {
+                        navController.navigate(Screen.PayScreen.route)
+                    },
                     enabled = buttonEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(30.dp),
-                    border = if (denda.status == 1) null else BorderStroke(1.dp, Color.Blue),
+                    border = BorderStroke(1.dp, if (denda.status == 1) Color.Black else Color.Blue), // Warna border berdasarkan status
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
                 ) {
-                    Text(buttonText,
-                        color = Color.DarkGray,
+                    Text(
+                        buttonText,
+                        color = if (denda.status == 1) Color.Black else Color.DarkGray, // Warna teks tombol berdasarkan status
                         fontSize = 10.sp,
-                        fontFamily = poppinsFamily,)
+                        fontFamily = poppinsFamily,
+                    )
                 }
                 Text(
                     text = "Due: ${dateFormat.format(denda.due)}",

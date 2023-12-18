@@ -8,12 +8,16 @@ sealed class Screen(val route: String) {
     object SearchScreen : Screen("search_screen")
     object ProfileScreen : Screen("profile_screen")
     object AdminMemberListScreen : Screen("admin_member_list")
-    object AdminMemberDetailScreen : Screen("admin_member_detail")
+    object AdminMemberDetailScreen : Screen("admin_member_detail_screen")
     object CreateScreen : Screen("create_screen")
     object JoinScreen : Screen("join_screen")
     object ArchiveScreen : Screen("archive_screen")
     object UserGroupScreen : Screen("user_group_screen")
     object MemberGroupScreen : Screen("member_group_screen")
-    object ArchiveAdminGroupDetail : Screen("archive_admin_group_detail")
+    object AdminProfileUserScreen : Screen("admin_profile_user_screen")
+    object PayScreen : Screen("pay_screen")
+    object AdminPaidScreen : Screen("admin_paid_screen")
+    object AdminNewDendaScreen : Screen("admin_new_denda_screen")
+
 
 }

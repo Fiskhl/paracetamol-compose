@@ -17,7 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.paracetamol.screen.admin.AdminMemberDetailsScreen
 import com.example.paracetamol.nav_screen.HomeScreen
 import com.example.paracetamol.screen.LoginScreen
 import com.example.paracetamol.nav_screen.ProfileScreen
@@ -33,8 +32,12 @@ import com.example.paracetamol.screen.JoinScreen
 import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
 import com.example.paracetamol.screen.AdminMemberListScreen
-import com.example.paracetamol.screen.ArchiveAdminGroupDetail
 import com.example.paracetamol.screen.MemberGroupScreen
+import com.example.paracetamol.screen.PayScreen
+import com.example.paracetamol.screen.admin.AdminMemberDetailScreen
+import com.example.paracetamol.screen.admin.AdminNewDendaScreen
+import com.example.paracetamol.screen.admin.AdminPaidScreen
+import com.example.paracetamol.screen.admin.AdminProfileUserScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,6 +114,11 @@ fun Navigation() {
                     isLoggedIn = false
                 }
             }
+            composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{description}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+                AdminNewDendaScreen(navController = navController, titleA = title, descriptionA = description)
+            }
             composable(route = Screen.AdminMemberListScreen.route + "/{title}/{description}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
@@ -127,20 +135,31 @@ fun Navigation() {
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
                 MemberGroupScreen(navController = navController, title = title, description = description)
             }
-            composable(route = Screen.AdminMemberDetailScreen.route + "/{name}/{studentId}") { navBackStackEntry ->
+            composable(route = Screen.AdminMemberDetailScreen.route + "/{title}/{description}/{name}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
-                val studentId = navBackStackEntry.arguments?.getString("denda") ?: ""
-                AdminMemberDetailsScreen(navController = navController, name = name, studentId = studentId)
+                AdminMemberDetailScreen(navController = navController, title = title, description = description, name = name)
             }
             composable(route = Screen.UserGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
                 UserGroupScreen(navController = navController, titleA = title, descriptionA = description)
             }
-            composable(route = Screen.ArchiveAdminGroupDetail.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.AdminProfileUserScreen.route + "/{name}/{status}") { navBackStackEntry ->
+                val name = navBackStackEntry.arguments?.getString("name") ?: ""
+                val status = navBackStackEntry.arguments?.getInt("status") ?: 0
+                AdminProfileUserScreen(navController = navController, name = name, status = status)
+            }
+            composable(route = Screen.PayScreen.route + "/{title}/{description}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                ArchiveAdminGroupDetail(navController = navController, title = title, description = description)
+                PayScreen(navController = navController, titleA = title, descriptionA = description)
+            }
+            composable(route = Screen.AdminPaidScreen.route + "/{title}/{description}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+                AdminPaidScreen(navController = navController, titleA = title, descriptionA = description)
             }
 
         }

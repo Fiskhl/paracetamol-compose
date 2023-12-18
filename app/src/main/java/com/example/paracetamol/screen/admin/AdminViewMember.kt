@@ -58,7 +58,7 @@ import java.util.Locale
 
 
 
-data class MemberViewGroupAdmin(val Name: String, val status: Int)
+data class MemberViewGroupAdmin(val name: String, val status: Int)
 
 
 val memberItemsViewAdmin = listOf(
@@ -84,6 +84,9 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
             .padding(horizontal = 25.dp, vertical = 7.dp),
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
+        onClick = {
+            navController.navigate("${Screen.AdminProfileUserScreen.route}/${member.name}/${member.status}")
+        }
     ) {
         Row(
             modifier = Modifier
@@ -98,7 +101,7 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member.Name,
+                    text = member.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -298,7 +301,7 @@ fun ArchiveCard(
 
 
 @Composable
-fun AdminViewMemberScreen(
+fun AdminViewMember(
     title: String,
     description: String,
     navController: NavController
@@ -400,9 +403,9 @@ fun AdminViewMemberScreen(
 
 @Composable
 @Preview(showBackground = true)
-fun AdminViewMemberScreenPreview() {
+fun AdminViewMemberPreview() {
     val navController = rememberNavController()
-    AdminViewMemberScreen(
+    AdminViewMember(
         "MAXIMA 2023",
         "Explore The World Reach New Potentials",
         navController = navController

@@ -148,33 +148,34 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 8.dp)
             .background(Color.White)
             .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-            .padding(8.dp) // Padding untuk memberi jarak dari border ke dalam
+            .border(1.dp, Color.Gray.copy(alpha = 0.8f), RoundedCornerShape(8.dp))
+            .padding(10.dp) // Padding untuk memberi jarak dari border ke dalam
     ) {
         Text(
             text = name,
             fontSize = 16.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(6.dp)
         )
-        Divider(color = Color.Gray, thickness = 1.dp)
+        Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = nim,
             fontSize = 16.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(6.dp)
         )
-        Divider(color = Color.Gray, thickness = 1.dp)
+        Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = major,
             fontSize = 16.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(6.dp)
         )
-        Divider(color = Color.Gray, thickness = 1.dp)
+        Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = email,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            modifier = Modifier.padding(6.dp)
         )
     }
 }
