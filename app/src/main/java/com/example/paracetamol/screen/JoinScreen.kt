@@ -49,7 +49,7 @@ fun JoinScreen(navController: NavController) {
 
     val context = LocalContext.current
 
-    var textState by rememberSaveable {
+    var referralCode by rememberSaveable {
         mutableStateOf("")
     }
 
@@ -109,9 +109,9 @@ fun JoinScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                value = textState,
+                value = referralCode,
                 onValueChange = {
-                    textState = it
+                    referralCode = it
                 },
                 placeholder = {
                     Text(
@@ -164,7 +164,6 @@ fun JoinScreen(navController: NavController) {
 @Composable
 @Preview(showBackground = true)
 fun JoinScreenPreview() {
-    val context = LocalContext.current
     val navController = rememberNavController()
     JoinScreen(navController = navController)
 }

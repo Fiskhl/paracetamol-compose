@@ -42,6 +42,7 @@ import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
+import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponseData
 
 data class GroupData(val title: String, val description: String)
 
@@ -108,19 +109,17 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
     val hasData = sampleItems.isNotEmpty()
 
-    // Local variable to store profile data
-//    var groupList by rememberSaveable { mutableStateOf<Profile?>(null) }
+    val groupList by rememberSaveable { mutableStateOf<GetJoinedGroupResponseData>(null) }
 
-    // LaunchedEffect to fetch profile data before building the UI
+
     LaunchedEffect(userViewModel) {
-        // Fetch profile data
         userViewModel.getJoinedGroup()
     }
 
-//    // Observe the LiveData and update the local variable
-//    userViewModel.profileData.observeAsState().value?.let {
-//        profileData = it
-//    }
+    // Observe the LiveData and update the local variable
+    userViewModel.profileData.observeAsState().value?.let {
+        profileData = it
+    }
 
     LazyColumn(
         contentPadding = innerPadding,
