@@ -292,7 +292,8 @@ fun AdminMemberListScreen(
                 fontSize = 12.sp
             )
         }
-//        MemberScrollContentAdmin(innerPadding = PaddingValues(16.dp), navController = navController)
+
+        CardTotal(memberItemsAdmin)
 
         //Floating Button
         val fabSize = 56.dp
@@ -302,7 +303,6 @@ fun AdminMemberListScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd
         ) {
-//            CardTotal(memberItemsAdmin)
 
             MemberScrollContentAdmin(innerPadding = PaddingValues(16.dp), navController = navController)
 
