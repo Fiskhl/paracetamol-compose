@@ -63,6 +63,9 @@ dependencies {
     // Live Data
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
 
+    // Saver
+    implementation("androidx.compose.runtime:runtime-saveable:1.2.1")
+
     // Compose
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))

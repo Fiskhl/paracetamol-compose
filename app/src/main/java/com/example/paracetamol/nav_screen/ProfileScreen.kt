@@ -17,10 +17,17 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,46 +35,37 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.R
+import com.example.paracetamol.api.data.profile.Profile
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.UserViewModel
 
-
-data class Profile(
-    val name: String,
-    val nim: String,
-    val major: String,
-    val email: String
-)
 
 @Composable
-fun ProfileScreen(navController: NavController, onLoggedOut:() -> Unit) {
+fun ProfileScreen(onLoggedOut:() -> Unit) {
+    val context = LocalContext.current
 
-    //    val context = LocalContext.current
-
-//    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
     // Local variable to store profile data
-//    var profileData by rememberSaveable { mutableStateOf<Profile?>(null) }
+    var profileData by rememberSaveable { mutableStateOf<Profile?>(null) }
 
     // LaunchedEffect to fetch profile data before building the UI
-//    LaunchedEffect(userViewModel) {
-//        // Fetch profile data
-//        userViewModel.getProfile()
-//    }
+    LaunchedEffect(userViewModel) {
+        // Fetch profile data
+        userViewModel.getProfile()
+    }
 
     // Observe the LiveData and update the local variable
-//    userViewModel.profileData.observeAsState().value?.let {
-//        profileData = it
-//    }
-// Local variable to store profile data
+    userViewModel.profileData.observeAsState().value?.let {
+        profileData = it
+    }
 
-    val profile = Profile(
-        name = "Joshua",
-        nim = "56899",
-        major = "Informatika (2021)",
-        email = "joshua@gmail.com"
-    )
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -117,15 +115,23 @@ fun ProfileScreen(navController: NavController, onLoggedOut:() -> Unit) {
                             .padding(horizontal = 4.dp)
                     )
 
-                    ProfileItem(profile.name, profile.nim, profile.major, profile.email,)
-//                    ProfileItem(profile.nim)
-//                    ProfileItem(profile.major)
-//                    ProfileItem(profile.email)
+                    if(profileData != null){
+                        ProfileItem(
+                            profileData!!.nama,
+                            profileData!!.nim,
+                            profileData!!.prodi + " (" + profileData!!.angkatan + ")",
+                            profileData!!.email
+                        )
+                    }
+
                 }
             }
 
             Button(
-                onClick = { /* Handle logout */ },
+                onClick = {
+                    onLoggedOut.invoke()
+                    userViewModel.logout()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(25.dp),
@@ -152,7 +158,7 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
             .background(Color.White)
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, Color.Gray.copy(alpha = 0.8f), RoundedCornerShape(8.dp))
-            .padding(10.dp) // Padding untuk memberi jarak dari border ke dalam
+            .padding(10.dp)
     ) {
         Text(
             text = name,
@@ -187,6 +193,5 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
 @Composable
 @Preview(showBackground = true)
 fun ProfileScreenPreview() {
-    val navController = rememberNavController()
-    ProfileScreen(navController = navController, onLoggedOut = {})
+    ProfileScreen(onLoggedOut = {})
 }

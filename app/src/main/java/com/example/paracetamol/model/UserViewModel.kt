@@ -7,7 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paracetamol.api.ApiService
-import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponseData
+import com.example.paracetamol.api.data.denda.request.PayDendaRequest
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.api.data.group.request.CreateGroupRequest
+import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.api.data.login.request.LoginRequest
 import com.example.paracetamol.api.data.profile.Profile
 import com.example.paracetamol.api.data.register.RegisterRequest
@@ -25,11 +28,23 @@ class UserViewModel(private val context: Context): ViewModel() {
     private val _profileData = MutableLiveData<Profile?>()
     val profileData: LiveData<Profile?> get() = _profileData
 
-    private val _joinedGroups = MutableLiveData<GetJoinedGroupResponseData?>()
-    val joinedGroups: LiveData<GetJoinedGroupResponseData?> get() = _joinedGroups
+    private val _joinedGroups = MutableLiveData<List<GroupItem?>?>()
+    val joinedGroups: LiveData<List<GroupItem?>?> get() = _joinedGroups
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
+    private val _dendas = MutableLiveData<List<DendaItem?>?>()
+    val dendas: LiveData<List<DendaItem?>?> get() = _dendas
+
+    private val _payDendaSuccess = MutableLiveData<Boolean?>()
+    val payDendaSuccess: LiveData<Boolean?> get() = _payDendaSuccess
+
+    private val _joinGroupSuccess = MutableLiveData<Boolean?>()
+    val joinGroupSuccess: LiveData<Boolean?> get() = _joinGroupSuccess
+
+    private val _createGroupSuccess = MutableLiveData<Boolean?>()
+    val createGroupSuccess: LiveData<Boolean?> get() = _createGroupSuccess
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> get() = _errorMessage
 
     private fun setLoginSuccess() {
         _loginSuccess.postValue(true)
@@ -43,8 +58,28 @@ class UserViewModel(private val context: Context): ViewModel() {
         _profileData.postValue(data)
     }
 
-    private fun setJoinedGroups(groups: GetJoinedGroupResponseData){
+    private fun setJoinedGroups(groups: List<GroupItem>){
         _joinedGroups.postValue(groups)
+    }
+
+    private fun setUserDenda(dendas: List<DendaItem>){
+        _dendas.postValue(dendas)
+    }
+
+    private fun setPaySuccess(){
+        _payDendaSuccess.postValue(true)
+    }
+
+    private fun setJoinGroupSuccess(){
+        _joinGroupSuccess.postValue(true)
+    }
+
+    private fun setCreateGroupSuccess(){
+        _createGroupSuccess.postValue(true)
+    }
+
+    private fun clearErrorMessage(){
+        _errorMessage.postValue(null);
     }
 
     fun register(
@@ -59,9 +94,8 @@ class UserViewModel(private val context: Context): ViewModel() {
             val registerRequest = RegisterRequest(nama,nim, password, email, prodi, angkatan)
             try {
                 val response = ApiService.create().register(registerRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
-                    Log.d(model_ref, response.body().toString())
+                    clearErrorMessage()
                     setRegisterSuccess()
                 } else {
                     handleErrorResponse(response.code())
@@ -77,11 +111,9 @@ class UserViewModel(private val context: Context): ViewModel() {
             val loginRequest = LoginRequest(email, password)
             try {
                 val response = ApiService.create().login(loginRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
-                    Log.d(model_ref, response.body().toString())
+                    clearErrorMessage()
                     val token = response.body()!!.token
-                    Log.d(model_ref, token)
                     saveToken(token)
                     saveSession()
                     setLoginSuccess()
@@ -98,14 +130,11 @@ class UserViewModel(private val context: Context): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val token = PreferenceManager.getToken(context)
-                Log.d(model_ref, token!!)
                 val response = ApiService.create().getProfile("Bearer $token")
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
-                    Log.d(model_ref, response.body().toString())
+                    clearErrorMessage()
                     val profileData = response.body()?.data?.profile
                     if (profileData != null) {
-                        Log.d(model_ref, profileData.toString())
                         setProfileData(profileData)
                     } else {
                         _errorMessage.postValue("Profile data is null")
@@ -119,27 +148,133 @@ class UserViewModel(private val context: Context): ViewModel() {
         }
     }
 
-    fun getJoinedGroup(){
+    fun getMemberID() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val memberID = PreferenceManager.getMemberID(context)
+                if(memberID != null) return@launch;
                 val token = PreferenceManager.getToken(context)
-                Log.d(model_ref, token!!)
-                val response = ApiService.create().getJoinedGroup("Bearer $token")
-                Log.d(model_ref, response.toString())
+                val response = ApiService.create().getProfile("Bearer $token")
                 if (response.isSuccessful) {
-                    Log.d(model_ref, response.body()?.string() ?: "No Response")
-//                    val profileData = response.body()?.data?.profile
-//                    if (profileData != null) {
-//                        Log.d(model_ref, profileData.toString())
-//                        setProfileData(profileData)
-//                    } else {
-//                        _errorMessage.postValue("Profile data is null")
-//                    }
+                    clearErrorMessage()
+                    val profileData = response.body()?.data?.profile
+                    if (profileData != null) {
+                        saveMemberID(profileData.id)
+                    } else {
+                        _errorMessage.postValue("Profile data is null")
+                    }
                 } else {
                     handleErrorResponse(response.code())
                 }
             } catch (e: Exception) {
-                _errorMessage.postValue("Failed to get profile")
+                _errorMessage.postValue("Failed to get memberID")
+            }
+        }
+    }
+
+    fun getJoinedGroup(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().getJoinedGroup("Bearer $token")
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        val groups = it.data?.groups
+                        groups?.let {
+                            setJoinedGroups(groups)
+                        } ?: run {
+                            _joinedGroups.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to get joined group(s)")
+            }
+        }
+    }
+
+    fun getAllUserDenda(groupID: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val memberID = PreferenceManager.getMemberID(context) ?: return@launch
+                val response = ApiService.create().getAllUserDenda(memberID, groupID)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        val dendas = it.data?.dendas
+                        dendas?.let {
+                            setUserDenda(dendas)
+                        } ?: run {
+                            _joinedGroups.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to get all fines")
+            }
+        }
+    }
+
+    fun payDenda(dendaID: String, link: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val payDendaRequest = PayDendaRequest(dendaID, link)
+                Log.d(model_ref, payDendaRequest.toString())
+                val response = ApiService.create().payDenda("Bearer $token", payDendaRequest)
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setPaySuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to pay fines")
+            }
+        }
+    }
+
+    fun joinGroup(referralCode: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().joinGroup(referralCode,"Bearer $token")
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setJoinGroupSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to join the group")
+            }
+        }
+    }
+
+    fun createGroup(namaGroup: String, refKey: String, desc: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val createGroupRequest = CreateGroupRequest(namaGroup, refKey, desc, true)
+                val response = ApiService.create().createGroup("Bearer $token", createGroupRequest)
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setCreateGroupSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to create a group")
             }
         }
     }
@@ -168,7 +303,8 @@ class UserViewModel(private val context: Context): ViewModel() {
         when (responseCode) {
             400 -> _errorMessage.postValue("Bad Request")
             404 -> _errorMessage.postValue("Not Found")
-            else -> _errorMessage.postValue("Login failed")
+            409 -> _errorMessage.postValue("Already Joined/Registered")
+            else -> _errorMessage.postValue("Error Code: $responseCode")
         }
     }
 

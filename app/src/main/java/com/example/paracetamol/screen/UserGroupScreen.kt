@@ -26,6 +26,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,8 +41,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.nav_screen.ArchiveScrollContent
 import com.example.paracetamol.nav_screen.CardArchiveItem
 import com.example.paracetamol.ui.theme.poppinsFamily
@@ -45,21 +56,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
-data class DendaData(val title: String, val description: String, val status: Int, val total: Int, val due: Date)
-
-val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-val dendaItem = listOf(
-    DendaData("Salah Rici", "Salah Rici", 1, 30000, dateFormat.parse("2024-12-05")),
-    DendaData("Rici yang Salah", "Karena ada rici", 0, 5000, dateFormat.parse("2024-09-15")),
-    DendaData("Semua karena rici", "Rici nomor 1", 0, 50000, dateFormat.parse("2024-01-25")),
-    DendaData("Rici kamu jahat", "Tanggung jawab rici", 0, 150000, dateFormat.parse("2024-04-05")),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDenda(denda: DendaData, navController: NavController) {
+fun CardDenda(titleA: String, denda: DendaItem?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,7 +79,7 @@ fun CardDenda(denda: DendaData, navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = denda.title,
+                    text = denda!!.title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -88,7 +87,7 @@ fun CardDenda(denda: DendaData, navController: NavController) {
                 )
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = denda.description,
+                    text = denda.desc,
                     fontSize = 11.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -100,12 +99,13 @@ fun CardDenda(denda: DendaData, navController: NavController) {
 
             // Kolom Kanan
             Column(
-                modifier = Modifier.width(180.dp)
+                modifier = Modifier
+                    .width(180.dp)
                     .padding(end = 0.dp), // Padding di kanan diatur menjadi 0.dp
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(denda.total)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(denda!!.nominal)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
@@ -113,32 +113,32 @@ fun CardDenda(denda: DendaData, navController: NavController) {
                     textAlign = TextAlign.End,
                 )
                 // Button pakai status
-                val buttonText = if (denda.status == 1) "Edit" else "Pay"
+                val buttonText = if (denda!!.is_paid) "Edit" else "Pay"
                 val buttonEnabled = true
 
                 Button(
                     onClick = {
-                        navController.navigate(Screen.PayScreen.route)
+                        navController.navigate("${Screen.PayScreen.route}/${denda!!._id}/${denda.title}")
                     },
                     enabled = buttonEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(30.dp),
-                    border = BorderStroke(1.dp, if (denda.status == 1) Color.Black else Color.Blue), // Warna border berdasarkan status
+                    border = BorderStroke(1.dp, if (denda.is_paid) Color.Black else Color.Blue), // Warna border berdasarkan status
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
                 ) {
                     Text(
                         buttonText,
-                        color = if (denda.status == 1) Color.Black else Color.DarkGray, // Warna teks tombol berdasarkan status
+                        color = if (denda.is_paid) Color.Black else Color.DarkGray, // Warna teks tombol berdasarkan status
                         fontSize = 10.sp,
                         fontFamily = poppinsFamily,
                     )
                 }
                 Text(
-                    text = "Due: ${dateFormat.format(denda.due)}",
+                    text = "Due: ${denda!!.hari}",
                     fontSize = 10.sp,
                     color = Color.Black,
                     textAlign = TextAlign.End,
@@ -151,23 +151,34 @@ fun CardDenda(denda: DendaData, navController: NavController) {
 
 
 @Composable
-fun DendaScrollContent(innerPadding: PaddingValues, navController: NavController) {
+fun DendaScrollContent(id: String, titleA: String, innerPadding: PaddingValues, navController: NavController) {
     val context = LocalContext.current
 
-    val hasData = dendaItem.isNotEmpty()
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
-//    // Observe the LiveData and update the local variable
-//    userViewModel.profileData.observeAsState().value?.let {
-//        profileData = it
-//    }
+    var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
+
+    LaunchedEffect(userViewModel){
+        userViewModel.getAllUserDenda(id)
+    }
+
+    // Observe the LiveData and update the local variable
+    userViewModel.dendas.observeAsState().value?.let {
+        dendaDatas = it
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(dendaItem) { item ->
-                CardDenda(denda = item, navController = navController)
+        if (dendaDatas != null) {
+            items(dendaDatas!!) { item ->
+                CardDenda(titleA = titleA, denda = item, navController = navController)
             }
         } else {
             item {
@@ -198,6 +209,7 @@ fun DendaScrollContent(innerPadding: PaddingValues, navController: NavController
 
 @Composable
 fun UserGroupScreen(
+    id: String,
     titleA: String,
     descriptionA: String,
     navController: NavController
@@ -247,7 +259,7 @@ fun UserGroupScreen(
                 fontSize = 12.sp
             )
         }
-        DendaScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
+        DendaScrollContent(id = id, titleA = titleA, innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }
 
@@ -258,6 +270,7 @@ fun UserGroupScreen(
 fun UserGroupScreenPreview() {
     val navController = rememberNavController()
     UserGroupScreen(
+        "12345",
         "MAXIMA 2023",
         "Explore The World Reach New Potentials",
         navController = navController

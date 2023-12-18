@@ -47,7 +47,7 @@ fun Navigation() {
     var isLoggedIn by rememberSaveable{ mutableStateOf(false) }
     val sessionExist = PreferenceManager.getIsLoggedIn(context)
 
-    if(sessionExist == true) isLoggedIn = true
+    if(sessionExist) isLoggedIn = true
 
     Scaffold(
         bottomBar = {
@@ -109,7 +109,7 @@ fun Navigation() {
                 ArchiveScreen(navController = navController)
             }
             composable(route = Screen.ProfileScreen.route){
-                ProfileScreen(navController = navController)
+                ProfileScreen()
                 {
                     isLoggedIn = false
                 }
@@ -141,20 +141,21 @@ fun Navigation() {
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
                 AdminMemberDetailScreen(navController = navController, title = title, description = description, name = name)
             }
-            composable(route = Screen.UserGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.UserGroupScreen.route + "/{id}/{title}/{description}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                UserGroupScreen(navController = navController, titleA = title, descriptionA = description)
+                UserGroupScreen(navController = navController, id = id, titleA = title, descriptionA = description)
             }
             composable(route = Screen.AdminProfileUserScreen.route + "/{name}/{status}") { navBackStackEntry ->
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
                 val status = navBackStackEntry.arguments?.getInt("status") ?: 0
                 AdminProfileUserScreen(navController = navController, name = name, status = status)
             }
-            composable(route = Screen.PayScreen.route + "/{title}/{description}") { navBackStackEntry ->
-                val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                PayScreen(navController = navController, titleA = title, descriptionA = description)
+            composable(route = Screen.PayScreen.route + "/{id}/{judulDenda}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
+                val judulDenda = navBackStackEntry.arguments?.getString("judulDenda") ?: ""
+                PayScreen(navController = navController, id = id, titleA = judulDenda)
             }
             composable(route = Screen.AdminPaidScreen.route + "/{title}/{description}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""

@@ -2,18 +2,11 @@ package com.example.paracetamol.nav_screen
 
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
@@ -24,9 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,27 +27,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.paracetamol.api.data.profile.Profile
 import com.example.paracetamol.model.UserViewModel
-//import com.example.paracetamol.Student
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
-import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponseData
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.component.showToast
 
-data class GroupData(val title: String, val description: String)
-
-// ganti api
-//val sampleItems = emptyList<GroupData>()
-val sampleItems = listOf(
-    GroupData("MAXIMA 2023", "Explore The World Reach New Potentials"),
-//    GroupData("UMN ECO 2023", "We Act for The Better Ear.ue Spartan"),
-    GroupData("STARLIGHT 2023", "With us you can be a Star"),
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardItem(group: GroupData, navController: NavController) {
+fun CardItem(
+    group: GroupItem?,
+    navController: NavController,
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +48,7 @@ fun CardItem(group: GroupData, navController: NavController) {
         border = BorderStroke(2.dp, Color(0xFF1F628E)),
         shape = RoundedCornerShape(12.dp),
         onClick = {
-            navController.navigate("${Screen.UserGroupScreen.route}/${group.title}/${group.description}")
+            navController.navigate("${Screen.UserGroupScreen.route}/${group!!._id}/${group.namaGroup}/${group.desc}")
         }
 
     ) {
@@ -76,7 +60,7 @@ fun CardItem(group: GroupData, navController: NavController) {
 
             ) {
             Text(
-                text = group.title,
+                text = group!!.namaGroup,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -86,7 +70,7 @@ fun CardItem(group: GroupData, navController: NavController) {
                 textAlign = TextAlign.Start,
             )
             Text(
-                text = group.description,
+                text = group.desc,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,26 +91,33 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
-    val hasData = sampleItems.isNotEmpty()
 
-    val groupList by rememberSaveable { mutableStateOf<GetJoinedGroupResponseData>(null) }
+    var groupList by rememberSaveable { mutableStateOf<List<GroupItem?>?>(null) }
 
 
     LaunchedEffect(userViewModel) {
+        userViewModel.getMemberID()
         userViewModel.getJoinedGroup()
     }
 
     // Observe the LiveData and update the local variable
-    userViewModel.profileData.observeAsState().value?.let {
-        profileData = it
+    userViewModel.joinedGroups.observeAsState().value?.let {
+        groupList = it
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
     }
 
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(sampleItems) { item ->
+        if (groupList != null) {
+            val filteredGroupList = groupList!!.filter { it?.status == true }
+
+            items(filteredGroupList) { item ->
                 CardItem(group = item, navController = navController)
             }
         } else {
@@ -138,7 +129,7 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        "No Group",
+                        "No group found.",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(vertical = 280.dp),

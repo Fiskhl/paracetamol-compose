@@ -7,5 +7,13 @@ data class GetJoinedGroupResponse(
 )
 
 data class GetJoinedGroupResponseData(
-    val groups: List<String>
+    val groups: List<GroupItem>
+)
+
+data class GroupItem(
+    val _id: String,
+    val namaGroup: String,
+    val desc: String,
+    val refKey: String,
+    val status: Boolean
 )

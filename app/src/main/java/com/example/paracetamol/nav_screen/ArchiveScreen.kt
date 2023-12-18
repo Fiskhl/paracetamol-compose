@@ -4,14 +4,19 @@ package com.example.paracetamol.nav_screen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -23,25 +28,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.paracetamol.model.UserViewModel
-//import com.example.paracetamol.Student
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
-
-data class ArchiveGroupData(val title: String, val description: String)
-
-// ganti api
-//val archiveSampleItems = emptyList<ArchiveGroupData>()
-val archiveSampleItems = listOf(
-    ArchiveGroupData("MAXIMA 2021", "Explore The World Reach New Potentials"),
-    ArchiveGroupData("UMN ECO 2021", "We Act for The Better Earth"),
-    ArchiveGroupData("UMN Festival 2021", "Devote Yourself to be a True Spartan"),
-    ArchiveGroupData("STARLIGHT 2021", "With us you can be a Star"),
-)
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.component.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardArchiveItem(group: ArchiveGroupData, navController: NavController) {
+fun CardArchiveItem(group: GroupItem, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,9 +44,9 @@ fun CardArchiveItem(group: ArchiveGroupData, navController: NavController) {
         border = BorderStroke(2.dp, Color(0xFF8E99A2)),
         shape = RoundedCornerShape(12.dp),
         color = Color.White.copy(alpha = 0.7f),
-        onClick = { //masuknya ke AdminMemberList ya
-            navController.navigate("${Screen.AdminMemberListScreen.route}/${group.title}/${group.description}")
-        }
+//        onClick = { //masuknya ke AdminMemberList ya
+//            navController.navigate("${Screen.AdminMemberListScreen.route}/${group.title}/${group.description}")
+//        }
 
     ) {
         Column(
@@ -62,7 +57,7 @@ fun CardArchiveItem(group: ArchiveGroupData, navController: NavController) {
 
             ) {
             Text(
-                text = group.title,
+                text = group.namaGroup,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -72,7 +67,7 @@ fun CardArchiveItem(group: ArchiveGroupData, navController: NavController) {
                 textAlign = TextAlign.Start,
             )
             Text(
-                text = group.description,
+                text = group.desc,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,29 +88,32 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
-    val hasData = archiveSampleItems.isNotEmpty()
 
-    // Local variable to store profile data
-//    var groupList by rememberSaveable { mutableStateOf<Profile?>(null) }
+    var groupList by rememberSaveable { mutableStateOf<List<GroupItem?>?>(null) }
 
-    // LaunchedEffect to fetch profile data before building the UI
     LaunchedEffect(userViewModel) {
-        // Fetch profile data
         userViewModel.getJoinedGroup()
     }
 
-//    // Observe the LiveData and update the local variable
-//    userViewModel.profileData.observeAsState().value?.let {
-//        profileData = it
-//    }
+    // Observe the LiveData and update the local variable
+    userViewModel.joinedGroups.observeAsState().value?.let {
+        groupList = it
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(archiveSampleItems) { item ->
-                CardArchiveItem(group = item, navController = navController)
+        if (groupList != null) {
+            val filteredGroupList = groupList!!.filter { it?.status == false }
+
+            items(filteredGroupList) { item ->
+                CardItem(group = item, navController = navController)
             }
         } else {
             item {

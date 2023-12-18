@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
-import com.example.paracetamol.nav_screen.Profile
 import com.example.paracetamol.nav_screen.ProfileItem
 import com.example.paracetamol.screen.AdminViewMember
 import com.example.paracetamol.screen.DendaScrollContent

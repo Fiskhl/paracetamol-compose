@@ -22,7 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -37,20 +39,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinScreen(navController: NavController) {
-
     val context = LocalContext.current
 
     var referralCode by rememberSaveable {
         mutableStateOf("")
+    }
+
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+
+    // Observe the LiveData and update the local variable
+    userViewModel.joinGroupSuccess.observeAsState().value?.let {success ->
+        if(success) {
+            showToast(context, "Request to join group has been sent.")
+        }
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
     }
 
     Column(
@@ -137,7 +156,11 @@ fun JoinScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.SearchScreen.route)
+                    if(referralCode.isNotBlank()){
+                        userViewModel.joinGroup(referralCode)
+                    }else{
+                        showToast(context, "Fill referral code.")
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -26,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -40,9 +41,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @SuppressLint("UnrememberedMutableState")
@@ -52,15 +56,25 @@ fun CreateScreen(navController: NavController) {
 
     val context = LocalContext.current
 
-//    var fullName by rememberSaveable { mutableStateOf(TextFieldValue()) }
-//    var organization by rememberSaveable { mutableStateOf(TextFieldValue()) }
-//    var referralCode by rememberSaveable { mutableStateOf(TextFieldValue()) }
-//
-//    val isButtonEnabled by derivedStateOf {
-//        fullName.text.isNotEmpty() && organization.text.isNotEmpty() && referralCode.text.isNotEmpty()
-//    }
-    var textState by rememberSaveable {
-        mutableStateOf("")
+    var name by rememberSaveable { mutableStateOf ("") }
+    var desc by rememberSaveable { mutableStateOf ("") }
+    var referralCode by rememberSaveable { mutableStateOf ("") }
+
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+
+    // Observe the LiveData and update the local variable
+    userViewModel.createGroupSuccess.observeAsState().value?.let {success ->
+        if(success) {
+            showToast(context, "Group created successfuly.")
+            name = ""
+            desc = ""
+            referralCode = ""
+        }
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
     }
 
     Column(
@@ -118,9 +132,9 @@ fun CreateScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                value = textState,
+                value = name,
                 onValueChange = {
-                    textState = it
+                    name = it
                 },
                 placeholder = {
                     Text(
@@ -147,9 +161,9 @@ fun CreateScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                value = textState,
+                value = desc,
                 onValueChange = {
-                    textState = it
+                    desc = it
                 },
                 placeholder = {
                     Text(
@@ -177,9 +191,9 @@ fun CreateScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                value = textState,
+                value = referralCode,
                 onValueChange = {
-                    textState = it
+                    referralCode = it
                 },
                 placeholder = {
                     Text(
@@ -205,7 +219,11 @@ fun CreateScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.SearchScreen.route)
+                    if(name.isNotBlank() && desc.isNotBlank() && referralCode.isNotBlank()){
+                        userViewModel.createGroup(name, desc, referralCode)
+                    } else {
+                        showToast(context, "Fill all required fields.")
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

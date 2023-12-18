@@ -1,10 +1,14 @@
 package com.example.paracetamol.api
 
+import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
+import com.example.paracetamol.api.data.admin.response.GetAMemberResponse
+import com.example.paracetamol.api.data.admin.response.GetAllMemberResponse
 import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
 import com.example.paracetamol.api.data.denda.request.DeleteDendaRequest
 import com.example.paracetamol.api.data.denda.request.PayDendaRequest
+import com.example.paracetamol.api.data.denda.response.GetUserDendaResponse
 import com.example.paracetamol.api.data.group.request.CreateGroupRequest
-import com.example.paracetamol.api.data.group.response.CreateGroupResponse
+import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponse
 import com.example.paracetamol.api.data.login.request.LoginRequest
 import com.example.paracetamol.api.data.login.response.LoginResponse
 import com.example.paracetamol.api.data.profile.ProfileResponse
@@ -30,28 +34,21 @@ interface ApiService {
     suspend fun register(@Body registerRequest: RegisterRequest): Response<RegisterResponse>
     @GET("/getProfile")
     suspend fun getProfile(@Header("Authorization") token: String): Response<ProfileResponse>
-    @PUT("/members/edit/{memberID}")
-    suspend fun editProfile(
-        @Path("memberID") memberID: String,
-        @Header("Authorization") token: String,
-        @Body registerRequest: RegisterRequest
-    ): Response<ResponseBody>
-    @DELETE("/member/{memberID}")
-    suspend fun deleteProfile(@Path("memberID") memberID: String): Response<ResponseBody>
+
 
     // Group
     @POST("/group")
     suspend fun createGroup(
         @Header("Authorization") token: String,
         @Body createGroupRequest: CreateGroupRequest
-    ): Response<CreateGroupResponse>
+    ): Response<ResponseBody>
     @POST("/group/join/{referralCode}")
     suspend fun joinGroup(
         @Path("referralCode") referralCode: String,
         @Header("Authorization") token: String
     ): Response<ResponseBody>
     @GET("/allJoinedGroup")
-    suspend fun getJoinedGroup(@Header("Authorization") token: String): Response<ResponseBody>
+    suspend fun getJoinedGroup(@Header("Authorization") token: String): Response<GetJoinedGroupResponse>
     @DELETE("/group/deactivate/{groupID}")
     suspend fun deactivateGroup(
         @Path("groupID") groupID: String,
@@ -63,21 +60,58 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<ResponseBody>
 
+
     // Denda
-    @POST("/addDenda")
-    suspend fun createDenda(
-        @Header("Authorization") token: String,
-        @Body createDendaRequest: CreateDendaRequest
-    ): Response<ResponseBody>
+    @GET("/allDenda/{memberID}/{groupID}")
+    suspend fun getAllUserDenda(
+        @Path("memberID") memberID: String,
+        @Path("groupID") groupID: String
+    ): Response<GetUserDendaResponse>
     @POST("/payDenda")
     suspend fun payDenda(
         @Header("Authorization") token: String,
         @Body payDendaRequest: PayDendaRequest
     ): Response<ResponseBody>
+    @POST("/addDenda")
+    suspend fun createDenda(
+        @Header("Authorization") token: String,
+        @Body createDendaRequest: CreateDendaRequest
+    ): Response<ResponseBody>
     @DELETE("/deleteDenda")
     suspend fun deleteDenda(
         @Header("Authorization") token: String,
         @Body deleteDendaRequest: DeleteDendaRequest
+    ): Response<ResponseBody>
+    @POST("/editDenda/{dendaID}/{groupRef}")
+    suspend fun editDenda(
+        @Header("Authorization") token: String,
+        @Body editDendaRequest: CreateDendaRequest
+    ): Response<ResponseBody>
+
+
+    // Admin
+    @GET("/accMember")
+    suspend fun acceptMember(
+        @Header("Authorization") token: String,
+        @Body acceptMemberRequest: MemberSettingRequest
+    ): Response<ResponseBody>
+    @GET("/members/{groupRef}")
+    suspend fun getAllMember(
+        @Header("Authorization") token: String
+    ): Response<GetAllMemberResponse>
+    @GET("/member/{memberID}/{groupRef}")
+    suspend fun getAMember(
+        @Header("Authorization") token: String
+    ): Response<GetAMemberResponse>
+    @PUT("/members/edit/giveAdmin")
+    suspend fun addAdmin(
+        @Header("Authorization") token: String,
+        @Body addAdminRequest: MemberSettingRequest
+    ): Response<ResponseBody>
+    @PUT("/members/edit/revokeAdmin")
+    suspend fun demoteAdmin(
+        @Header("Authorization") token: String,
+        @Body demoteAdminRequest: MemberSettingRequest
     ): Response<ResponseBody>
 
     companion object {
