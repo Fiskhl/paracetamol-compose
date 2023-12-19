@@ -17,6 +17,10 @@ import com.example.paracetamol.api.data.register.RegisterRequest
 import com.example.paracetamol.preferences.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class UserViewModel(private val context: Context): ViewModel() {
@@ -229,9 +233,9 @@ class UserViewModel(private val context: Context): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val token = PreferenceManager.getToken(context)
-                val payDendaRequest = PayDendaRequest(dendaID, link)
-                Log.d(model_ref, payDendaRequest.toString())
-                val response = ApiService.create().payDenda("Bearer $token", payDendaRequest)
+                val idDendaRequestBody = dendaID.toRequestBody("text/plain".toMediaTypeOrNull())
+                val fileRequestBody = link.toRequestBody("text/plain".toMediaTypeOrNull())
+                val response = ApiService.create().payDenda("Bearer $token", idDendaRequestBody, fileRequestBody)
                 Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
@@ -323,8 +327,8 @@ class UserViewModel(private val context: Context): ViewModel() {
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {
             400 -> _errorMessage.postValue("Bad Request")
-            401 -> _errorMessage.postValue("Invalid Credentials")
-            404 -> _errorMessage.postValue("Not Found")
+            401 -> _errorMessage.postValue("Unauthorized/Invalid Credentials")
+            404 -> _errorMessage.postValue("Data Not Found")
             409 -> _errorMessage.postValue("Already Joined/Registered")
             500 -> _errorMessage.postValue("Server Error")
             else -> _errorMessage.postValue("Error Code: $responseCode")

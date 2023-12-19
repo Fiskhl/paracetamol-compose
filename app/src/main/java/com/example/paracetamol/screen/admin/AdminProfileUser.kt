@@ -25,10 +25,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,21 +43,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
+import com.example.paracetamol.api.data.group.response.Member
+import com.example.paracetamol.api.data.profile.Profile
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.nav_screen.ProfileItem
-import com.example.paracetamol.screen.DendaScrollContent
-import com.example.paracetamol.screen.Screen
-
-data class Profile(
-    val nim: String,
-    val major: String,
-    val email: String
-)
 
 @Composable
-fun ProfileItem(name: String, nim: String, major: String, email: String) {
+fun ProfileItem(aMemberData: Profile) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,25 +66,25 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
             .padding(10.dp) // Padding untuk memberi jarak dari border ke dalam
     ) {
         Text(
-            text = name,
+            text = aMemberData.nama,
             fontSize = 16.sp,
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
-            text = nim,
+            text = aMemberData.nim,
             fontSize = 16.sp,
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
-            text = major,
+            text = "${aMemberData.prodi} (${aMemberData.angkatan})",
             fontSize = 16.sp,
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
-            text = email,
+            text = aMemberData.email,
             fontSize = 16.sp,
             modifier = Modifier.padding(6.dp)
         )
@@ -89,16 +94,48 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
 
 @Composable
 fun AdminProfileUserScreen(
-    name: String,
-    status: Int,
-    navController: NavController
+    navController: NavController,
+    id: String,
+    isAdmin: Boolean,
+    refKey: String
 ) {
+    val context = LocalContext.current
 
-    val profile = Profile(
-        nim = "56899",
-        major = "Informatika (2021)",
-        email = "joshua@gmail.com"
-    )
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
+
+    // Local variable to store profile data
+    var aMemberData by rememberSaveable { mutableStateOf<Profile?>(null) }
+
+    // LaunchedEffect to fetch profile data before building the UI
+    LaunchedEffect(adminViewModel) {
+        // Fetch profile data
+        adminViewModel.getAGroupMember(id, refKey)
+    }
+
+    // Observe the LiveData and update the local variable
+    adminViewModel.aMemberData.observeAsState().value?.let {
+        aMemberData = it
+    }
+
+    val successKickMember by adminViewModel.successKickMember.observeAsState()
+    successKickMember?.let {
+        showToast(context, "Member kicked.")
+    }
+
+    val addAdminSuccess by adminViewModel.addAdminSuccess.observeAsState()
+    addAdminSuccess?.let {
+        showToast(context, "Member promoted to admin.")
+    }
+
+    val demoteAdminSuccess by adminViewModel.demoteAdminSuccess.observeAsState()
+    demoteAdminSuccess?.let {
+        showToast(context, "Admin demoted to member.")
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Column(
         modifier = Modifier
@@ -120,7 +157,7 @@ fun AdminProfileUserScreen(
             }
         }
         Text(
-            text = if (status == 1) "Admin" else "Member",
+            text = if (isAdmin) "Admin" else "Member",
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth(),
             fontSize = 25.sp,
@@ -156,15 +193,19 @@ fun AdminProfileUserScreen(
                         .padding(horizontal = 4.dp)
                 )
 
-                ProfileItem(name, profile.nim, profile.major, profile.email,)
+                if(aMemberData != null)
+                    ProfileItem(aMemberData!!)
             }
         }
 
-        when (status) {
-            0 -> {
+        when (isAdmin) {
+            false -> {
                 // Jika status adalah 0 (Member)
                 Button(
-                    onClick = { /* Handle give admin */ },
+                    onClick = {
+                        if(aMemberData != null)
+                            adminViewModel.addAdmin(aMemberData!!.id, refKey)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -187,7 +228,10 @@ fun AdminProfileUserScreen(
                 }
 
                 Button(
-                    onClick = { /* Handle kick member */ },
+                    onClick = {
+                        if(aMemberData != null)
+                            adminViewModel.kickMember(refKey, aMemberData!!.id)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -210,10 +254,13 @@ fun AdminProfileUserScreen(
                 }
             }
 
-            1 -> {
+            true -> {
                 // Jika status adalah 1 (Admin)
                 Button(
-                    onClick = { /* Handle revoke admin */ },
+                    onClick = {
+                        if(aMemberData != null)
+                            adminViewModel.demoteAdmin(aMemberData!!.id, refKey)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -235,10 +282,6 @@ fun AdminProfileUserScreen(
                     )
                 }
             }
-
-            else -> {
-
-            }
         }
 
     }
@@ -250,7 +293,7 @@ fun AdminProfileUserScreen(
 //    val navController = rememberNavController()
 //    AdminProfileUserScreen(
 //        "Joshua Hot Banget",
-//        1,
+//        true,
 //        navController = navController
 //    )
 //}

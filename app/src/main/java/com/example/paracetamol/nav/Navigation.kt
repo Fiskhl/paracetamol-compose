@@ -158,10 +158,11 @@ fun Navigation() {
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
                 UserGroupScreen(navController = navController, id = id, titleA = title, descriptionA = description)
             }
-            composable(route = Screen.AdminProfileUserScreen.route + "/{name}/{status}") { navBackStackEntry ->
-                val name = navBackStackEntry.arguments?.getString("name") ?: ""
-                val status = navBackStackEntry.arguments?.getInt("status") ?: 0
-                AdminProfileUserScreen(navController = navController, name = name, status = status)
+            composable(route = Screen.AdminProfileUserScreen.route + "/{id}/{isAdmin}/{refKey}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
+                val isAdmin = navBackStackEntry.arguments?.getString("isAdmin") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                AdminProfileUserScreen(navController = navController, id = id, isAdmin = isAdmin.toBoolean(), refKey = refKey)
             }
             composable(route = Screen.PayScreen.route + "/{id}/{judulDenda}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""

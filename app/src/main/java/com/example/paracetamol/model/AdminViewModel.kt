@@ -11,6 +11,7 @@ import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
 import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.api.data.profile.Profile
 import com.example.paracetamol.preferences.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,14 @@ class AdminViewModel(private val context: Context): ViewModel() {
     private val _groupData = MutableLiveData<GroupItem?>()
     val groupData: LiveData<GroupItem?> get() = _groupData
 
+    private val _aMemberData = MutableLiveData<Profile?>()
+    val aMemberData: LiveData<Profile?> get() = _aMemberData
 
+    private val _addAdminSuccess = MutableLiveData<Boolean?>()
+    val addAdminSuccess: LiveData<Boolean?> get() = _addAdminSuccess
+
+    private val _demoteAdminSuccess = MutableLiveData<Boolean?>()
+    val demoteAdminSuccess: LiveData<Boolean?> get() = _demoteAdminSuccess
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -69,6 +77,19 @@ class AdminViewModel(private val context: Context): ViewModel() {
     private fun setSuccessKickMember(){
         _successKickMember.postValue(true)
     }
+
+    private fun setAMemberData(data: Profile){
+        _aMemberData.postValue(data)
+    }
+
+    private fun setAddAdminSuccess(){
+        _addAdminSuccess.postValue(true)
+    }
+
+    private fun setDemoteAdminSuccess(){
+        _demoteAdminSuccess.postValue(true)
+    }
+
 
     private fun clearErrorMessage(){
         if (_errorMessage.value != null) {
@@ -153,7 +174,6 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     val responseBody = response.body()
-                    Log.d(model_ref, responseBody.toString())
                     responseBody?.let {
                         val group = it.data?.data
                         Log.d(model_ref, group.toString())
@@ -178,7 +198,6 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 val token = PreferenceManager.getToken(context)
                 val acceptMemberRequest = MemberSettingRequest(groupRef, memberID)
                 val response = ApiService.create().acceptMember("Bearer $token", acceptMemberRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setSuccessAcceptMember()
@@ -204,8 +223,71 @@ class AdminViewModel(private val context: Context): ViewModel() {
                     handleErrorResponse(response.code())
                 }
             } catch (e: Exception) {
-                Log.d(model_ref, e.toString())
                 _errorMessage.postValue("Failed to kick member.")
+            }
+        }
+    }
+
+    fun getAGroupMember(memberID: String, groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().getAMember(memberID, groupRef, "Bearer $token")
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        val aMemberData = it.data?.data
+                        aMemberData?.let {
+                            setAMemberData(aMemberData)
+                        } ?: run {
+                            _aMemberData.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to get a member data.")
+            }
+        }
+    }
+
+    fun addAdmin(memberID: String, groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val addAdminRequest = MemberSettingRequest(groupRef, memberID)
+                val response = ApiService.create().addAdmin("Bearer $token", addAdminRequest)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setAddAdminSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to promote member.")
+            }
+        }
+    }
+
+    fun demoteAdmin(memberID: String, groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val demoteAdminRequest = MemberSettingRequest(groupRef, memberID)
+                val response = ApiService.create().addAdmin("Bearer $token", demoteAdminRequest)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setDemoteAdminSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to get a member data.")
             }
         }
     }
@@ -213,7 +295,8 @@ class AdminViewModel(private val context: Context): ViewModel() {
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {
             400 -> _errorMessage.postValue("Bad Request")
-            404 -> _errorMessage.postValue("Not Found")
+            401 -> _errorMessage.postValue("Unauthorized/Invalid Credentials")
+            404 -> _errorMessage.postValue("Data Not Found")
             409 -> _errorMessage.postValue("Already Joined/Registered")
             500 -> _errorMessage.postValue("Server Error")
             else -> _errorMessage.postValue("Error Code: $responseCode")

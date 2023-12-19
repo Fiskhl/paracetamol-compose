@@ -70,7 +70,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController) {
+fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController, refKey: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -78,7 +78,7 @@ fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController) {
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${Screen.AdminProfileUserScreen.route}/${member!!.nama}/${member!!.is_admin}")
+            navController.navigate("${Screen.AdminProfileUserScreen.route}/${member!!._id}/${member!!.is_admin.toString()}/$refKey")
         }
     ) {
         Row(
@@ -130,7 +130,7 @@ fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController) {
 
 
 @Composable
-fun MemberViewScrollContentAdmin(adminMembers: List<MemberDataAdmin?>?, innerPadding: PaddingValues, navController: NavController) {
+fun MemberViewScrollContentAdmin(adminMembers: List<MemberDataAdmin?>?, innerPadding: PaddingValues, navController: NavController, refKey: String) {
     LazyColumn(
         contentPadding = innerPadding,
     ) {
@@ -138,7 +138,7 @@ fun MemberViewScrollContentAdmin(adminMembers: List<MemberDataAdmin?>?, innerPad
             val sortedAdminMembers = adminMembers.sortedByDescending { it?.is_admin == true }
 
             items(sortedAdminMembers!!) { item ->
-                CardMemberAdmin(member = item, navController = navController)
+                CardMemberAdmin(member = item, navController = navController, refKey = refKey)
             }
         } else {
             item {
@@ -184,7 +184,7 @@ fun WaitingMembersList(waitingMembers: List<MemberDataAdmin?>?, groupRef: String
 
     val successKickMember by adminViewModel.successKickMember.observeAsState()
     successKickMember?.let { success ->
-        if(success) showToast(context, "Member kicked.")
+        if(success) showToast(context, "Member rejected.")
     }
 
     val errorMessage by adminViewModel.errorMessage.observeAsState()
@@ -420,7 +420,7 @@ fun AdminViewMemberScreen(
             )
         }
 
-        MemberViewScrollContentAdmin(adminMembers = adminMembers, innerPadding = PaddingValues(16.dp), navController = navController)
+        MemberViewScrollContentAdmin(adminMembers = adminMembers, innerPadding = PaddingValues(16.dp), navController = navController, refKey = refKey)
 
         //garis
         Divider(

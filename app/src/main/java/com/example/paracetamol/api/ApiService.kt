@@ -11,11 +11,13 @@ import com.example.paracetamol.api.data.denda.response.GetUserDendaResponse
 import com.example.paracetamol.api.data.group.request.CreateGroupRequest
 import com.example.paracetamol.api.data.group.response.GetAGroupResponse
 import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponse
+import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.login.request.LoginRequest
 import com.example.paracetamol.api.data.login.response.LoginResponse
 import com.example.paracetamol.api.data.profile.ProfileResponse
 import com.example.paracetamol.api.data.register.RegisterRequest
 import com.example.paracetamol.api.data.register.RegisterResponse
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import okhttp3.internal.http.hasBody
 import retrofit2.Response
@@ -28,8 +30,10 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -83,10 +87,12 @@ interface ApiService {
         @Path("memberID") memberID: String,
         @Path("groupID") groupID: String
     ): Response<GetUserDendaResponse>
+    @Multipart
     @POST("/payDenda")
     suspend fun payDenda(
         @Header("Authorization") token: String,
-        @Body payDendaRequest: PayDendaRequest
+        @Part("id_denda") id_denda: RequestBody,
+        @Part("file") file: RequestBody,
     ): Response<ResponseBody>
     @POST("/addDenda")
     suspend fun createDenda(
@@ -121,8 +127,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body kickMemberRequest: MemberSettingRequest
     ): Response<ResponseBody>
-    @GET("/member/{memberID}/{groupRef}")
+    @GET("/members/{memberID}/{groupRef}")
     suspend fun getAMember(
+        @Path("memberID") memberID: String,
+        @Path("groupRef") groupRef: String,
         @Header("Authorization") token: String
     ): Response<GetAMemberResponse>
     @GET("/getAllMemberAdmin/{groupRef}")
