@@ -3,7 +3,9 @@ package com.example.paracetamol.screen.admin
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,19 +13,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,8 +45,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -47,6 +58,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -69,7 +81,20 @@ fun AdminNewDendaScreen(
     var description by remember { mutableStateOf("") }
     var due by remember { mutableStateOf("") }
     var value by remember { mutableStateOf("") }
-    var assign by remember { mutableStateOf("") }
+//    var assign by remember { mutableStateOf("") }
+
+    // Data palsu anggota untuk dropdown
+    var mExpanded by remember { mutableStateOf(false) }
+
+    val mCities = listOf("Delhi", "Mumbai", "Chennai", "Kolkata", "Hyderabad", "Bengaluru", "Pune")
+    var mSelectedText by remember { mutableStateOf("") }
+    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
+
+    val icon = if (mExpanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
 
     val context = LocalContext.current
 
@@ -212,14 +237,10 @@ fun AdminNewDendaScreen(
                     singleLine = true,
                 )
 
-                TextField(
-                    value = assign,
-                    onValueChange = { assign = it },
-                    label = { Text("Assign") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
+
+                OutlinedTextField(
+                    value = mSelectedText,
+                    onValueChange = { mSelectedText = it },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFF1F8FF),
                         cursorColor = Color.Black,
@@ -227,9 +248,46 @@ fun AdminNewDendaScreen(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp, bottom = 5.dp)
+                        .height(55.dp)
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize = coordinates.size.toSize()
+                        },
+                    label = { Text("Assign") },
+                    trailingIcon = {
+                        Icon(
+                            icon,
+                            "contentDescription",
+                            Modifier.clickable { mExpanded = !mExpanded }
+                        )
+                    }
                 )
+
+                DropdownMenu(
+                    expanded = mExpanded,
+                    onDismissRequest = { mExpanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
+                ) {
+                    mCities.forEach { label ->
+//                        DropdownMenuItem(onClick = {
+//                            mSelectedText = label
+//                            mExpanded = false
+//                        })
+//                        {
+//                            Text(text = label)
+//                        }
+                    }
+                }
+
+
+
+
+
+
+            }
 
                 Button(
                     modifier = Modifier
@@ -254,15 +312,16 @@ fun AdminNewDendaScreen(
             }
         }
     }
-}
+
 
 //@Composable
 //@Preview(showBackground = true)
 //fun AdminNewDendaScreenPreview() {
 //    val navController = rememberNavController()
 //    AdminNewDendaScreen(
-//        "MAXIMA 2023",
-//        "Explore The World Reach New Potentials",
-//        navController = navController
+//        navController = navController,
+//        titleA = "MAXIMA 2023",
+//        groupID = "Explore The World",
+//        refKey = "Reach New Potentials"
 //    )
 //}
