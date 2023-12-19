@@ -265,14 +265,14 @@ fun UserGroupScreen(
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun UserGroupScreenPreview() {
-    val navController = rememberNavController()
-    UserGroupScreen(
-        "12345",
-        "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun UserGroupScreenPreview() {
+//    val navController = rememberNavController()
+//    UserGroupScreen(
+//        "12345",
+//        "MAXIMA 2023",
+//        "Explore The World Reach New Potentials",
+//        navController = navController
+//    )
+//}

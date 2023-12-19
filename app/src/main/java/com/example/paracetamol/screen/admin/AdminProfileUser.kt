@@ -40,7 +40,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
 import com.example.paracetamol.nav_screen.ProfileItem
-import com.example.paracetamol.screen.AdminViewMember
 import com.example.paracetamol.screen.DendaScrollContent
 import com.example.paracetamol.screen.Screen
 
@@ -245,13 +244,13 @@ fun AdminProfileUserScreen(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun AdminProfileUserScreenPreview() {
-    val navController = rememberNavController()
-    AdminProfileUserScreen(
-        "Joshua Hot Banget",
-        1,
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminProfileUserScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminProfileUserScreen(
+//        "Joshua Hot Banget",
+//        1,
+//        navController = navController
+//    )
+//}

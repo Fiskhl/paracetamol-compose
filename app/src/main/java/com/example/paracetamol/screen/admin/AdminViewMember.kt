@@ -35,7 +35,13 @@ import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,8 +52,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.nav_screen.ArchiveScrollContent
 import com.example.paracetamol.nav_screen.CardArchiveItem
 import com.example.paracetamol.ui.theme.poppinsFamily
@@ -56,28 +68,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
-
-data class MemberViewGroupAdmin(val name: String, val status: Int)
-
-
-val memberItemsViewAdmin = listOf(
-    MemberViewGroupAdmin("Joshua", 1),
-    MemberViewGroupAdmin("Kafi", 0),
-//    MemberViewGroupAdmin("Jaya", 0),
-//    MemberViewGroupAdmin("Muhammad", 0),
-//    MemberViewGroupAdmin("Gre", 0),
-//    MemberViewGroupAdmin("Rici", 1),
-//    MemberViewGroupAdmin("Kalyana", 0),
-//    MemberViewGroupAdmin("Muhammad", 0),
-//    MemberViewGroupAdmin("Gre", 0),
-//    MemberViewGroupAdmin("Rici", 1),
-//    MemberViewGroupAdmin("Kalyana", 0),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) {
+fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +78,7 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${Screen.AdminProfileUserScreen.route}/${member.name}/${member.status}")
+            navController.navigate("${Screen.AdminProfileUserScreen.route}/${member!!.nama}/${member!!.is_admin}")
         }
     ) {
         Row(
@@ -101,7 +94,7 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member.name,
+                    text = member!!.nama,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -114,14 +107,15 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
 
             // Kolom Kanan
             Column(
-                modifier = Modifier.width(180.dp)
+                modifier = Modifier
+                    .width(180.dp)
                     .padding(end = 0.dp)
                     .padding(8.dp), // Padding di kanan diatur menjadi 0.dp
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
                 // Text pakai status
-                val memberOrAdmin = if (member.status == 1) "Admin" else ""
+                val memberOrAdmin = if (member!!.is_admin) "Admin" else ""
 
                 Text(
                     text = memberOrAdmin,
@@ -136,17 +130,14 @@ fun CardMemberAdmin(member: MemberViewGroupAdmin, navController: NavController) 
 
 
 @Composable
-fun MemberViewScrollContentAdmin(innerPadding: PaddingValues, navController: NavController) {
-    val hasData = memberItemsViewAdmin.isNotEmpty()
-
-    // Urutkan berdasarkan status
-    val sortedMembers = memberItemsViewAdmin.sortedByDescending { it.status }
-
+fun MemberViewScrollContentAdmin(adminMembers: List<MemberDataAdmin?>?, innerPadding: PaddingValues, navController: NavController) {
     LazyColumn(
         contentPadding = innerPadding,
     ) {
-        if (hasData) {
-            items(sortedMembers) { item ->
+        if (adminMembers!!.isNotEmpty()) {
+            val sortedAdminMembers = adminMembers.sortedByDescending { it?.is_admin == true }
+
+            items(sortedAdminMembers!!) { item ->
                 CardMemberAdmin(member = item, navController = navController)
             }
         } else {
@@ -176,17 +167,33 @@ fun MemberViewScrollContentAdmin(innerPadding: PaddingValues, navController: Nav
 
 
 @Composable
-fun WaitingMembersList() {
-    // Data waiting members
-    val waitingMembers = listOf(
-        "John Doe",
-        "John Thor",
-        "Jane Smith",
-        "Alice Johnson"
-    )
+fun WaitingMembersList(waitingMembers: List<MemberDataAdmin?>?, groupRef: String) {
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel (context) }
+
+    val successArchive by adminViewModel.successArchiveGroup.observeAsState()
+    successArchive?.let { success ->
+        if(success) showToast(context, "Archive group success.")
+    }
+
+    val successAcceptMember by adminViewModel.successAcceptMember.observeAsState()
+    successAcceptMember?.let { success ->
+        if(success) showToast(context, "Member accepted.")
+    }
+
+    val successKickMember by adminViewModel.successKickMember.observeAsState()
+    successKickMember?.let { success ->
+        if(success) showToast(context, "Member kicked.")
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Column {
-        waitingMembers.forEach { member ->
+        waitingMembers!!.forEach { member ->
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -202,7 +209,7 @@ fun WaitingMembersList() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = member,
+                        text = member!!.nama,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -210,16 +217,30 @@ fun WaitingMembersList() {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Close",
-                            tint = Color.Black
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Checkmark",
-                            tint = Color.Black
-                        )
+                        IconButton(
+                            onClick = {
+                                adminViewModel.kickMember(groupRef, member._id)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close",
+                                tint = Color.Black
+                            )
+                        }
+
+                        // Accept Icon
+                        IconButton(
+                            onClick = {
+                                adminViewModel.acceptMember(groupRef, member._id)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Checkmark",
+                                tint = Color.Black
+                            )
+                        }
                     }
                 }
             }
@@ -239,7 +260,7 @@ fun SwitchButton(
     colors: SwitchColors = SwitchDefaults.colors()
 ) {
     androidx.compose.material3.Switch(
-        checked = checked,
+        checked = !checked,
         onCheckedChange = onCheckedChange,
         modifier = modifier,
         enabled = enabled,
@@ -248,8 +269,6 @@ fun SwitchButton(
     )
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArchiveCard(
     title: String,
@@ -273,7 +292,7 @@ fun ArchiveCard(
         ) {
             Column {
                 Text(
-                    text = "Archive ?",
+                    text = "Archive?",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -294,18 +313,56 @@ fun ArchiveCard(
     }
 }
 
-
-
-
-
-
-
 @Composable
-fun AdminViewMember(
-    title: String,
-    description: String,
-    navController: NavController
+fun AdminViewMemberScreen(
+    navController: NavController,
+    id: String,
+    namaGroup: String,
+    refKey: String,
 ) {
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel (context) }
+
+    var allMembersDataAdmin by rememberSaveable {
+        mutableStateOf<List<MemberDataAdmin?>?>(null)
+    }
+
+    var groupData by rememberSaveable { mutableStateOf<GroupItem?>(null) }
+
+    LaunchedEffect(adminViewModel) {
+        adminViewModel.getAllMembersGroupDataAdmin(refKey)
+        adminViewModel.getAGroup(refKey)
+    }
+
+    // Observe the LiveData and update the local variable
+    adminViewModel.allMembersData.observeAsState().value?.let{
+        allMembersDataAdmin =  it
+    }
+
+    adminViewModel.groupData.observeAsState().value?.let {
+        groupData = it
+    }
+
+    val successArchive by adminViewModel.successArchiveGroup.observeAsState()
+    successArchive?.let { success ->
+        if(success) showToast(context, "Archive group success.")
+    }
+
+    val successReactivate by adminViewModel.successReactivateGroup.observeAsState()
+    successReactivate?.let { success ->
+        if(success) showToast(context, "Unarchive group success.")
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
+
+    val adminMembers = allMembersDataAdmin?.filter { it?.is_allowed == true } ?: emptyList()
+    val waitingMembers = allMembersDataAdmin?.filter { it?.is_allowed == false } ?: emptyList()
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -324,17 +381,17 @@ fun AdminViewMember(
             ) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = { navController.navigateUp() },
-                modifier = Modifier
-                    .padding(end = 1.dp),
-            ) {
-                Icon(Icons.Default.Group, contentDescription = "Group")
-            }
+//            Spacer(modifier = Modifier.weight(1f))
+//            IconButton(
+//                onClick = { navController.navigateUp() },
+//                modifier = Modifier
+//                    .padding(end = 1.dp),
+//            ) {
+//                Icon(Icons.Default.Group, contentDescription = "Group")
+//            }
         }
         Text(
-            text = title,
+            text = namaGroup,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold
         )
@@ -344,7 +401,7 @@ fun AdminViewMember(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = description,
+                text = refKey,
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -362,7 +419,8 @@ fun AdminViewMember(
                 fontSize = 12.sp
             )
         }
-        MemberViewScrollContentAdmin(innerPadding = PaddingValues(16.dp), navController = navController)
+
+        MemberViewScrollContentAdmin(adminMembers = adminMembers, innerPadding = PaddingValues(16.dp), navController = navController)
 
         //garis
         Divider(
@@ -380,7 +438,7 @@ fun AdminViewMember(
 
         )
 
-        WaitingMembersList()
+        WaitingMembersList(waitingMembers = waitingMembers, groupRef = refKey)
 
         //garis
         Divider(
@@ -391,23 +449,30 @@ fun AdminViewMember(
             color = Color.Gray
         )
 
-        ArchiveCard(
-            title = title,
-            isArchived = false,
-            onArchiveToggle = { /* Handle when the archive status changes */ }
-        )
+        if(groupData != null)
+            ArchiveCard(
+                title = namaGroup,
+                isArchived = groupData!!.status,
+                onArchiveToggle = {
+                    if(groupData!!.status)
+                        adminViewModel.archiveGroup(refKey)
+                    else
+                        adminViewModel.reactivateGroup(refKey)
+                }
+            )
 
     }
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun AdminViewMemberPreview() {
-    val navController = rememberNavController()
-    AdminViewMember(
-        "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminViewMemberScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminViewMemberScreen(
+//        navController = navController,
+//        "1234",
+//        "MAXIMA 2023",
+//        "Explore The World Reach New Potentials",
+//    )
+//}

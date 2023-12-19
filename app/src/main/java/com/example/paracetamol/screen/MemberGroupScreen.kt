@@ -27,6 +27,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +42,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.api.data.group.response.Member
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.nav_screen.ArchiveScrollContent
 import com.example.paracetamol.nav_screen.CardArchiveItem
 import com.example.paracetamol.ui.theme.poppinsFamily
@@ -47,23 +59,9 @@ import java.util.Date
 import java.util.Locale
 
 
-
-data class MemberGroup(val Name: String, val status: Int)
-
-
-val memberItems = listOf(
-    MemberGroup("Joshua", 1),
-    MemberGroup("Kafi", 0),
-    MemberGroup("Jaya", 0),
-    MemberGroup("Muhammad", 0),
-    MemberGroup("Gre", 0),
-    MemberGroup("Rici", 1),
-    MemberGroup("Kalyana", 0),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMember(member: MemberGroup, navController: NavController) {
+fun CardMember(member: Member?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +82,7 @@ fun CardMember(member: MemberGroup, navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member.Name,
+                    text = member!!.nama,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -104,7 +102,7 @@ fun CardMember(member: MemberGroup, navController: NavController) {
                 horizontalAlignment = Alignment.End
             ) {
                 // Text pakai status
-                val memberOrAdmin = if (member.status == 1) "Admin" else ""
+                val memberOrAdmin = if (member!!.is_admin) "Admin" else ""
 
                 Text(
                     text = memberOrAdmin,
@@ -119,18 +117,15 @@ fun CardMember(member: MemberGroup, navController: NavController) {
 
 
 @Composable
-fun MemberScrollContent(innerPadding: PaddingValues, navController: NavController) {
-    val hasData = memberItems.isNotEmpty()
-
-    // Urutkan berdasarkan status
-    val sortedMembers = memberItems.sortedByDescending { it.status }
-
+fun MemberScrollContent(groupMembers: List<Member?>?, innerPadding: PaddingValues, navController: NavController) {
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(sortedMembers) { item ->
+        if (groupMembers != null) {
+            val sortedGroupMembers = groupMembers.sortedByDescending { it?.is_admin == true }
+
+            items(sortedGroupMembers) { item ->
                 CardMember(member = item, navController = navController)
             }
         } else {
@@ -164,10 +159,27 @@ fun MemberScrollContent(innerPadding: PaddingValues, navController: NavControlle
 
 @Composable
 fun MemberGroupScreen(
+    navController: NavController,
     title: String,
-    description: String,
-    navController: NavController
+    refKey: String
 ) {
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel (context) }
+
+    var groupMembers by rememberSaveable {
+        mutableStateOf<List<Member?>?>(null)
+    }
+
+    LaunchedEffect(adminViewModel) {
+        adminViewModel.getMembersGroupData(refKey)
+    }
+
+    // Observe the LiveData and update the local variable
+    adminViewModel.groupMembersData.observeAsState().value?.let{
+        groupMembers =  it
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -206,7 +218,7 @@ fun MemberGroupScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = description,
+                text = refKey,
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -223,18 +235,19 @@ fun MemberGroupScreen(
                 fontSize = 12.sp
             )
         }
-        MemberScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
+
+        MemberScrollContent(groupMembers = groupMembers, innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun MemberGroupScreenPreview() {
-    val navController = rememberNavController()
-    MemberGroupScreen(
-        "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun MemberGroupScreenPreview() {
+//    val navController = rememberNavController()
+//    MemberGroupScreen(
+//        "MAXIMA 2023",
+//        "Explore The World Reach New Potentials",
+//        navController = navController
+//    )
+//}

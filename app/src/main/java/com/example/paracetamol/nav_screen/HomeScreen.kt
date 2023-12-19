@@ -186,8 +186,8 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(navController = NavController(LocalContext.current))
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(navController = NavController(LocalContext.current))
+//}

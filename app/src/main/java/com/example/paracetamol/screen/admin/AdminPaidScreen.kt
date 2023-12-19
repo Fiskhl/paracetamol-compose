@@ -126,13 +126,13 @@ fun AdminPaidScreen(
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun AdminPaidScreenPreview() {
-    val navController = rememberNavController()
-    AdminPaidScreen(
-        "STARLIGHT 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminPaidScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminPaidScreen(
+//        "STARLIGHT 2023",
+//        "Explore The World Reach New Potentials",
+//        navController = navController
+//    )
+//}

@@ -32,6 +32,7 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
 import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.component.showToast
+import com.example.paracetamol.screen.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,9 +44,9 @@ fun CardArchiveItem(group: GroupItem?, navController: NavController) {
         border = BorderStroke(2.dp, Color(0xFF8E99A2)),
         shape = RoundedCornerShape(12.dp),
         color = Color.White.copy(alpha = 0.7f),
-//        onClick = { //masuknya ke AdminMemberList ya
-//            navController.navigate("${Screen.AdminMemberListScreen.route}/${group.title}/${group.description}")
-//        }
+        onClick = {
+            navController.navigate("${Screen.AdminViewMemberScreen.route}/${group!!._id}/${group!!.namaGroup}/${group!!.refKey}")
+        }
 
     ) {
         Column(
@@ -162,8 +163,8 @@ fun ArchiveScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ArchiveScreenPreview() {
-    ArchiveScreen(navController = NavController(LocalContext.current))
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ArchiveScreenPreview() {
+//    ArchiveScreen(navController = NavController(LocalContext.current))
+//}

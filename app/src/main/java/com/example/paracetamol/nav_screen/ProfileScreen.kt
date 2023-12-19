@@ -190,8 +190,8 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun ProfileScreenPreview() {
-    ProfileScreen(onLoggedOut = {})
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun ProfileScreenPreview() {
+//    ProfileScreen(onLoggedOut = {})
+//}

@@ -157,13 +157,13 @@ fun PayScreen(
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun PayScreenPreview() {
-    val navController = rememberNavController()
-    PayScreen(
-        "STARLIGHT 2023",
-        "12345",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun PayScreenPreview() {
+//    val navController = rememberNavController()
+//    PayScreen(
+//        "STARLIGHT 2023",
+//        "12345",
+//        navController = navController
+//    )
+//}

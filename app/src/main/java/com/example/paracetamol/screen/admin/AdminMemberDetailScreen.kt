@@ -19,6 +19,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -29,8 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.screen.CardTotal
 import com.example.paracetamol.screen.DendaScrollContent
 import com.example.paracetamol.screen.MemberScrollContentAdmin
@@ -55,7 +65,7 @@ val dendaItem = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
+fun CardDendaUser(denda: DendaItem?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,7 +86,7 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = denda.title,
+                    text = denda!!.title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -84,13 +94,13 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
                 )
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = denda.description,
+                    text = denda!!.desc,
                     fontSize = 11.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
                 )
                 Text(
-                    text = "Due: ${dateFormat.format(denda.due)}",
+                    text = "Due: ${denda!!.hari}",
                     modifier = Modifier.padding(horizontal = 10.dp),
                     fontSize = 10.sp,
                     color = Color.Black,
@@ -108,7 +118,7 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(denda.total)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(denda!!.nominal)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
@@ -116,7 +126,7 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
                     textAlign = TextAlign.End,
                 )
                 // Button pakai status
-                val buttonText = if (denda.status == 1) "Done" else "Pending"
+                val buttonText = if (denda!!.is_paid) "Done" else "Pending"
                 val buttonEnabled = true
 
                 Button(
@@ -126,14 +136,14 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(30.dp),
-                    border = BorderStroke(1.dp, if (denda.status == 1) Color.Black else Color.Blue), // Warna border berdasarkan status
+                    border = BorderStroke(1.dp, if (denda!!.is_paid) Color.Black else Color.Blue), // Warna border berdasarkan status
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
                 ) {
                     Text(
                         buttonText,
-                        color = if (denda.status == 1) Color.Black else Color.DarkGray, // Warna teks tombol berdasarkan status
+                        color = if (denda!!.is_paid) Color.Black else Color.DarkGray, // Warna teks tombol berdasarkan status
                         fontSize = 10.sp,
                         fontFamily = poppinsFamily,
                     )
@@ -172,17 +182,34 @@ fun CardDendaUser(denda: DendaDataUser, navController: NavController) {
 
 
 @Composable
-fun DendaUserScrollContent(innerPadding: PaddingValues, navController: NavController) {
+fun DendaUserScrollContent(id: String, innerPadding: PaddingValues, navController: NavController) {
     val context = LocalContext.current
 
-    val hasData = dendaItem.isNotEmpty()
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+
+    var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
+
+    LaunchedEffect(userViewModel){
+        userViewModel.getAllSelfDenda(id)
+    }
+
+    // Observe the LiveData and update the local variable
+    userViewModel.dendas.observeAsState().value?.let {
+        dendaDatas = it
+    }
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
+
 
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(dendaItem) { item ->
+        if (dendaDatas != null) {
+            items(dendaDatas!!) { item ->
                 CardDendaUser(denda = item, navController = navController)
             }
         } else {
@@ -213,9 +240,9 @@ fun DendaUserScrollContent(innerPadding: PaddingValues, navController: NavContro
 
 @Composable
 fun AdminMemberDetailScreen(
-    title: String,
-    description: String,
+    id: String,
     name: String,
+    namaGroup: String,
     navController: NavController
 ) {
     Column(
@@ -238,7 +265,7 @@ fun AdminMemberDetailScreen(
             }
         }
         Text(
-            text = title,
+            text = namaGroup,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold
         )
@@ -264,19 +291,19 @@ fun AdminMemberDetailScreen(
                 fontSize = 12.sp
             )
         }
-        DendaUserScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
+        DendaUserScrollContent(id = id, innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun AdminMemberDetailScreenPreview() {
-    val navController = rememberNavController()
-    AdminMemberDetailScreen(
-        "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        "Joshua",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminMemberDetailScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminMemberDetailScreen(
+//        "123",
+//        "Joshua",
+//        "MAXIMA 2023",
+//        navController = navController
+//    )
+//}

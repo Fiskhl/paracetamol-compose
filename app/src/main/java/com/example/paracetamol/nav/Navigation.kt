@@ -32,6 +32,7 @@ import com.example.paracetamol.screen.JoinScreen
 import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
 import com.example.paracetamol.screen.AdminMemberListScreen
+import com.example.paracetamol.screen.AdminViewMemberScreen
 import com.example.paracetamol.screen.GlobalViewModel
 import com.example.paracetamol.screen.MemberGroupScreen
 import com.example.paracetamol.screen.PayScreen
@@ -115,10 +116,11 @@ fun Navigation() {
                     isLoggedIn = false
                 }
             }
-            composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{groupID}/{refKey}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                AdminNewDendaScreen(navController = navController, titleA = title, descriptionA = description)
+                val groupID = navBackStackEntry.arguments?.getString("groupID") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                AdminNewDendaScreen(navController = navController, titleA = title, groupID = groupID, refKey = refKey)
             }
             composable(route = Screen.AdminMemberListScreen.route + "/{id}/{refKey}/{title}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
@@ -133,16 +135,22 @@ fun Navigation() {
             composable(route = Screen.JoinScreen.route){
                 JoinScreen(navController = navController)
             }
-            composable(route = Screen.MemberGroupScreen.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.MemberGroupScreen.route + "/{title}/{refKey}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                MemberGroupScreen(navController = navController, title = title, description = description)
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                MemberGroupScreen(navController = navController, title = title, refKey = refKey)
             }
-            composable(route = Screen.AdminMemberDetailScreen.route + "/{title}/{description}/{name}") { navBackStackEntry ->
-                val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
+            composable(route = Screen.AdminMemberDetailScreen.route + "/{id}/{name}/{namaGroup}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
-                AdminMemberDetailScreen(navController = navController, title = title, description = description, name = name)
+                val namaGroup = navBackStackEntry.arguments?.getString("namaGroup") ?: ""
+                AdminMemberDetailScreen(navController = navController, id = id, name = name, namaGroup = namaGroup)
+            }
+            composable(route = Screen.AdminViewMemberScreen.route + "/{id}/{namaGroup}/{refKey}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
+                val namaGroup = navBackStackEntry.arguments?.getString("namaGroup") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                AdminViewMemberScreen(navController = navController, id = id, namaGroup = namaGroup, refKey = refKey)
             }
             composable(route = Screen.UserGroupScreen.route + "/{id}/{title}/{description}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""

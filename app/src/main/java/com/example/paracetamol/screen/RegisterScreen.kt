@@ -356,9 +356,9 @@ fun RegisterScreen(navController: NavController) {
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun RegisterScreenPreview() {
-    val navController = rememberNavController()
-    RegisterScreen(navController = navController)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun RegisterScreenPreview() {
+//    val navController = rememberNavController()
+//    RegisterScreen(navController = navController)
+//}

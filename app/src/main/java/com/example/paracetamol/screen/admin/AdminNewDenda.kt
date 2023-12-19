@@ -60,9 +60,10 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminNewDendaScreen(
+    navController: NavController,
     titleA: String,
-    descriptionA: String,
-    navController: NavController
+    groupID: String,
+    refKey: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -255,13 +256,13 @@ fun AdminNewDendaScreen(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun AdminNewDendaScreenPreview() {
-    val navController = rememberNavController()
-    AdminNewDendaScreen(
-        "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminNewDendaScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminNewDendaScreen(
+//        "MAXIMA 2023",
+//        "Explore The World Reach New Potentials",
+//        navController = navController
+//    )
+//}

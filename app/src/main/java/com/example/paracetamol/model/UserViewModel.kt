@@ -80,7 +80,9 @@ class UserViewModel(private val context: Context): ViewModel() {
     }
 
     private fun clearErrorMessage(){
-        _errorMessage.postValue(null);
+        if (_errorMessage.value != null) {
+            _errorMessage.postValue(null)
+        }
     }
 
     fun register(
@@ -321,6 +323,7 @@ class UserViewModel(private val context: Context): ViewModel() {
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {
             400 -> _errorMessage.postValue("Bad Request")
+            401 -> _errorMessage.postValue("Invalid Credentials")
             404 -> _errorMessage.postValue("Not Found")
             409 -> _errorMessage.postValue("Already Joined/Registered")
             500 -> _errorMessage.postValue("Server Error")

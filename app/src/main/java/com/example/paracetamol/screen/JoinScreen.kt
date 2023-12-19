@@ -184,9 +184,9 @@ fun JoinScreen(navController: NavController) {
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun JoinScreenPreview() {
-    val navController = rememberNavController()
-    JoinScreen(navController = navController)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun JoinScreenPreview() {
+//    val navController = rememberNavController()
+//    JoinScreen(navController = navController)
+//}

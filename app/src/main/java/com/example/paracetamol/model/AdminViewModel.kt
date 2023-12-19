@@ -7,22 +7,37 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paracetamol.api.ApiService
-import com.example.paracetamol.api.data.admin.response.Member
-import com.example.paracetamol.api.data.denda.request.PayDendaRequest
-import com.example.paracetamol.api.data.denda.response.DendaItem
-import com.example.paracetamol.api.data.group.request.CreateGroupRequest
+import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
+import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
+import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.group.response.GroupItem
-import com.example.paracetamol.api.data.login.request.LoginRequest
-import com.example.paracetamol.api.data.profile.Profile
-import com.example.paracetamol.api.data.register.RegisterRequest
 import com.example.paracetamol.preferences.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class AdminViewModel(private val context: Context): ViewModel() {
     private val _groupMembersData = MutableLiveData<List<Member?>?>()
     val groupMembersData: LiveData<List<Member?>?> get() = _groupMembersData
+
+    private val _allMembersDataAdmin = MutableLiveData<List<MemberDataAdmin?>?>()
+    val allMembersData: LiveData<List<MemberDataAdmin?>?> get() = _allMembersDataAdmin
+
+    private val _successArchiveGroup = MutableLiveData<Boolean?>()
+    val successArchiveGroup: LiveData<Boolean?> get() = _successArchiveGroup
+
+    private val _successReactivateGroup = MutableLiveData<Boolean?>()
+    val successReactivateGroup: LiveData<Boolean?> get() = _successReactivateGroup
+
+    private val _successAcceptMember = MutableLiveData<Boolean?>()
+    val successAcceptMember: LiveData<Boolean?> get() = _successAcceptMember
+
+    private val _successKickMember = MutableLiveData<Boolean?>()
+    val successKickMember: LiveData<Boolean?> get() = _successKickMember
+
+    private val _groupData = MutableLiveData<GroupItem?>()
+    val groupData: LiveData<GroupItem?> get() = _groupData
+
+
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -31,8 +46,34 @@ class AdminViewModel(private val context: Context): ViewModel() {
         _groupMembersData.postValue(data)
     }
 
+    private fun setAllGroupMembersData(data: List<MemberDataAdmin>){
+        _allMembersDataAdmin.postValue(data)
+    }
+
+    private fun setArchiveGroupSuccess(){
+        _successArchiveGroup.postValue(true)
+    }
+
+    private fun setReactivateGroupSuccess(){
+        _successReactivateGroup.postValue(true)
+    }
+
+    private fun setGroupData(data: GroupItem){
+        _groupData.postValue(data)
+    }
+
+    private fun setSuccessAcceptMember(){
+        _successAcceptMember.postValue(true)
+    }
+
+    private fun setSuccessKickMember(){
+        _successKickMember.postValue(true)
+    }
+
     private fun clearErrorMessage(){
-        _errorMessage.postValue(null);
+        if (_errorMessage.value != null) {
+            _errorMessage.postValue(null)
+        }
     }
 
     fun getMembersGroupData(groupRef: String){
@@ -42,7 +83,8 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 val response = ApiService.create().getAllMember(groupRef, "Bearer $token")
                 if (response.isSuccessful) {
                     clearErrorMessage()
-                    setGroupMembersData(response.body()?.data!!.members)
+                    Log.d(model_ref, response.body()?.data.toString())
+                    setGroupMembersData(response.body()?.data!!.data)
                 } else {
                     handleErrorResponse(response.code())
                 }
@@ -52,7 +94,121 @@ class AdminViewModel(private val context: Context): ViewModel() {
         }
     }
 
+    fun getAllMembersGroupDataAdmin(groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().getAllMemberAdmin(groupRef, "Bearer $token")
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    Log.d(model_ref, response.body()?.data.toString())
+                    setAllGroupMembersData(response.body()?.data!!.data)
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to get all fines")
+            }
+        }
+    }
 
+    fun archiveGroup(groupRef: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().deactivateGroup(groupRef, "Bearer $token")
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setArchiveGroupSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to archive group.")
+            }
+        }
+    }
+
+    fun reactivateGroup(groupRef: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().reactivateGroup(groupRef, "Bearer $token")
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setReactivateGroupSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to unarchive group.")
+            }
+        }
+    }
+
+    fun getAGroup(groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiService.create().getAGroup(groupRef)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    Log.d(model_ref, responseBody.toString())
+                    responseBody?.let {
+                        val group = it.data?.data
+                        Log.d(model_ref, group.toString())
+                        group?.let {
+                            setGroupData(group)
+                        } ?: run {
+                            _groupData.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to get group.")
+            }
+        }
+    }
+
+    fun acceptMember(groupRef: String, memberID: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val acceptMemberRequest = MemberSettingRequest(groupRef, memberID)
+                val response = ApiService.create().acceptMember("Bearer $token", acceptMemberRequest)
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setSuccessAcceptMember()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to accept member.")
+            }
+        }
+    }
+
+    fun kickMember(groupRef: String, memberID: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val kickMemberRequest = MemberSettingRequest(groupRef, memberID)
+                val response = ApiService.create().kickMember("Bearer $token", kickMemberRequest)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setSuccessKickMember()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to kick member.")
+            }
+        }
+    }
 
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {

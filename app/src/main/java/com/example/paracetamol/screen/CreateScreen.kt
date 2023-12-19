@@ -248,10 +248,10 @@ fun CreateScreen(navController: NavController) {
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun CreateScreenPreview() {
-    val context = LocalContext.current
-    val navController = rememberNavController()
-    CreateScreen(navController = navController)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun CreateScreenPreview() {
+//    val context = LocalContext.current
+//    val navController = rememberNavController()
+//    CreateScreen(navController = navController)
+//}
