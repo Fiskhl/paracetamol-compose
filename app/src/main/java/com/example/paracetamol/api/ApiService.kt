@@ -90,6 +90,11 @@ interface ApiService {
 
 
     // Admin
+    @GET("/members/isAdmin/{groupRef}")
+    suspend fun checkStatusAdmin(
+        @Path("groupRef") groupRef: String,
+        @Header("Authorization") token: String,
+    ): Response<ResponseBody>
     @GET("/accMember")
     suspend fun acceptMember(
         @Header("Authorization") token: String,
@@ -97,6 +102,7 @@ interface ApiService {
     ): Response<ResponseBody>
     @GET("/members/{groupRef}")
     suspend fun getAllMember(
+        @Path("groupRef") groupRef: String,
         @Header("Authorization") token: String
     ): Response<GetAllMemberResponse>
     @GET("/member/{memberID}/{groupRef}")

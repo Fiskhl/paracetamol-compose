@@ -36,6 +36,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +54,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.admin.response.Member
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.api.data.group.response.GroupItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
+import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.nav_screen.ArchiveScrollContent
 import com.example.paracetamol.nav_screen.CardArchiveItem
 import com.example.paracetamol.ui.theme.poppinsFamily
@@ -59,45 +73,17 @@ import java.util.Date
 import java.util.Locale
 
 
+class GlobalViewModel : ViewModel() {
+    var totalDendaGroup by mutableStateOf(0)
+        private set
 
-data class MemberGroupAdmin(val name: String, val total: Int)
-
-
-val memberItemsAdmin = listOf(
-    MemberGroupAdmin("Joshua", 100000),
-    MemberGroupAdmin("Kafi", 1000000),
-    MemberGroupAdmin("Jaya", 50000),
-    MemberGroupAdmin("Muhammad", 10000),
-    MemberGroupAdmin("Gre", 70000),
-    MemberGroupAdmin("Rici", 35000),
-    MemberGroupAdmin("Kalyana", 15000),
-    MemberGroupAdmin("Joshua", 100000),
-    MemberGroupAdmin("Kafi", 1000000),
-    MemberGroupAdmin("Jaya", 50000),
-    MemberGroupAdmin("Muhammad", 10000),
-    MemberGroupAdmin("Gre", 70000),
-    MemberGroupAdmin("Rici", 35000),
-    MemberGroupAdmin("Kalyana", 15000),
-    MemberGroupAdmin("Joshua", 100000),
-    MemberGroupAdmin("Kafi", 1000000),
-    MemberGroupAdmin("Jaya", 50000),
-    MemberGroupAdmin("Muhammad", 10000),
-    MemberGroupAdmin("Gre", 70000),
-    MemberGroupAdmin("Rici", 35000),
-    MemberGroupAdmin("Kalyana", 15000),
-    MemberGroupAdmin("Joshua", 100000),
-    MemberGroupAdmin("Kafi", 1000000),
-    MemberGroupAdmin("Jaya", 50000),
-    MemberGroupAdmin("Muhammad", 10000),
-    MemberGroupAdmin("Gre", 70000),
-    MemberGroupAdmin("Rici", 35000),
-    MemberGroupAdmin("Kalyana", 15000),
-)
+    fun updateTotalDendaGroup(value: Int) {
+        totalDendaGroup = value
+    }
+}
 
 @Composable
-fun CardTotal(memberItems: List<MemberGroupAdmin>) {
-    val totalSum = memberItemsAdmin.sumOf { it.total }
-
+fun CardTotal(globalViewModel: GlobalViewModel) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,13 +117,14 @@ fun CardTotal(memberItems: List<MemberGroupAdmin>) {
 
             // Kolom Kanan
             Column(
-                modifier = Modifier.width(180.dp)
+                modifier = Modifier
+                    .width(180.dp)
                     .padding(end = 0.dp)
                     .padding(8.dp), // Padding di kanan diatur menjadi 0.dp
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(totalSum)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(globalViewModel.totalDendaGroup)
                 Text(
                     text = formattedTotal,
                     fontSize = 10.sp,
@@ -152,7 +139,27 @@ fun CardTotal(memberItems: List<MemberGroupAdmin>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
+fun CardMemberAdmin(member: Member?, navController: NavController, globalViewModel: GlobalViewModel) {
+    val context = LocalContext.current
+
+    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
+
+    var totalDenda by rememberSaveable { mutableStateOf<Int> (0) }
+
+    LaunchedEffect(userViewModel){
+        userViewModel.getAllSelfDenda(member!!._id)
+    }
+
+    // Observe the LiveData and update the local variable
+    userViewModel.dendas.observeAsState().value?.let { dendas ->
+        dendas.forEach { attr ->
+            totalDenda += attr!!.nominal
+        }
+    }
+
+    // Update totalDendaGroup using globalViewModel
+    globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + totalDenda)
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,7 +167,7 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${Screen.UserGroupScreen.route}/${member.name}")
+            navController.navigate("${Screen.UserGroupScreen.route}/${member!!.nama}")
         }
     ) {
         Row(
@@ -176,7 +183,7 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member.name,
+                    text = member!!.nama,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -189,13 +196,14 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
 
             // Kolom Kanan
             Column(
-                modifier = Modifier.width(180.dp)
+                modifier = Modifier
+                    .width(180.dp)
                     .padding(end = 0.dp)
                     .padding(8.dp), // Padding di kanan diatur menjadi 0.dp
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(member.total)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(totalDenda)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
@@ -209,16 +217,36 @@ fun CardMemberAdmin(member: MemberGroupAdmin, navController: NavController) {
 
 
 @Composable
-fun MemberScrollContentAdmin(innerPadding: PaddingValues, navController: NavController) {
-    val hasData = memberItemsAdmin.isNotEmpty()
+fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingValues, navController: NavController,   globalViewModel: GlobalViewModel) {
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
+
+    var members by rememberSaveable { mutableStateOf<List<Member?>?>(null) }
+
+
+    LaunchedEffect(adminViewModel) {
+        adminViewModel.getMembersGroupData(refKey)
+    }
+
+    // Observe the LiveData and update the local variable
+    val membersData by adminViewModel.groupMembersData.observeAsState()
+    membersData?.let{
+        members = membersData
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (hasData) {
-            items(memberItemsAdmin) { item ->
-                CardMemberAdmin(member = item, navController = navController)
+        if (members != null) {
+            items(members!!) { item ->
+                CardMemberAdmin(member = item, navController = navController, globalViewModel = globalViewModel)
             }
         } else {
             item {
@@ -248,10 +276,13 @@ fun MemberScrollContentAdmin(innerPadding: PaddingValues, navController: NavCont
 
 @Composable
 fun AdminMemberListScreen(
+    id: String,
+    refKey: String,
     title: String,
-    description: String,
-    navController: NavController
+    navController: NavController,
+    globalViewModel: GlobalViewModel
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -296,7 +327,7 @@ fun AdminMemberListScreen(
             )
         }
 
-        CardTotal(memberItemsAdmin)
+        CardTotal(globalViewModel)
 
         //Floating Button
         val fabSize = 56.dp
@@ -307,7 +338,7 @@ fun AdminMemberListScreen(
             contentAlignment = Alignment.BottomEnd
         ) {
 
-            MemberScrollContentAdmin(innerPadding = PaddingValues(16.dp), navController = navController)
+            MemberScrollContentAdmin(id = id, refKey = refKey, innerPadding = PaddingValues(16.dp), navController = navController, globalViewModel = globalViewModel)
 
             FloatingActionButton(
                 onClick = { navController.navigate(Screen.AdminNewDendaScreen.route) },
@@ -337,9 +368,12 @@ fun AdminMemberListScreen(
 @Preview(showBackground = true)
 fun AdminMemberListScreenPreview() {
     val navController = rememberNavController()
+    val globalViewModel = GlobalViewModel()
     AdminMemberListScreen(
+        "123",
+        "123",
         "MAXIMA 2023",
-        "Explore The World Reach New Potentials",
-        navController = navController
+        navController = navController,
+        globalViewModel = globalViewModel
     )
 }

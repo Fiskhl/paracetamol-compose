@@ -1,6 +1,6 @@
 package com.example.paracetamol.nav_screen
 
-
+import kotlinx.coroutines.MainScope
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,14 +33,23 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
 import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.component.showToast
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardItem(
+    userViewModel: UserViewModel,
     group: GroupItem?,
     navController: NavController,
 ) {
+    val context = LocalContext.current
+
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,7 +57,15 @@ fun CardItem(
         border = BorderStroke(2.dp, Color(0xFF1F628E)),
         shape = RoundedCornerShape(12.dp),
         onClick = {
-            navController.navigate("${Screen.UserGroupScreen.route}/${group!!._id}/${group.namaGroup}/${group.desc}")
+            userViewModel.getInGroupStatus(group!!.refKey) { isAdmin ->
+                MainScope().launch{
+                    if (isAdmin) {
+                        navController.navigate("${Screen.AdminMemberListScreen.route}/${group!!._id}/${group.refKey}/${group.namaGroup}")
+                    } else {
+                        navController.navigate("${Screen.UserGroupScreen.route}/${group!!._id}/${group.namaGroup}/${group.desc}")
+                    }
+                }
+            }
         }
 
     ) {
@@ -118,7 +135,7 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
             val filteredGroupList = groupList!!.filter { it?.status == true }
 
             items(filteredGroupList) { item ->
-                CardItem(group = item, navController = navController)
+                CardItem(userViewModel = userViewModel, group = item, navController = navController)
             }
         } else {
             item {

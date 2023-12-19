@@ -32,6 +32,7 @@ import com.example.paracetamol.screen.JoinScreen
 import com.example.paracetamol.nav_screen.ArchiveScreen
 import com.example.paracetamol.preferences.PreferenceManager
 import com.example.paracetamol.screen.AdminMemberListScreen
+import com.example.paracetamol.screen.GlobalViewModel
 import com.example.paracetamol.screen.MemberGroupScreen
 import com.example.paracetamol.screen.PayScreen
 import com.example.paracetamol.screen.admin.AdminMemberDetailScreen
@@ -119,10 +120,12 @@ fun Navigation() {
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
                 AdminNewDendaScreen(navController = navController, titleA = title, descriptionA = description)
             }
-            composable(route = Screen.AdminMemberListScreen.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.AdminMemberListScreen.route + "/{id}/{refKey}/{title}") { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                AdminMemberListScreen(navController = navController, title = title, description = description)
+                val globalViewModel = GlobalViewModel()
+                AdminMemberListScreen(navController = navController, id = id, refKey = refKey, title = title, globalViewModel = globalViewModel)
             }
             composable(route = Screen.CreateScreen.route){
                 CreateScreen(navController = navController)

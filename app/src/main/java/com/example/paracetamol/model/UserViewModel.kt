@@ -17,6 +17,7 @@ import com.example.paracetamol.api.data.register.RegisterRequest
 import com.example.paracetamol.preferences.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class UserViewModel(private val context: Context): ViewModel() {
     private val _registerSuccess = MutableLiveData<Boolean?>()
@@ -94,7 +95,6 @@ class UserViewModel(private val context: Context): ViewModel() {
             val registerRequest = RegisterRequest(nama,nim, password, email, prodi, angkatan)
             try {
                 val response = ApiService.create().register(registerRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setRegisterSuccess()
@@ -178,7 +178,6 @@ class UserViewModel(private val context: Context): ViewModel() {
             try {
                 val token = PreferenceManager.getToken(context)
                 val response = ApiService.create().getJoinedGroup("Bearer $token")
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     val responseBody = response.body()
@@ -199,7 +198,7 @@ class UserViewModel(private val context: Context): ViewModel() {
         }
     }
 
-    fun getAllUserDenda(groupID: String){
+    fun getAllSelfDenda(groupID: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val memberID = PreferenceManager.getMemberID(context) ?: return@launch
@@ -249,7 +248,6 @@ class UserViewModel(private val context: Context): ViewModel() {
             try {
                 val token = PreferenceManager.getToken(context)
                 val response = ApiService.create().joinGroup(referralCode,"Bearer $token")
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setJoinGroupSuccess()
@@ -268,7 +266,6 @@ class UserViewModel(private val context: Context): ViewModel() {
                 val token = PreferenceManager.getToken(context)
                 val createGroupRequest = CreateGroupRequest(namaGroup, refKey, desc, true)
                 val response = ApiService.create().createGroup("Bearer $token", createGroupRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setCreateGroupSuccess()
@@ -281,15 +278,17 @@ class UserViewModel(private val context: Context): ViewModel() {
         }
     }
 
-    fun getInGroupStatus(){
+    fun getInGroupStatus(groupRef: String, onIsAdmin: (Boolean) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val token = PreferenceManager.getToken(context)
-                val response = ApiService.create().getAMember(token!!)
-                Log.d(model_ref, response.toString())
+                val response = ApiService.create().checkStatusAdmin(groupRef, "Bearer $token")
                 if (response.isSuccessful) {
                     clearErrorMessage()
-                    setCreateGroupSuccess()
+                    val responseBody = response.body()?.string()
+                    val jsonObject = JSONObject(responseBody)
+                    val isAdmin = jsonObject.getBoolean("isAdmin")
+                    onIsAdmin(isAdmin)
                 } else {
                     handleErrorResponse(response.code())
                 }
@@ -298,7 +297,6 @@ class UserViewModel(private val context: Context): ViewModel() {
             }
         }
     }
-
 
     fun logout() {
         clearPreferences()

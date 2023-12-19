@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.paracetamol.model.UserViewModel
-import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 import androidx.compose.ui.Alignment
 import com.example.paracetamol.api.data.group.response.GroupItem
@@ -36,7 +35,7 @@ import com.example.paracetamol.component.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardArchiveItem(group: GroupItem, navController: NavController) {
+fun CardArchiveItem(group: GroupItem?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +56,7 @@ fun CardArchiveItem(group: GroupItem, navController: NavController) {
 
             ) {
             Text(
-                text = group.namaGroup,
+                text = group!!.namaGroup,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -67,7 +66,7 @@ fun CardArchiveItem(group: GroupItem, navController: NavController) {
                 textAlign = TextAlign.Start,
             )
             Text(
-                text = group.desc,
+                text = group!!.desc,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,7 +112,7 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
             val filteredGroupList = groupList!!.filter { it?.status == false }
 
             items(filteredGroupList) { item ->
-                CardItem(group = item, navController = navController)
+                CardArchiveItem(group = item, navController = navController)
             }
         } else {
             item {
