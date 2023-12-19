@@ -94,6 +94,7 @@ class UserViewModel(private val context: Context): ViewModel() {
             val registerRequest = RegisterRequest(nama,nim, password, email, prodi, angkatan)
             try {
                 val response = ApiService.create().register(registerRequest)
+                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setRegisterSuccess()
@@ -177,6 +178,7 @@ class UserViewModel(private val context: Context): ViewModel() {
             try {
                 val token = PreferenceManager.getToken(context)
                 val response = ApiService.create().getJoinedGroup("Bearer $token")
+                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     val responseBody = response.body()
@@ -279,6 +281,25 @@ class UserViewModel(private val context: Context): ViewModel() {
         }
     }
 
+    fun getInGroupStatus(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val response = ApiService.create().getAMember(token!!)
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setCreateGroupSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Failed to get your status")
+            }
+        }
+    }
+
+
     fun logout() {
         clearPreferences()
     }
@@ -304,6 +325,7 @@ class UserViewModel(private val context: Context): ViewModel() {
             400 -> _errorMessage.postValue("Bad Request")
             404 -> _errorMessage.postValue("Not Found")
             409 -> _errorMessage.postValue("Already Joined/Registered")
+            500 -> _errorMessage.postValue("Server Error")
             else -> _errorMessage.postValue("Error Code: $responseCode")
         }
     }

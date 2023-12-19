@@ -220,7 +220,7 @@ fun CreateScreen(navController: NavController) {
             Button(
                 onClick = {
                     if(name.isNotBlank() && desc.isNotBlank() && referralCode.isNotBlank()){
-                        userViewModel.createGroup(name, desc, referralCode)
+                        userViewModel.createGroup(name, referralCode, desc)
                     } else {
                         showToast(context, "Fill all required fields.")
                     }
