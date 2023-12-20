@@ -126,8 +126,10 @@ class AdminViewModel(private val context: Context): ViewModel() {
             try {
                 val token = PreferenceManager.getToken(context)
                 val response = ApiService.create().getAllMember(groupRef, "Bearer $token")
+                Log.d(model_ref, "Response: $response")
                 if (response.isSuccessful) {
                     clearErrorMessage()
+                    Log.d(model_ref, "Data: ${response.body()?.data!!.data}")
                     setGroupMembersData(response.body()?.data!!.data)
                 } else {
                     handleErrorResponse(response.code())

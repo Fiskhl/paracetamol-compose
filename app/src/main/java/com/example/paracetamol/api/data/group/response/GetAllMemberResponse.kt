@@ -21,11 +21,6 @@ data class Member(
     val _id: String,
     val nama: String,
     val is_admin: Boolean,
-    private val _totalDenda: MutableStateFlow<Int> = MutableStateFlow(0)
+    val totalDenda: Int = 0
 ) {
-    val totalDenda: MutableStateFlow<Int> get() = _totalDenda
-
-    fun updateTotalDenda(newTotalDenda: Int) {
-        _totalDenda.value = newTotalDenda
-    }
 }

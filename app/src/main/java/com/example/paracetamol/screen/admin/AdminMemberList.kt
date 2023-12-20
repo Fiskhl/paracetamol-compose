@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -125,26 +126,37 @@ fun CardTotal(globalViewModel: GlobalViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMemberAdmin(groupID: String, member: Member?, navController: NavController, globalViewModel: GlobalViewModel, title: String, refKey: String) {
+fun CardMemberAdmin(
+    member: Member?,
+    navController: NavController,
+    globalViewModel: GlobalViewModel,
+    title: String,
+    refKey: String,
+    groupID: String,
+    onMemberTotalCalculated: (Int) -> Unit
+) {
     val context = LocalContext.current
-
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
     // Observe the LiveData and update the local variable
-    var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
+    var memberTotalDenda by remember { mutableStateOf(0) }
 
     LaunchedEffect(userViewModel) {
-        userViewModel.getAllSelfDenda(true, member!!._id, groupID)
+        userViewModel.getAllSelfDenda(true, member?._id, groupID)
     }
 
     // Observe the LiveData and update the local variable
     userViewModel.dendas.observeAsState().value?.let {
-        dendaDatas = it
+        memberTotalDenda = it.sumOf { item -> item?.nominal ?: 0 }
     }
 
     val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
+    }
+
+    LaunchedEffect(memberTotalDenda) {
+        onMemberTotalCalculated(memberTotalDenda)
     }
 
     Surface(
@@ -190,7 +202,7 @@ fun CardMemberAdmin(groupID: String, member: Member?, navController: NavControll
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(0)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(memberTotalDenda)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
@@ -233,7 +245,9 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
     ) {
         if (members != null) {
             items(members!!) { item ->
-                CardMemberAdmin(groupID = id, member = item, navController = navController, globalViewModel = globalViewModel, title = title, refKey = refKey)
+                CardMemberAdmin(member = item, navController = navController, globalViewModel = globalViewModel, title = title, refKey = refKey, groupID = id, onMemberTotalCalculated = { memberTotal ->
+                    globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + memberTotal)
+                })
             }
         } else {
             item {

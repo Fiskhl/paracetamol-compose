@@ -1,5 +1,6 @@
 package com.example.paracetamol.screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -178,6 +179,11 @@ fun MemberGroupScreen(
     // Observe the LiveData and update the local variable
     adminViewModel.groupMembersData.observeAsState().value?.let{
         groupMembers =  it
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
     }
 
     Column(
