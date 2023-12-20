@@ -272,6 +272,7 @@ fun AdminUpdateDendaScreen(
 
 //                PaidCard(member = memberName, isPaid = , onPaidToggle = )
 
+                //ini yg archive gua bingung
 //                if(groupData != null)
 //                    com.example.paracetamol.screen.ArchiveCard(
 //                        title = namaGroup,
