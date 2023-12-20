@@ -1,6 +1,7 @@
 package com.example.paracetamol.screen.admin
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -78,6 +79,7 @@ fun AdminPaidScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -96,6 +98,7 @@ fun AdminPaidScreen(
         Text(
             text = titleA,
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             fontWeight = FontWeight.Bold
         )
         Row(
@@ -105,6 +108,7 @@ fun AdminPaidScreen(
         ) {
             Text(
                 text = "Send Proof",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -116,6 +120,7 @@ fun AdminPaidScreen(
         ) {
             Text(
                 text = "Name Profile",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -131,7 +136,7 @@ fun AdminPaidScreen(
                 .padding(horizontal = 35.dp)
                 .height(55.dp),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF1F8FF),
+                containerColor = Color.White,
                 cursorColor = Color.Black,
                 disabledLabelColor = Color.Black,
                 focusedIndicatorColor = Color.Transparent,

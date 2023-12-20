@@ -127,11 +127,12 @@ fun AdminNewDendaScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(Color(0xFFF2F1FA)) //
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFF2F1FA)) //
 //            .padding(horizontal = 16.dp)
                 .padding(top = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -151,6 +152,7 @@ fun AdminNewDendaScreen(
             Text(
                 text = titleA,
                 fontSize = 25.sp,
+                color = Color(0xFF15104D),
                 fontWeight = FontWeight.Bold
             )
             Row(
@@ -160,6 +162,7 @@ fun AdminNewDendaScreen(
             ) {
                 Text(
                     text = "Add Fine",
+                    color = Color(0xFF15104D),
                     modifier = Modifier.padding(top = 4.dp),
                     fontSize = 12.sp
                 )
@@ -178,7 +181,7 @@ fun AdminNewDendaScreen(
                         .padding(top = 35.dp, bottom = 5.dp)
                         .height(55.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
+                        containerColor = Color.White,
                         cursorColor = Color.Black,
                         disabledLabelColor = Color(0xFFF1F8FF),
                         focusedIndicatorColor = Color.Transparent,
@@ -197,7 +200,7 @@ fun AdminNewDendaScreen(
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(55.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
+                        containerColor = Color.White,
                         cursorColor = Color.Black,
                         disabledLabelColor = Color(0xFFF1F8FF),
                         focusedIndicatorColor = Color.Transparent,
@@ -216,7 +219,7 @@ fun AdminNewDendaScreen(
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(55.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
+                        containerColor = Color.White,
                         cursorColor = Color.Black,
                         disabledLabelColor = Color(0xFFF1F8FF),
                         focusedIndicatorColor = Color.Transparent,
@@ -235,7 +238,7 @@ fun AdminNewDendaScreen(
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(55.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
+                        containerColor = Color.White,
                         cursorColor = Color.Black,
                         disabledLabelColor = Color(0xFFF1F8FF),
                         focusedIndicatorColor = Color.Transparent,
@@ -307,7 +310,7 @@ fun AdminNewDendaScreen(
                         onValueChange = {},
                         readOnly = true,
                         colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color(0xFFF1F8FF),
+                            containerColor = Color.White,
                             cursorColor = Color.Black,
                             disabledLabelColor = Color(0xFFF1F8FF),
                             focusedIndicatorColor = Color.Transparent,
@@ -369,7 +372,7 @@ fun AdminNewDendaScreen(
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center,
-                        color = Color.DarkGray
+                        color = Color(0xFF15104D),
                     )
                 }
             }

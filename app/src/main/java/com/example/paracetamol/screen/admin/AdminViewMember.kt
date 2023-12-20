@@ -75,7 +75,7 @@ fun CardMemberAdmin(member: MemberDataAdmin?, navController: NavController, refK
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(1.5f.dp, Color.Red),
+        border = BorderStroke(1.5f.dp, Color.Black),
         shape = RoundedCornerShape(10.dp),
         onClick = {
             navController.navigate("${Screen.AdminProfileUserScreen.route}/${member!!._id}/${member!!.is_admin.toString()}/$refKey")
@@ -198,7 +198,7 @@ fun WaitingMembersList(waitingMembers: List<MemberDataAdmin?>?, groupRef: String
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp, vertical = 4.dp),
-                border = BorderStroke(1.5f.dp, Color.Blue),
+                border = BorderStroke(1.5f.dp, Color(0xFF1F628E)),
                 shape = RoundedCornerShape(10.dp),
             ) {
                 Row(
@@ -366,6 +366,7 @@ fun AdminViewMemberScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
 //            .padding(horizontal = 16.dp)
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -393,6 +394,7 @@ fun AdminViewMemberScreen(
         Text(
             text = namaGroup,
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             fontWeight = FontWeight.Bold
         )
         Row(
@@ -402,6 +404,7 @@ fun AdminViewMemberScreen(
         ) {
             Text(
                 text = refKey,
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -414,6 +417,7 @@ fun AdminViewMemberScreen(
         ) {
             Text(
                 text = "Admin",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp
@@ -428,12 +432,13 @@ fun AdminViewMemberScreen(
                 .fillMaxWidth()
                 .height(1.5f.dp)
                 .padding(horizontal = 16.dp),
-            color = Color.Gray
+            color = Color(0xFF15104D),
         )
 
         Text(
             "Waiting Member",
             fontWeight = FontWeight.Bold,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(vertical = 4.dp)
 
         )
@@ -446,7 +451,7 @@ fun AdminViewMemberScreen(
                 .fillMaxWidth()
                 .height(1.5f.dp)
                 .padding(horizontal = 16.dp),
-            color = Color.Gray
+            color = Color(0xFF15104D),
         )
 
         if(groupData != null)

@@ -75,7 +75,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(2.dp, Color.Red),
+        border = BorderStroke(2.dp, Color.Black),
         shape = RoundedCornerShape(12.dp),
     ) {
         Row(
@@ -94,21 +94,21 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
                     text = denda!!.title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.Start,
                 )
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
                     text = denda!!.desc,
                     fontSize = 11.sp,
-                    color = Color.Black,
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.Start,
                 )
                 Text(
                     text = "Due: ${denda!!.hari}",
                     modifier = Modifier.padding(horizontal = 10.dp),
                     fontSize = 10.sp,
-                    color = Color.Black,
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.Start,
                 )
             }
@@ -127,7 +127,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
-                    color = Color.Black.copy(alpha = 0.7f),
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.End,
                 )
                 // Button pakai status
@@ -141,7 +141,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(30.dp),
-                    border = BorderStroke(1.dp, if (denda!!.is_paid) Color.Black else Color.Blue), // Warna border berdasarkan status
+                    border = BorderStroke(1.dp, if (denda!!.is_paid) Color.Black else Color(0xFF1F628E)), // Warna border berdasarkan status
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
@@ -257,6 +257,7 @@ fun AdminMemberDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
 //            .padding(horizontal = 16.dp)
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -276,6 +277,7 @@ fun AdminMemberDetailScreen(
         Text(
             text = namaGroup,
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             fontWeight = FontWeight.Bold
         )
         Row(
@@ -285,6 +287,7 @@ fun AdminMemberDetailScreen(
         ) {
             Text(
                 text = "Fine Information",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -296,6 +299,7 @@ fun AdminMemberDetailScreen(
         ) {
             Text(
                 text = name,
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )

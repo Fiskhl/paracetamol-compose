@@ -69,24 +69,28 @@ fun ProfileItem(aMemberData: AMember) {
         Text(
             text = aMemberData.nama,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = aMemberData.nim,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = "${aMemberData.prodi} (${aMemberData.angkatan})",
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = aMemberData.email,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
     }
@@ -141,6 +145,7 @@ fun AdminProfileUserScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
 //            .padding(horizontal = 16.dp)
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -162,6 +167,7 @@ fun AdminProfileUserScreen(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth(),
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
@@ -187,6 +193,7 @@ fun AdminProfileUserScreen(
 
                 Text(
                     text = "Biodata",
+                    color = Color(0xFF15104D),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     modifier = Modifier
@@ -221,7 +228,7 @@ fun AdminProfileUserScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
-                        color = Color.Black,
+                        color = Color(0xFF15104D),
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
@@ -237,7 +244,7 @@ fun AdminProfileUserScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                         .padding(horizontal = 25.dp),
-                    border = BorderStroke(1.dp, Color.Black),
+                    border = BorderStroke(1.dp, Color.Red),
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
@@ -247,7 +254,7 @@ fun AdminProfileUserScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
-                        color = Color.Black,
+                        color = Color(0xFF15104D),
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
@@ -266,7 +273,7 @@ fun AdminProfileUserScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                         .padding(horizontal = 25.dp),
-                    border = BorderStroke(1.dp, Color.Black),
+                    border = BorderStroke(1.dp, Color.Red),
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
@@ -276,7 +283,7 @@ fun AdminProfileUserScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
-                        color = Color.Black,
+                        color = Color(0xFF15104D),
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold

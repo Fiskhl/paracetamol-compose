@@ -163,7 +163,7 @@ fun CardMemberAdmin(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(1.5f.dp, Color.Red),
+        border = BorderStroke(1.5f.dp, Color.Black),
         shape = RoundedCornerShape(10.dp),
         onClick = {
             navController.navigate("${Screen.AdminMemberDetailScreen.route}/${member!!._id}/${member!!.nama}/$title/$groupID/$refKey")
@@ -206,7 +206,8 @@ fun CardMemberAdmin(
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
-                    color = Color.Black.copy(alpha = 0.5f),
+                    //jadi putih
+                    color = Color.White,
                     textAlign = TextAlign.End,
                 )
             }
@@ -283,87 +284,100 @@ fun AdminMemberListScreen(
     title: String,
     globalViewModel: GlobalViewModel
 ) {
-
-    Column(
+    Surface(
         modifier = Modifier
             .fillMaxSize()
-//            .padding(horizontal = 16.dp)
-            .padding(top = 18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFFF2F1FA)) //
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                onClick = { navController.navigateUp() }, // Back
-                modifier = Modifier
-                    .padding(start = 1.dp),
-            ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    navController.navigate("${Screen.AdminViewMemberScreen.route}/$id/$title/$refKey")
-                },
-                modifier = Modifier
-                    .padding(end = 1.dp),
-            ) {
-                Icon(Icons.Default.Group, contentDescription = "Group")
-            }
-        }
-        Text(
-            text = title,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Row(
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .background(Color(0xFFF2F1FA)) //
+//            .padding(horizontal = 16.dp)
+                .padding(top = 18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Fine Information",
-                modifier = Modifier.padding(top = 4.dp),
-                fontSize = 12.sp
-            )
-        }
-
-        CardTotal(globalViewModel)
-
-        //Floating Button
-        val fabSize = 56.dp
-        val fabMargin = 16.dp
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-
-            MemberScrollContentAdmin(id = id, refKey = refKey, innerPadding = PaddingValues(16.dp), navController = navController, globalViewModel = globalViewModel, title = title)
-
-            FloatingActionButton(
-                onClick = { navController.navigate("${Screen.AdminNewDendaScreen.route}/$title/$refKey/$id")},
-                modifier = Modifier
-                    .padding(fabMargin)
-                    .size(fabSize)
-                    .shadow(8.dp, CircleShape)
-                    .background(Color.White)
-                    .align(Alignment.BottomEnd),
-                content = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            tint = Color.Gray
-                        )
-                    }
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+                    .background(Color(0xFFF2F1FA)) //
+            ) {
+                IconButton(
+                    onClick = { navController.navigateUp() }, // Back
+                    modifier = Modifier
+                        .padding(start = 1.dp),
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = {
+                        navController.navigate("${Screen.AdminViewMemberScreen.route}/$id/$title/$refKey")
+                    },
+                    modifier = Modifier
+                        .padding(end = 1.dp),
+                ) {
+                    Icon(Icons.Default.Group, contentDescription = "Group")
+                }
+            }
+            Text(
+                text = title,
+                fontSize = 25.sp,
+                color = Color(0xFF15104D),
+                fontWeight = FontWeight.Bold
             )
+            Row(
+                modifier = Modifier
+                    .background(Color(0xFFF2F1FA)) //
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Fine Information",
+                    color = Color(0xFF15104D),
+                    modifier = Modifier.padding(top = 4.dp),
+                    fontSize = 12.sp
+                )
+            }
+
+//            CardTotal(globalViewModel)
+
+            //Floating Button
+            val fabSize = 56.dp
+            val fabMargin = 16.dp
+
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+
+                MemberScrollContentAdmin(id = id, refKey = refKey, innerPadding = PaddingValues(16.dp), navController = navController, globalViewModel = globalViewModel, title = title)
+
+                FloatingActionButton(
+                    onClick = { navController.navigate("${Screen.AdminNewDendaScreen.route}/$title/$refKey/$id")},
+                    modifier = Modifier
+                        .padding(fabMargin)
+                        .size(fabSize)
+                        .shadow(8.dp, CircleShape)
+                        .background(Color.White)
+                        .align(Alignment.BottomEnd),
+                    content = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                    }
+                )
+            }
+
         }
 
     }
+
 }
 
 
