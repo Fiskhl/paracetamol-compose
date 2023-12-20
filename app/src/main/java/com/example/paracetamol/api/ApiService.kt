@@ -3,6 +3,7 @@ package com.example.paracetamol.api
 import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
 import com.example.paracetamol.api.data.admin.response.GetAMemberResponse
 import com.example.paracetamol.api.data.admin.response.GetAllMemberAdminResponse
+import com.example.paracetamol.api.data.admin.response.GetListMemberWithDendaResponse
 import com.example.paracetamol.api.data.group.response.GetAllMemberResponse
 import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
 import com.example.paracetamol.api.data.denda.request.DeleteDendaRequest
@@ -139,6 +140,10 @@ interface ApiService {
         @Path("groupRef") groupRef: String,
         @Header("Authorization") token: String
     ): Response<GetAllMemberAdminResponse>
+    @GET("/getDendaNamaTotal/{groupRef}")
+    suspend fun getGroupMemberWithDenda(
+        @Path("groupRef") groupRef: String,
+    ): Response<GetListMemberWithDendaResponse>
     @PUT("/members/edit/giveAdmin")
     suspend fun addAdmin(
         @Header("Authorization") token: String,

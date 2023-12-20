@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.paracetamol.api.data.admin.response.MemberWithDenda
 import com.example.paracetamol.api.data.denda.response.DendaItem
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.component.showToast
@@ -127,36 +128,17 @@ fun CardTotal(globalViewModel: GlobalViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardMemberAdmin(
-    member: Member?,
+    member: MemberWithDenda?,
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     title: String,
     refKey: String,
     groupID: String,
-    onMemberTotalCalculated: (Int) -> Unit
+    globalViewModel: GlobalViewModel
 ) {
-    val context = LocalContext.current
-    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
-    // Observe the LiveData and update the local variable
-    var memberTotalDenda by remember { mutableStateOf(0) }
-
-    LaunchedEffect(userViewModel) {
-        userViewModel.getAllSelfDenda(true, member?._id, groupID)
-    }
-
-    // Observe the LiveData and update the local variable
-    userViewModel.dendas.observeAsState().value?.let {
-        memberTotalDenda = it.sumOf { item -> item?.nominal ?: 0 }
-    }
-
-    val errorMessage by userViewModel.errorMessage.observeAsState()
-    errorMessage?.let {
-        showToast(context, it)
-    }
-
-    LaunchedEffect(memberTotalDenda) {
-        onMemberTotalCalculated(memberTotalDenda)
+    DisposableEffect(member){
+        globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + member!!.nominal)
+        onDispose {  }
     }
 
     Surface(
@@ -166,7 +148,7 @@ fun CardMemberAdmin(
         border = BorderStroke(1.5f.dp, Color.Black),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${Screen.AdminMemberDetailScreen.route}/${member!!._id}/${member!!.nama}/$title/$groupID/$refKey")
+            navController.navigate("${Screen.AdminMemberDetailScreen.route}/${member!!.id}/${member!!.name}/$title/$groupID/$refKey")
         }
     ) {
         Row(
@@ -182,7 +164,7 @@ fun CardMemberAdmin(
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = member!!.nama,
+                    text = member!!.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -202,12 +184,12 @@ fun CardMemberAdmin(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(memberTotalDenda)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(member!!.nominal)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
                     //jadi putih
-                    color = Color.White,
+                    color = Color.Red,
                     textAlign = TextAlign.End,
                 )
             }
@@ -222,17 +204,17 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
 
     val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
 
-    var members by rememberSaveable { mutableStateOf<List<Member?>?>(null) }
+    var members by rememberSaveable { mutableStateOf<List<MemberWithDenda?>?>(null) }
 
 
     LaunchedEffect(adminViewModel) {
-        adminViewModel.getMembersGroupData(refKey)
+        adminViewModel.getGroupMemberWithDenda(refKey)
     }
 
     // Observe the LiveData and update the local variable
-    val membersData by adminViewModel.groupMembersData.observeAsState()
-    membersData?.let{
-        members = membersData
+    val groupMemberWithDenda by adminViewModel.groupMemberWithDenda.observeAsState()
+    groupMemberWithDenda?.let{
+        members = it
     }
 
     val errorMessage by adminViewModel.errorMessage.observeAsState()
@@ -246,9 +228,7 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
     ) {
         if (members != null) {
             items(members!!) { item ->
-                CardMemberAdmin(member = item, navController = navController, globalViewModel = globalViewModel, title = title, refKey = refKey, groupID = id, onMemberTotalCalculated = { memberTotal ->
-                    globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + memberTotal)
-                })
+                CardMemberAdmin(member = item, navController = navController, title = title, refKey = refKey, groupID = id, globalViewModel = globalViewModel, )
             }
         } else {
             item {
@@ -300,7 +280,8 @@ fun AdminMemberListScreen(
         ) {
             Row(
                 horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .background(Color(0xFFF2F1FA)) //
             ) {
                 IconButton(
@@ -341,7 +322,7 @@ fun AdminMemberListScreen(
                 )
             }
 
-//            CardTotal(globalViewModel)
+            CardTotal(globalViewModel)
 
             //Floating Button
             val fabSize = 56.dp

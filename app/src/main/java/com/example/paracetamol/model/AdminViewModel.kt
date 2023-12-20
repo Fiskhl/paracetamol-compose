@@ -10,6 +10,7 @@ import com.example.paracetamol.api.ApiService
 import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
 import com.example.paracetamol.api.data.admin.response.AMember
 import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
+import com.example.paracetamol.api.data.admin.response.MemberWithDenda
 import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
 import com.example.paracetamol.api.data.denda.request.DeleteDendaRequest
 import com.example.paracetamol.api.data.denda.response.DendaSpesifikItem
@@ -59,6 +60,9 @@ class AdminViewModel(private val context: Context): ViewModel() {
 
     private val _spesifikDenda = MutableLiveData<DendaSpesifikItem?>()
     val spesifikDenda: LiveData<DendaSpesifikItem?> get() = _spesifikDenda
+
+    private val _groupMemberWithDenda = MutableLiveData<List<MemberWithDenda?>?>()
+    val groupMemberWithDenda: LiveData<List<MemberWithDenda?>?> get() = _groupMemberWithDenda
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -113,6 +117,10 @@ class AdminViewModel(private val context: Context): ViewModel() {
 
     private fun setSpesifikDenda(data: DendaSpesifikItem){
         _spesifikDenda.postValue(data)
+    }
+
+    private fun setGroupMemberWithDenda(data: List<MemberWithDenda>){
+        _groupMemberWithDenda.postValue(data)
     }
 
     private fun clearErrorMessage(){
@@ -366,6 +374,31 @@ class AdminViewModel(private val context: Context): ViewModel() {
                         val spesifikDendaData = it.data?.data
                         spesifikDendaData?.let {
                             setSpesifikDenda(spesifikDendaData)
+                        } ?: run {
+                            _spesifikDenda.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to delete fines.")
+            }
+        }
+    }
+
+    fun getGroupMemberWithDenda(groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiService.create().getGroupMemberWithDenda(groupRef)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        val memberWithDenda = it.data?.members
+                        memberWithDenda?.let {
+                            setGroupMemberWithDenda(memberWithDenda)
                         } ?: run {
                             _spesifikDenda.postValue(null)
                         }
