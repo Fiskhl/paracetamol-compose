@@ -1,5 +1,7 @@
 package com.example.paracetamol.screen.admin
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +109,7 @@ fun AdminPaidScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Send Proof",
+                text = "See Proof",
                 color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
@@ -118,12 +120,12 @@ fun AdminPaidScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Name Profile",
-                color = Color(0xFF15104D),
-                modifier = Modifier.padding(top = 4.dp),
-                fontSize = 12.sp
-            )
+//            Text(
+//                text = "Name Profile",
+//                color = Color(0xFF15104D),
+//                modifier = Modifier.padding(top = 4.dp),
+//                fontSize = 12.sp
+//            )
         }
 
         TextField(
@@ -146,6 +148,36 @@ fun AdminPaidScreen(
             singleLine = true,
             enabled = false
         )
+        val context = LocalContext.current
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 35.dp, end = 35.dp, bottom = 16.dp)
+                .height(55.dp),
+            border = BorderStroke(2.dp, Color.Black),
+            colors = ButtonDefaults.elevatedButtonColors(
+                contentColor = Color.White
+            ),
+            onClick = {
+                // Open proof link externally
+                var modifiedUrl = proofLink
+                if (!modifiedUrl.startsWith("http://") && !modifiedUrl.startsWith("https://")) {
+                    modifiedUrl = "http://$modifiedUrl"
+                }
+
+                val uri = Uri.parse(modifiedUrl)
+                val browserIntent = Intent(Intent.ACTION_VIEW, uri)
+                context.startActivity(browserIntent)
+            }
+        ) {
+            Text(
+                "See Proof",
+                color = Color(0xFF15104D),
+                fontSize = 16.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
