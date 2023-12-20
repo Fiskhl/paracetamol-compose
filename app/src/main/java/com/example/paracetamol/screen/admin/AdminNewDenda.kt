@@ -288,7 +288,12 @@ fun AdminNewDendaScreen(
 
                 ExposedDropdownMenuBox(
                     expanded = isExpanded, 
-                    onExpandedChange = {isExpanded = it}
+                    onExpandedChange = {isExpanded = it},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp, bottom = 5.dp)
+                        .height(55.dp),
+
                 ) {
                     TextField(
                         value = selectedMemberName,
@@ -301,7 +306,16 @@ fun AdminNewDendaScreen(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
+                        label = { Text("Assign") },
+                        trailingIcon = {
+                            Icon(
+                                icon,
+                                "contentDescription",
+                                Modifier.clickable { isExpanded = !isExpanded }
+                            )
+                        },
                         modifier = Modifier.menuAnchor()
+                            .fillMaxWidth(),
                     )
                     
                     ExposedDropdownMenu(
@@ -349,14 +363,14 @@ fun AdminNewDendaScreen(
 }
 
 
-//@Composable
-//@Preview(showBackground = true)
-//fun AdminNewDendaScreenPreview() {
-//    val navController = rememberNavController()
-//    AdminNewDendaScreen(
-//        navController = navController,
-//        titleA = "MAXIMA 2023",
-//        groupID = "Explore The World",
-//        refKey = "Reach New Potentials"
-//    )
-//}
+@Composable
+@Preview(showBackground = true)
+fun AdminNewDendaScreenPreview() {
+    val navController = rememberNavController()
+    AdminNewDendaScreen(
+        navController = navController,
+        titleA = "MAXIMA 2023",
+        refKey = "Reach New Potentials"
+    )
+}
+
