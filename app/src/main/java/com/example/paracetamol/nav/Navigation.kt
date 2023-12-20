@@ -161,11 +161,12 @@ fun Navigation() {
                 val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
                 AdminViewMemberScreen(navController = navController, id = id, namaGroup = namaGroup, refKey = refKey)
             }
-            composable(route = Screen.UserGroupScreen.route + "/{id}/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.UserGroupScreen.route + "/{id}/{title}/{description}/{refKey}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                UserGroupScreen(navController = navController, id = id, titleA = title, descriptionA = description)
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                UserGroupScreen(navController = navController, id = id, titleA = title, descriptionA = description, refKey = refKey)
             }
             composable(route = Screen.AdminProfileUserScreen.route + "/{id}/{isAdmin}/{refKey}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
@@ -178,10 +179,11 @@ fun Navigation() {
                 val judulDenda = navBackStackEntry.arguments?.getString("judulDenda") ?: ""
                 PayScreen(navController = navController, id = id, titleA = judulDenda)
             }
-            composable(route = Screen.AdminPaidScreen.route + "/{title}/{dendaID}") { navBackStackEntry ->
+            composable(route = Screen.AdminPaidScreen.route + "/{title}/{dendaID}/{nama}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val dendaID = navBackStackEntry.arguments?.getString("dendaID") ?: ""
-                AdminPaidScreen(navController = navController, titleA = title, dendaID = dendaID)
+                val nama = navBackStackEntry.arguments?.getString("nama") ?: ""
+                AdminPaidScreen(navController = navController, titleA = title, dendaID = dendaID, nama = nama)
             }
 
         }

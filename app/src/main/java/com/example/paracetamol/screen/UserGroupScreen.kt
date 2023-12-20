@@ -212,6 +212,7 @@ fun UserGroupScreen(
     id: String,
     titleA: String,
     descriptionA: String,
+    refKey: String,
     navController: NavController
 ) {
     Column(
@@ -236,7 +237,7 @@ fun UserGroupScreen(
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
                 onClick = {
-                    navController.navigate("${Screen.MemberGroupScreen.route}/${titleA}/${descriptionA}")
+                    navController.navigate("${Screen.MemberGroupScreen.route}/$titleA/$refKey")
                 },
                 modifier = Modifier
                     .padding(end = 1.dp),

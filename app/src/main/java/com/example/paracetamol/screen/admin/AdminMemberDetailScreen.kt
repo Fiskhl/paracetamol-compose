@@ -55,7 +55,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: String, namaGroup: String) {
+fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: String, namaGroup: String, nama: String) {
     val context = LocalContext.current
 
     val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
@@ -177,7 +177,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
                         tint = Color.Black,
                         modifier = Modifier
                             .size(20.dp) // Ukuran untuk ikon Edit
-                            .clickable { navController.navigate("${Screen.AdminPaidScreen.route}/$namaGroup/${denda._id}")}
+                            .clickable { navController.navigate("${Screen.AdminPaidScreen.route}/$namaGroup/${denda._id}/$nama")}
                     )
                 }
 
@@ -189,7 +189,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
 
 
 @Composable
-fun DendaUserScrollContent(id: String, groupID: String, innerPadding: PaddingValues, navController: NavController, groupRef: String, namaGroup: String) {
+fun DendaUserScrollContent(id: String, groupID: String, innerPadding: PaddingValues, navController: NavController, groupRef: String, namaGroup: String, nama: String) {
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
@@ -217,7 +217,7 @@ fun DendaUserScrollContent(id: String, groupID: String, innerPadding: PaddingVal
     ) {
         if (dendaDatas != null) {
             items(dendaDatas!!) { item ->
-                CardDendaUser(denda = item, navController = navController, groupRef = groupRef, namaGroup = namaGroup)
+                CardDendaUser(denda = item, navController = navController, groupRef = groupRef, namaGroup = namaGroup, nama = nama)
             }
         } else {
             item {
@@ -304,7 +304,7 @@ fun AdminMemberDetailScreen(
                 fontSize = 12.sp
             )
         }
-        DendaUserScrollContent(id = id, innerPadding = PaddingValues(16.dp), navController = navController, groupID = groupID, groupRef = refKey, namaGroup = namaGroup)
+        DendaUserScrollContent(id = id, innerPadding = PaddingValues(16.dp), navController = navController, groupID = groupID, groupRef = refKey, namaGroup = namaGroup, nama = name)
     }
 }
 

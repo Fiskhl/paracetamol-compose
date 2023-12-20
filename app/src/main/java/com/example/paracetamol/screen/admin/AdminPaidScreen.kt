@@ -53,6 +53,7 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 fun AdminPaidScreen(
     titleA: String,
     dendaID: String,
+    nama: String,
     navController: NavController
 ) {
 
@@ -109,7 +110,7 @@ fun AdminPaidScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "See Proof",
+                text = nama,
                 color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp

@@ -63,7 +63,7 @@ fun CardItem(
                     if (isAdmin) {
                         navController.navigate("${Screen.AdminMemberListScreen.route}/${group!!._id}/${group.refKey}/${group.namaGroup}")
                     } else {
-                        navController.navigate("${Screen.UserGroupScreen.route}/${group!!._id}/${group.namaGroup}/${group.desc}")
+                        navController.navigate("${Screen.UserGroupScreen.route}/${group!!._id}/${group.namaGroup}/${group.desc}/${group.refKey}")
                     }
                 }
             }
