@@ -1,5 +1,6 @@
 package com.example.paracetamol.screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -46,11 +48,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.paracetamol.api.data.denda.response.DendaItem
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.component.showToast
 import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
+import kotlinx.coroutines.flow.asStateFlow
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -60,7 +64,7 @@ class GlobalViewModel : ViewModel() {
         private set
 
     fun updateTotalDendaGroup(value: Int) {
-        totalDendaGroup = value
+            totalDendaGroup = value
     }
 }
 
@@ -121,26 +125,27 @@ fun CardTotal(globalViewModel: GlobalViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMemberAdmin(member: Member?, navController: NavController, globalViewModel: GlobalViewModel, title: String) {
+fun CardMemberAdmin(groupID: String, member: Member?, navController: NavController, globalViewModel: GlobalViewModel, title: String, refKey: String) {
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
-    var totalDenda by rememberSaveable { mutableStateOf<Int> (0) }
+    // Observe the LiveData and update the local variable
+    var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
 
-    LaunchedEffect(userViewModel){
-        userViewModel.getAllSelfDenda(member!!._id)
+    LaunchedEffect(userViewModel) {
+        userViewModel.getAllSelfDenda(true, member!!._id, groupID)
     }
 
     // Observe the LiveData and update the local variable
-    userViewModel.dendas.observeAsState().value?.let { dendas ->
-        dendas.forEach { attr ->
-            totalDenda += attr!!.nominal
-        }
+    userViewModel.dendas.observeAsState().value?.let {
+        dendaDatas = it
     }
 
-    // Update totalDendaGroup using globalViewModel
-    globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + totalDenda)
+    val errorMessage by userViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
     Surface(
         modifier = Modifier
@@ -149,7 +154,7 @@ fun CardMemberAdmin(member: Member?, navController: NavController, globalViewMod
         border = BorderStroke(1.5f.dp, Color.Red),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${Screen.AdminMemberDetailScreen.route}/${member!!._id}/${member!!.nama}/$title")
+            navController.navigate("${Screen.AdminMemberDetailScreen.route}/${member!!._id}/${member!!.nama}/$title/$groupID/$refKey")
         }
     ) {
         Row(
@@ -185,7 +190,7 @@ fun CardMemberAdmin(member: Member?, navController: NavController, globalViewMod
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(totalDenda)
+                val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(0)
                 Text(
                     text = "Total: $formattedTotal",
                     fontSize = 10.sp,
@@ -228,7 +233,7 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
     ) {
         if (members != null) {
             items(members!!) { item ->
-                CardMemberAdmin(member = item, navController = navController, globalViewModel = globalViewModel, title = title)
+                CardMemberAdmin(groupID = id, member = item, navController = navController, globalViewModel = globalViewModel, title = title, refKey = refKey)
             }
         } else {
             item {

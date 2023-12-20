@@ -159,7 +159,7 @@ fun DendaScrollContent(id: String, titleA: String, innerPadding: PaddingValues, 
     var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
 
     LaunchedEffect(userViewModel){
-        userViewModel.getAllSelfDenda(id)
+        userViewModel.getAllSelfDenda(false, null, id)
     }
 
     // Observe the LiveData and update the local variable

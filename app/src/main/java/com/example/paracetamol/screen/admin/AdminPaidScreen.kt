@@ -20,20 +20,28 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.denda.response.DendaSpesifikItem
+import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 
@@ -41,19 +49,30 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 @Composable
 fun AdminPaidScreen(
     titleA: String,
-    descriptionA: String,
+    dendaID: String,
     navController: NavController
 ) {
 
-    var proofLink by remember { mutableStateOf("Di sini ada link nanti ya muehehehehehhe") }
+    var proofLink by rememberSaveable { mutableStateOf<String>("") }
 
-    // Mengecek apakah nilai TextField tidak kosong
-    val isProofLinkNotEmpty by remember {
-        derivedStateOf {
-            proofLink.isNotEmpty()
-        }
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
+
+    LaunchedEffect(adminViewModel){
+        adminViewModel.getSpesifikDenda(dendaID)
     }
 
+    // Observe the LiveData and update the local variable
+    val spesifikDenda by adminViewModel.spesifikDenda.observeAsState()
+    spesifikDenda?.let {
+        proofLink = it.link
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
 
 
     Column(
@@ -95,12 +114,13 @@ fun AdminPaidScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
         ) {
-        Text(
-            text = "Name Profile",
-            modifier = Modifier.padding(top = 4.dp),
-            fontSize = 12.sp
-        )
+            Text(
+                text = "Name Profile",
+                modifier = Modifier.padding(top = 4.dp),
+                fontSize = 12.sp
+            )
         }
+
         TextField(
             value = proofLink,
             onValueChange = {  },

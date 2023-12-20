@@ -82,235 +82,231 @@ fun AdminUpdateDendaScreen(
     navController: NavController,
     titleA: String,
     refKey: String,
-    title: String,
-    description: String,
-    dueDate: String,
-    nominal: Int,
-    memberName: String
+    groupID: String
 ) {
-    var title by remember { mutableStateOf(title) }
-    var description by remember { mutableStateOf(description) }
-    var due by remember { mutableStateOf(dueDate) }
-    var nominal by remember { mutableStateOf(nominal) }
-    var selectedMemberId by rememberSaveable { mutableStateOf("") }
-    var selectedMemberName by remember { mutableStateOf("") }
-
-    val context = LocalContext.current
-
-    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
-
-    var members by rememberSaveable { mutableStateOf<List<Member?>?>(null) }
-
-    LaunchedEffect(adminViewModel) {
-        adminViewModel.getMembersGroupData(refKey)
-    }
-
-    // Observe the LiveData and update the local variable
-    val membersData by adminViewModel.groupMembersData.observeAsState()
-    membersData?.let{
-        members = membersData
-    }
-
-    val errorMessage by adminViewModel.errorMessage.observeAsState()
-    errorMessage?.let {
-        showToast(context, it)
-    }
-
-    // Dropdown
-    var isExpanded by remember { mutableStateOf(false) }
-    val icon = if (isExpanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-
-
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-//            .padding(horizontal = 16.dp)
-                .padding(top = 18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                IconButton(
-                    onClick = { navController.navigateUp() }, // Back
-                    modifier = Modifier
-                        .padding(start = 1.dp),
-                ) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-            }
-            Text(
-                text = titleA,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Add Fine",
-                    modifier = Modifier.padding(top = 4.dp),
-                    fontSize = 12.sp
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 25.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                TextField(
-                    value = memberName,
-                    onValueChange = {  },
-                    label = { Text("Member") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 35.dp, bottom = 5.dp)
-                        .height(55.dp),
-                    enabled = false, // Disable editing
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                )
-                TextField(
-                    value = title,
-                    onValueChange = {  },
-                    label = { Text("Title") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
-                    enabled = false, // Disable editing
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                )
-
-                TextField(
-                    value = description,
-                    onValueChange = {  },
-                    label = { Text("Description") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
-                    enabled = false, // Disable editing
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                )
-
-                TextField(
-                    value = due,
-                    onValueChange = {  },
-                    label = { Text("Due Date") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
-                    enabled = false, // Disable editing
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                )
-
-                TextField(
-                    value = nominal.toString(), // Ubah nilai Int menjadi String
-                    onValueChange = { newValue ->
-                        // Konversi nilai String ke Int dan simpan kembali ke variabel nominal
-                        nominal = newValue.toIntOrNull() ?: nominal // Nilai default jika konversi gagal
-                    },
-                    label = { Text("Total") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color(0xFFF1F8FF),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                )
-
-//                PaidCard(member = memberName, isPaid = , onPaidToggle = )
-
-                //ini yg archive gua bingung
-//                if(groupData != null)
-//                    com.example.paracetamol.screen.ArchiveCard(
-//                        title = namaGroup,
-//                        isArchived = groupData!!.status,
-//                        onArchiveToggle = {
-//                            if (groupData!!.status)
-//                                adminViewModel.archiveGroup(refKey)
-//                            else
-//                                adminViewModel.reactivateGroup(refKey)
-//                        }
+//    var title by remember { mutableStateOf(title) }
+//    var description by remember { mutableStateOf(description) }
+//    var due by remember { mutableStateOf(dueDate) }
+//    var nominal by remember { mutableStateOf(nominal) }
+//    var selectedMemberId by rememberSaveable { mutableStateOf("") }
+//    var selectedMemberName by remember { mutableStateOf("") }
+//
+//    val context = LocalContext.current
+//
+//    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
+//
+//    var members by rememberSaveable { mutableStateOf<List<Member?>?>(null) }
+//
+//    LaunchedEffect(adminViewModel) {
+//        adminViewModel.getMembersGroupData(refKey)
+//    }
+//
+//    // Observe the LiveData and update the local variable
+//    val membersData by adminViewModel.groupMembersData.observeAsState()
+//    membersData?.let{
+//        members = membersData
+//    }
+//
+//    val errorMessage by adminViewModel.errorMessage.observeAsState()
+//    errorMessage?.let {
+//        showToast(context, it)
+//    }
+//
+//    // Dropdown
+//    var isExpanded by remember { mutableStateOf(false) }
+//    val icon = if (isExpanded)
+//        Icons.Filled.KeyboardArrowUp
+//    else
+//        Icons.Filled.KeyboardArrowDown
+//
+//
+//    Surface(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(MaterialTheme.colorScheme.background),
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+////            .padding(horizontal = 16.dp)
+//                .padding(top = 18.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Row(
+//                horizontalArrangement = Arrangement.Start,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                IconButton(
+//                    onClick = { navController.navigateUp() }, // Back
+//                    modifier = Modifier
+//                        .padding(start = 1.dp),
+//                ) {
+//                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+//                }
+//            }
+//            Text(
+//                text = titleA,
+//                fontSize = 25.sp,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Center
+//            ) {
+//                Text(
+//                    text = "Add Fine",
+//                    modifier = Modifier.padding(top = 4.dp),
+//                    fontSize = 12.sp
+//                )
+//            }
+//            Column(
+//                modifier = Modifier
+//                    .padding(horizontal = 25.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//            ) {
+//                TextField(
+//                    value = memberName,
+//                    onValueChange = {  },
+//                    label = { Text("Member") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 35.dp, bottom = 5.dp)
+//                        .height(55.dp),
+//                    enabled = false, // Disable editing
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color.Black,
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    shape = RoundedCornerShape(8.dp),
+//                    singleLine = true,
+//                )
+//                TextField(
+//                    value = title,
+//                    onValueChange = {  },
+//                    label = { Text("Title") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp, bottom = 5.dp)
+//                        .height(55.dp),
+//                    enabled = false, // Disable editing
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color.Black,
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    shape = RoundedCornerShape(8.dp),
+//                    singleLine = true,
+//                )
+//
+//                TextField(
+//                    value = description,
+//                    onValueChange = {  },
+//                    label = { Text("Description") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp, bottom = 5.dp)
+//                        .height(55.dp),
+//                    enabled = false, // Disable editing
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color.Black,
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    shape = RoundedCornerShape(8.dp),
+//                    singleLine = true,
+//                )
+//
+//                TextField(
+//                    value = due,
+//                    onValueChange = {  },
+//                    label = { Text("Due Date") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp, bottom = 5.dp)
+//                        .height(55.dp),
+//                    enabled = false, // Disable editing
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color.Black,
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    shape = RoundedCornerShape(8.dp),
+//                    singleLine = true,
+//                )
+//
+//                TextField(
+//                    value = nominal.toString(), // Ubah nilai Int menjadi String
+//                    onValueChange = { newValue ->
+//                        // Konversi nilai String ke Int dan simpan kembali ke variabel nominal
+//                        nominal = newValue.toIntOrNull() ?: nominal // Nilai default jika konversi gagal
+//                    },
+//                    label = { Text("Total") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp, bottom = 5.dp)
+//                        .height(55.dp),
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color(0xFFF1F8FF),
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    shape = RoundedCornerShape(8.dp),
+//                    singleLine = true,
+//                )
+//
+////                PaidCard(member = memberName, isPaid = , onPaidToggle = )
+//
+//                //ini yg archive gua bingung
+////                if(groupData != null)
+////                    com.example.paracetamol.screen.ArchiveCard(
+////                        title = namaGroup,
+////                        isArchived = groupData!!.status,
+////                        onArchiveToggle = {
+////                            if (groupData!!.status)
+////                                adminViewModel.archiveGroup(refKey)
+////                            else
+////                                adminViewModel.reactivateGroup(refKey)
+////                        }
+////                    )
+//
+//
+//                Button(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 16.dp, bottom = 16.dp)
+//                        .height(55.dp),
+//                    border = BorderStroke(2.dp, Color(0xFF47A7FF)),
+//                    colors = ButtonDefaults.elevatedButtonColors(
+//                        contentColor = Color.White
+//                    ),
+//                    onClick = { /* Isi disini */ }
+//                ) {
+//                    Text(
+//                        "Update Fine",
+//                        fontSize = 16.sp,
+//                        fontFamily = poppinsFamily,
+//                        fontWeight = FontWeight.SemiBold,
+//                        textAlign = TextAlign.Center,
+//                        color = Color.DarkGray
 //                    )
-
-
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp)
-                        .height(55.dp),
-                    border = BorderStroke(2.dp, Color(0xFF47A7FF)),
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        contentColor = Color.White
-                    ),
-                    onClick = { /* Isi disini */ }
-                ) {
-                    Text(
-                        "Update Fine",
-                        fontSize = 16.sp,
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        color = Color.DarkGray
-                    )
-                }
-            }
-
-
-        }
-    }
+//                }
+//            }
+//
+//
+//        }
+//    }
 }
 
 @Composable
@@ -359,20 +355,15 @@ fun PaidCard(
 
 
 
-@Composable
-@Preview(showBackground = true)
-fun AdminUpdateDendaScreenPreview() {
-    val navController = rememberNavController()
-    AdminUpdateDendaScreen(
-        navController = navController,
-        titleA = "MAXIMA 2023",
-        refKey = "Reach New Potentials",
-        title = "Your Ass",
-        description = "What's up my n",
-        dueDate = "Due Date",
-        nominal = 10000,
-        memberName = "Brianiga"
-
-    )
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminUpdateDendaScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminUpdateDendaScreen(
+//        navController = navController,
+//        titleA = "MAXIMA 2023",
+//        refKey = "Reach New Potentials",
+//        groupID = "",
+//    )
+//}
 

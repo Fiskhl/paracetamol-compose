@@ -204,10 +204,14 @@ class UserViewModel(private val context: Context): ViewModel() {
         }
     }
 
-    fun getAllSelfDenda(groupID: String){
+    fun getAllSelfDenda(isAdmin: Boolean, memberID: String?, groupID: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val memberID = PreferenceManager.getMemberID(context) ?: return@launch
+                var memberID =
+                    if (isAdmin && memberID != null)
+                        memberID
+                    else
+                        PreferenceManager.getMemberID(context) ?: return@launch
                 val response = ApiService.create().getAllUserDenda(memberID, groupID)
                 if (response.isSuccessful) {
                     clearErrorMessage()
@@ -236,7 +240,6 @@ class UserViewModel(private val context: Context): ViewModel() {
                 val idDendaRequestBody = dendaID.toRequestBody("text/plain".toMediaTypeOrNull())
                 val fileRequestBody = link.toRequestBody("text/plain".toMediaTypeOrNull())
                 val response = ApiService.create().payDenda("Bearer $token", idDendaRequestBody, fileRequestBody)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setPaySuccess()

@@ -11,6 +11,8 @@ import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
 import com.example.paracetamol.api.data.admin.response.AMember
 import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
 import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
+import com.example.paracetamol.api.data.denda.request.DeleteDendaRequest
+import com.example.paracetamol.api.data.denda.response.DendaSpesifikItem
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.api.data.profile.Profile
@@ -51,6 +53,12 @@ class AdminViewModel(private val context: Context): ViewModel() {
 
     private val _createDendaSuccess = MutableLiveData<Boolean?>()
     val createDendaSuccess: LiveData<Boolean?> get() = _createDendaSuccess
+
+    private val _deleteDendaSuccess = MutableLiveData<Boolean?>()
+    val deleteDendaSuccess: LiveData<Boolean?> get() = _deleteDendaSuccess
+
+    private val _spesifikDenda = MutableLiveData<DendaSpesifikItem?>()
+    val spesifikDenda: LiveData<DendaSpesifikItem?> get() = _spesifikDenda
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -99,6 +107,14 @@ class AdminViewModel(private val context: Context): ViewModel() {
         _createDendaSuccess.postValue(true)
     }
 
+    private fun setDeleteDendaSuccess(){
+        _deleteDendaSuccess.postValue(true)
+    }
+
+    private fun setSpesifikDenda(data: DendaSpesifikItem){
+        _spesifikDenda.postValue(data)
+    }
+
     private fun clearErrorMessage(){
         if (_errorMessage.value != null) {
             _errorMessage.postValue(null)
@@ -112,7 +128,6 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 val response = ApiService.create().getAllMember(groupRef, "Bearer $token")
                 if (response.isSuccessful) {
                     clearErrorMessage()
-                    Log.d(model_ref, response.body()?.data.toString())
                     setGroupMembersData(response.body()?.data!!.data)
                 } else {
                     handleErrorResponse(response.code())
@@ -305,7 +320,6 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 val token = PreferenceManager.getToken(context)
                 val createDendaRequest = CreateDendaRequest(groupID, memberID, title, due, nominal, desc, false)
                 val response = ApiService.create().createDenda("Bearer $token", createDendaRequest)
-                Log.d(model_ref, response.toString())
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setCreateDendaSuccess()
@@ -314,7 +328,52 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.d(model_ref, e.toString())
-                _errorMessage.postValue("Failed to demote admin.")
+                _errorMessage.postValue("Failed to create fines.")
+            }
+        }
+    }
+
+    fun deleteDenda(dendaID: String, groupRef: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val deleteDendaRequest = DeleteDendaRequest(dendaID, groupRef)
+                val response = ApiService.create().deleteDenda("Bearer $token", deleteDendaRequest)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    Log.d(model_ref, response.body()!!.string())
+                    setDeleteDendaSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to delete fines.")
+            }
+        }
+    }
+
+    fun getSpesifikDenda(dendaID: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiService.create().getSpesifikDenda(dendaID)
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        val spesifikDendaData = it.data?.data
+                        spesifikDendaData?.let {
+                            setSpesifikDenda(spesifikDendaData)
+                        } ?: run {
+                            _spesifikDenda.postValue(null)
+                        }
+                    }
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to delete fines.")
             }
         }
     }

@@ -117,10 +117,11 @@ fun Navigation() {
                     isLoggedIn = false
                 }
             }
-            composable(route = Screen.AdminUpdateDendaScreen.route + "/{title}/{refKey}") { navBackStackEntry ->
+            composable(route = Screen.AdminUpdateDendaScreen.route + "/{title}/{refKey}/{groupID}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
                 val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
-                AdminUpdateDendaScreen(navController = navController, titleA = title, refKey = refKey)
+                val groupID = navBackStackEntry.arguments?.getString("groupID") ?: ""
+                AdminUpdateDendaScreen(navController = navController, titleA = title, refKey = refKey, groupID = groupID)
             }
             composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{refKey}/{groupID}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
@@ -146,11 +147,13 @@ fun Navigation() {
                 val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
                 MemberGroupScreen(navController = navController, title = title, refKey = refKey)
             }
-            composable(route = Screen.AdminMemberDetailScreen.route + "/{id}/{name}/{namaGroup}") { navBackStackEntry ->
+            composable(route = Screen.AdminMemberDetailScreen.route + "/{id}/{name}/{namaGroup}/{groupID}/{refKey}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
                 val name = navBackStackEntry.arguments?.getString("name") ?: ""
                 val namaGroup = navBackStackEntry.arguments?.getString("namaGroup") ?: ""
-                AdminMemberDetailScreen(navController = navController, id = id, name = name, namaGroup = namaGroup)
+                val groupID = navBackStackEntry.arguments?.getString("groupID") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                AdminMemberDetailScreen(navController = navController, id = id, name = name, namaGroup = namaGroup, groupID = groupID, refKey = refKey)
             }
             composable(route = Screen.AdminViewMemberScreen.route + "/{id}/{namaGroup}/{refKey}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
@@ -175,10 +178,10 @@ fun Navigation() {
                 val judulDenda = navBackStackEntry.arguments?.getString("judulDenda") ?: ""
                 PayScreen(navController = navController, id = id, titleA = judulDenda)
             }
-            composable(route = Screen.AdminPaidScreen.route + "/{title}/{description}") { navBackStackEntry ->
+            composable(route = Screen.AdminPaidScreen.route + "/{title}/{dendaID}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val description = navBackStackEntry.arguments?.getString("description") ?: ""
-                AdminPaidScreen(navController = navController, titleA = title, descriptionA = description)
+                val dendaID = navBackStackEntry.arguments?.getString("dendaID") ?: ""
+                AdminPaidScreen(navController = navController, titleA = title, dendaID = dendaID)
             }
 
         }

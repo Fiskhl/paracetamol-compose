@@ -7,7 +7,10 @@ import com.example.paracetamol.api.data.group.response.GetAllMemberResponse
 import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
 import com.example.paracetamol.api.data.denda.request.DeleteDendaRequest
 import com.example.paracetamol.api.data.denda.request.PayDendaRequest
+import com.example.paracetamol.api.data.denda.response.DendaItem
+import com.example.paracetamol.api.data.denda.response.GetSpesifikDendaResponse
 import com.example.paracetamol.api.data.denda.response.GetUserDendaResponse
+import com.example.paracetamol.api.data.denda.response.GetUserDendaResponseData
 import com.example.paracetamol.api.data.group.request.CreateGroupRequest
 import com.example.paracetamol.api.data.group.response.GetAGroupResponse
 import com.example.paracetamol.api.data.group.response.GetJoinedGroupResponse
@@ -82,6 +85,10 @@ interface ApiService {
 
 
     // Denda
+    @GET("/getDendaSpesific/{dendaID}")
+    suspend fun getSpesifikDenda(
+        @Path("dendaID") dendaID: String,
+    ): Response<GetSpesifikDendaResponse>
     @GET("/allDenda/{memberID}/{groupID}")
     suspend fun getAllUserDenda(
         @Path("memberID") memberID: String,
@@ -99,17 +106,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body createDendaRequest: CreateDendaRequest
     ): Response<ResponseBody>
-    @DELETE("/deleteDenda")
+    @POST("/deleteDenda")
     suspend fun deleteDenda(
         @Header("Authorization") token: String,
         @Body deleteDendaRequest: DeleteDendaRequest
     ): Response<ResponseBody>
-    @POST("/editDenda/{dendaID}/{groupRef}")
-    suspend fun editDenda(
-        @Header("Authorization") token: String,
-        @Body editDendaRequest: CreateDendaRequest
-    ): Response<ResponseBody>
-
 
     // Admin
     @GET("/members/isAdmin/{groupRef}")

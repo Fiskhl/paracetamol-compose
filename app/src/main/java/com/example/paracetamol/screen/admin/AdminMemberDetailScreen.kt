@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.api.data.denda.response.DendaItem
 import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.screen.CardTotal
 import com.example.paracetamol.screen.DendaScrollContent
@@ -52,20 +53,24 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class DendaDataUser(val title: String, val description: String, val status: Int, val total: Int, val due: Date)
-
-val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-val dendaItem = listOf(
-    DendaDataUser("Salah Rici", "Salah Rici", 1, 30000, dateFormat.parse("2024-12-05")),
-    DendaDataUser("Rici yang Salah", "Karena ada rici", 0, 5000, dateFormat.parse("2024-09-15")),
-    DendaDataUser("Semua karena rici", "Rici nomor 1", 0, 50000, dateFormat.parse("2024-01-25")),
-    DendaDataUser("Rici kamu jahat", "Tanggung jawab rici", 0, 150000, dateFormat.parse("2024-04-05")),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDendaUser(denda: DendaItem?, navController: NavController) {
+fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: String, namaGroup: String) {
+    val context = LocalContext.current
+
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
+
+    // Observe the LiveData and update the local variable
+    val deleteDendaSuccess by adminViewModel.deleteDendaSuccess.observeAsState()
+    deleteDendaSuccess?.let {
+        showToast(context, "Fines deleted.")
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,12 +159,14 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
                         tint = Color.Black,
                         modifier = Modifier
                             .size(20.dp) // Ukuran untuk ikon Edit
-                            .clickable { navController.navigate(Screen.PayScreen.route) }
+                            .clickable {
+                                adminViewModel.deleteDenda(denda._id, groupRef)
+                            }
                     )
 
                     Spacer(modifier = Modifier.width(15.dp))
@@ -170,7 +177,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController) {
                         tint = Color.Black,
                         modifier = Modifier
                             .size(20.dp) // Ukuran untuk ikon Edit
-                            .clickable { navController.navigate(Screen.AdminPaidScreen.route) }
+                            .clickable { navController.navigate("${Screen.AdminPaidScreen.route}/$namaGroup/${denda._id}")}
                     )
                 }
 
@@ -182,7 +189,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController) {
 
 
 @Composable
-fun DendaUserScrollContent(id: String, innerPadding: PaddingValues, navController: NavController) {
+fun DendaUserScrollContent(id: String, groupID: String, innerPadding: PaddingValues, navController: NavController, groupRef: String, namaGroup: String) {
     val context = LocalContext.current
 
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
@@ -190,7 +197,7 @@ fun DendaUserScrollContent(id: String, innerPadding: PaddingValues, navControlle
     var dendaDatas by rememberSaveable { mutableStateOf<List<DendaItem?>?>(null) }
 
     LaunchedEffect(userViewModel){
-        userViewModel.getAllSelfDenda(id)
+        userViewModel.getAllSelfDenda(true, id, groupID)
     }
 
     // Observe the LiveData and update the local variable
@@ -210,7 +217,7 @@ fun DendaUserScrollContent(id: String, innerPadding: PaddingValues, navControlle
     ) {
         if (dendaDatas != null) {
             items(dendaDatas!!) { item ->
-                CardDendaUser(denda = item, navController = navController)
+                CardDendaUser(denda = item, navController = navController, groupRef = groupRef, namaGroup = namaGroup)
             }
         } else {
             item {
@@ -240,10 +247,12 @@ fun DendaUserScrollContent(id: String, innerPadding: PaddingValues, navControlle
 
 @Composable
 fun AdminMemberDetailScreen(
+    navController: NavController,
     id: String,
     name: String,
     namaGroup: String,
-    navController: NavController
+    groupID: String,
+    refKey: String,
 ) {
     Column(
         modifier = Modifier
@@ -291,7 +300,7 @@ fun AdminMemberDetailScreen(
                 fontSize = 12.sp
             )
         }
-        DendaUserScrollContent(id = id, innerPadding = PaddingValues(16.dp), navController = navController)
+        DendaUserScrollContent(id = id, innerPadding = PaddingValues(16.dp), navController = navController, groupID = groupID, groupRef = refKey, namaGroup = namaGroup)
     }
 }
 
