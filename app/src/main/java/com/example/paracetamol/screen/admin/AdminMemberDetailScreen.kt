@@ -132,7 +132,7 @@ fun CardDendaUser(denda: DendaItem?, navController: NavController, groupRef: Str
                 )
                 // Button pakai status
                 val buttonText = if (denda!!.is_paid) "Done" else "Pending"
-                val buttonEnabled = true
+                val buttonEnabled = false
 
                 Button(
                     onClick = {  },
