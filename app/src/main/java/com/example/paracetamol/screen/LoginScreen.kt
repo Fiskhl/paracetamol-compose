@@ -54,7 +54,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.R
 import com.example.paracetamol.model.UserViewModel
 
-
+/**
+ * Composable function for rendering the login screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {

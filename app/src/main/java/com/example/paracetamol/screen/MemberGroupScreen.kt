@@ -59,7 +59,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
+/**
+ * Composable function for rendering the member group  screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardMember(member: Member?, navController: NavController) {

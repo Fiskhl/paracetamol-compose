@@ -56,6 +56,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Composable function for rendering the user group screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDenda(titleA: String, denda: DendaItem?, navController: NavController) {
