@@ -76,11 +76,10 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminNewDendaScreen(
+fun AdminUpdateDendaScreen(
     navController: NavController,
     titleA: String,
-    refKey: String,
-    groupID: String
+    refKey: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -104,11 +103,6 @@ fun AdminNewDendaScreen(
     val membersData by adminViewModel.groupMembersData.observeAsState()
     membersData?.let{
         members = membersData
-    }
-
-    val createDendaSuccess by adminViewModel.createDendaSuccess.observeAsState()
-    createDendaSuccess?.let {
-        showToast(context, "Fines added to this user.")
     }
 
     val errorMessage by adminViewModel.errorMessage.observeAsState()
@@ -243,106 +237,8 @@ fun AdminNewDendaScreen(
                     ),
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 )
 
-
-//                OutlinedTextField(
-//                    value = selectedMemberName,
-//                    onValueChange = { selectedMemberName = it },
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        containerColor = Color(0xFFF1F8FF),
-//                        cursorColor = Color.Black,
-//                        disabledLabelColor = Color(0xFFF1F8FF),
-//                        focusedIndicatorColor = Color.Transparent,
-//                        unfocusedIndicatorColor = Color.Transparent
-//                    ),
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(top = 5.dp, bottom = 5.dp)
-//                        .height(55.dp)
-//                        .onGloballyPositioned { coordinates ->
-//                            mTextFieldSize = coordinates.size.toSize()
-//                        },
-//                    label = { Text("Assign") },
-//                    trailingIcon = {
-//                        Icon(
-//                            icon,
-//                            "contentDescription",
-//                            Modifier.clickable { mExpanded = !mExpanded }
-//                        )
-//                    }
-//                )
-//
-//                DropdownMenu(
-//                    expanded = mExpanded,
-//                    onDismissRequest = { mExpanded = false },
-//                    modifier = Modifier
-//                        .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
-//                ) {
-//                    members?.forEach { member ->
-//                        if (member != null) {
-//                            DropdownMenuItem(onClick = {
-//                                selectedMemberName = member.nama
-//                                selectedMemberId = member._id
-//                                mExpanded = false
-//                            }) {
-//                                Text(text = member.nama)
-//                            }
-//                        }
-//                    }
-//                }
-
-                ExposedDropdownMenuBox(
-                    expanded = isExpanded, 
-                    onExpandedChange = {isExpanded = it},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp),
-
-                ) {
-                    TextField(
-                        value = selectedMemberName,
-                        onValueChange = {},
-                        readOnly = true,
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color(0xFFF1F8FF),
-                            cursorColor = Color.Black,
-                            disabledLabelColor = Color(0xFFF1F8FF),
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        label = { Text("Assign") },
-                        trailingIcon = {
-                            Icon(
-                                icon,
-                                "contentDescription",
-                                Modifier.clickable { isExpanded = !isExpanded }
-                            )
-                        },
-                        modifier = Modifier.menuAnchor()
-                            .fillMaxWidth(),
-                    )
-                    
-                    ExposedDropdownMenu(
-                        expanded = isExpanded,
-                        onDismissRequest = { isExpanded = false }
-                    ) {
-                        members?.forEach { member ->
-                            if(member != null)
-                                DropdownMenuItem(
-                                    text = { Text(text = member!!.nama) },
-                                    onClick = {
-                                        selectedMemberName = member!!.nama
-                                        selectedMemberId = member!!._id
-                                        isExpanded = false
-                                    }
-                                )
-                        }
-
-                    }
-                }
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -352,16 +248,7 @@ fun AdminNewDendaScreen(
                     colors = ButtonDefaults.elevatedButtonColors(
                         contentColor = Color.White
                     ),
-                    onClick = {
-                        if (title.isNotBlank() && description.isNotBlank() && nominal.isNotBlank() && due.isNotBlank() && selectedMemberId.isNotBlank()){
-                            if(nominal.toIntOrNull() == null || nominal.toIntOrNull() == 0)
-                                showToast(context, "Please input valid total number.")
-                            else
-                                adminViewModel.createDenda(title, description, due, nominal.toInt(), selectedMemberId, groupID)
-                        }else{
-                            showToast(context, "Please fill all fields.")
-                        }
-                    }
+                    onClick = { /* Isi disini */ }
                 ) {
                     Text(
                         "Add Fine",
@@ -373,19 +260,21 @@ fun AdminNewDendaScreen(
                     )
                 }
             }
+
+
         }
     }
 }
 
 
-//@Composable
-//@Preview(showBackground = true)
-//fun AdminNewDendaScreenPreview() {
-//    val navController = rememberNavController()
-//    AdminNewDendaScreen(
-//        navController = navController,
-//        titleA = "MAXIMA 2023",
-//        refKey = "Reach New Potentials"
-//    )
-//}
-//
+@Composable
+@Preview(showBackground = true)
+fun AdminUpdateDendaScreenPreview() {
+    val navController = rememberNavController()
+    AdminUpdateDendaScreen(
+        navController = navController,
+        titleA = "MAXIMA 2023",
+        refKey = "Reach New Potentials"
+    )
+}
+

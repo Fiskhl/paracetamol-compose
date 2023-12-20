@@ -40,6 +40,7 @@ import com.example.paracetamol.screen.admin.AdminMemberDetailScreen
 import com.example.paracetamol.screen.admin.AdminNewDendaScreen
 import com.example.paracetamol.screen.admin.AdminPaidScreen
 import com.example.paracetamol.screen.admin.AdminProfileUserScreen
+import com.example.paracetamol.screen.admin.AdminUpdateDendaScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,6 +116,11 @@ fun Navigation() {
                 {
                     isLoggedIn = false
                 }
+            }
+            composable(route = Screen.AdminUpdateDendaScreen.route + "/{title}/{refKey}") { navBackStackEntry ->
+                val title = navBackStackEntry.arguments?.getString("title") ?: ""
+                val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
+                AdminUpdateDendaScreen(navController = navController, titleA = title, refKey = refKey)
             }
             composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{refKey}/{groupID}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""

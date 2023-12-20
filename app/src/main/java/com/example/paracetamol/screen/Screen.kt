@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
     object PayScreen : Screen("pay_screen")
     object AdminPaidScreen : Screen("admin_paid_screen")
     object AdminNewDendaScreen : Screen("admin_new_denda_screen")
+    object AdminUpdateDendaScreen : Screen("admin_update_denda_screen")
 
 
 }
