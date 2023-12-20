@@ -8,11 +8,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.paracetamol.screen.Screen
 
+// Data class representing items in a navigation menu
 data class NavItem(
-    val icon: ImageVector,
-    val label: String,
-    val route: String,
+    val icon: ImageVector,  // Icon associated with the navigation item
+    val label: String,      // Label or text for the navigation item
+    val route: String       // Route or destination associated with the navigation item
 )
+
+// List of navigation items used in the application
 
 val listOfNavItems = listOf(
     NavItem(
