@@ -116,11 +116,10 @@ fun Navigation() {
                     isLoggedIn = false
                 }
             }
-            composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{groupID}/{refKey}") { navBackStackEntry ->
+            composable(route = Screen.AdminNewDendaScreen.route + "/{title}/{refKey}") { navBackStackEntry ->
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val groupID = navBackStackEntry.arguments?.getString("groupID") ?: ""
                 val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
-                AdminNewDendaScreen(navController = navController, titleA = title, groupID = groupID, refKey = refKey)
+                AdminNewDendaScreen(navController = navController, titleA = title, refKey = refKey)
             }
             composable(route = Screen.AdminMemberListScreen.route + "/{id}/{refKey}/{title}") { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""

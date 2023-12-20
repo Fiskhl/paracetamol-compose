@@ -47,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.R
+import com.example.paracetamol.api.data.admin.response.AMember
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.profile.Profile
 import com.example.paracetamol.component.showToast
@@ -55,7 +56,7 @@ import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.nav_screen.ProfileItem
 
 @Composable
-fun ProfileItem(aMemberData: Profile) {
+fun ProfileItem(aMemberData: AMember) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,7 +105,7 @@ fun AdminProfileUserScreen(
     val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
 
     // Local variable to store profile data
-    var aMemberData by rememberSaveable { mutableStateOf<Profile?>(null) }
+    var aMemberData by rememberSaveable { mutableStateOf<AMember?>(null) }
 
     // LaunchedEffect to fetch profile data before building the UI
     LaunchedEffect(adminViewModel) {
@@ -204,7 +205,7 @@ fun AdminProfileUserScreen(
                 Button(
                     onClick = {
                         if(aMemberData != null)
-                            adminViewModel.addAdmin(aMemberData!!.id, refKey)
+                            adminViewModel.addAdmin(aMemberData!!._id, refKey)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -230,7 +231,7 @@ fun AdminProfileUserScreen(
                 Button(
                     onClick = {
                         if(aMemberData != null)
-                            adminViewModel.kickMember(refKey, aMemberData!!.id)
+                            adminViewModel.kickMember(refKey, aMemberData!!._id)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -259,7 +260,7 @@ fun AdminProfileUserScreen(
                 Button(
                     onClick = {
                         if(aMemberData != null)
-                            adminViewModel.demoteAdmin(aMemberData!!.id, refKey)
+                            adminViewModel.demoteAdmin(aMemberData!!._id, refKey)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

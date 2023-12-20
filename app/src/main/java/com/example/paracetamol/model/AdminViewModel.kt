@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paracetamol.api.ApiService
 import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
+import com.example.paracetamol.api.data.admin.response.AMember
 import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.group.response.GroupItem
@@ -38,8 +39,8 @@ class AdminViewModel(private val context: Context): ViewModel() {
     private val _groupData = MutableLiveData<GroupItem?>()
     val groupData: LiveData<GroupItem?> get() = _groupData
 
-    private val _aMemberData = MutableLiveData<Profile?>()
-    val aMemberData: LiveData<Profile?> get() = _aMemberData
+    private val _aMemberData = MutableLiveData<AMember?>()
+    val aMemberData: LiveData<AMember?> get() = _aMemberData
 
     private val _addAdminSuccess = MutableLiveData<Boolean?>()
     val addAdminSuccess: LiveData<Boolean?> get() = _addAdminSuccess
@@ -78,7 +79,7 @@ class AdminViewModel(private val context: Context): ViewModel() {
         _successKickMember.postValue(true)
     }
 
-    private fun setAMemberData(data: Profile){
+    private fun setAMemberData(data: AMember){
         _aMemberData.postValue(data)
     }
 
@@ -267,7 +268,6 @@ class AdminViewModel(private val context: Context): ViewModel() {
                     handleErrorResponse(response.code())
                 }
             } catch (e: Exception) {
-                Log.d(model_ref, e.toString())
                 _errorMessage.postValue("Failed to promote member.")
             }
         }
@@ -278,7 +278,7 @@ class AdminViewModel(private val context: Context): ViewModel() {
             try {
                 val token = PreferenceManager.getToken(context)
                 val demoteAdminRequest = MemberSettingRequest(groupRef, memberID)
-                val response = ApiService.create().addAdmin("Bearer $token", demoteAdminRequest)
+                val response = ApiService.create().demoteAdmin("Bearer $token", demoteAdminRequest)
                 if (response.isSuccessful) {
                     clearErrorMessage()
                     setDemoteAdminSuccess()
@@ -287,7 +287,7 @@ class AdminViewModel(private val context: Context): ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.d(model_ref, e.toString())
-                _errorMessage.postValue("Failed to get a member data.")
+                _errorMessage.postValue("Failed to demote admin.")
             }
         }
     }

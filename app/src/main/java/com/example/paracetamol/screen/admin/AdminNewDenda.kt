@@ -28,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,10 +39,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,8 +65,10 @@ import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.component.DialogUI
 import com.example.paracetamol.component.showToast
+import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.screen.AdminMemberListScreen
 import com.example.paracetamol.screen.Screen
@@ -74,47 +79,44 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 fun AdminNewDendaScreen(
     navController: NavController,
     titleA: String,
-    groupID: String,
     refKey: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var due by remember { mutableStateOf("") }
-    var value by remember { mutableStateOf("") }
-//    var assign by remember { mutableStateOf("") }
+    var nominal by remember { mutableStateOf("") }
+    var selectedMemberId by rememberSaveable { mutableStateOf("") }
+    var selectedMemberName by remember { mutableStateOf("") }
+//    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
-    // Data palsu anggota untuk dropdown
-    var mExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    val mCities = listOf("Delhi", "Mumbai", "Chennai", "Kolkata", "Hyderabad", "Bengaluru", "Pune")
-    var mSelectedText by remember { mutableStateOf("") }
-    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
+    val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
 
-    val icon = if (mExpanded)
+    var members by rememberSaveable { mutableStateOf<List<Member?>?>(null) }
+
+    LaunchedEffect(adminViewModel) {
+        adminViewModel.getMembersGroupData(refKey)
+    }
+
+    // Observe the LiveData and update the local variable
+    val membersData by adminViewModel.groupMembersData.observeAsState()
+    membersData?.let{
+        members = membersData
+    }
+
+    val errorMessage by adminViewModel.errorMessage.observeAsState()
+    errorMessage?.let {
+        showToast(context, it)
+    }
+
+    // Dropdown
+    var isExpanded by remember { mutableStateOf(false) }
+    val icon = if (isExpanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
 
-
-    val context = LocalContext.current
-
-    val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
-
-    val registerSuccess by userViewModel.registerSuccess.observeAsState()
-    registerSuccess?.let { success ->
-        if (success) {
-            Log.d("RegisterScreen", "Register Success!")
-            DialogUI(
-                title = "Registration Successful",
-                desc = "Your account has been successfully registered."
-            )
-        }
-    }
-
-    val errorMessage by userViewModel.errorMessage.observeAsState()
-    errorMessage?.let {
-        showToast(context, it)
-    }
 
     Surface(
         modifier = Modifier
@@ -219,9 +221,9 @@ fun AdminNewDendaScreen(
                 )
 
                 TextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    label = { Text("Value") },
+                    value = nominal,
+                    onValueChange = { nominal = it },
+                    label = { Text("Total") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
@@ -238,80 +240,113 @@ fun AdminNewDendaScreen(
                 )
 
 
-                OutlinedTextField(
-                    value = mSelectedText,
-                    onValueChange = { mSelectedText = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF1F8FF),
-                        cursorColor = Color.Black,
-                        disabledLabelColor = Color(0xFFF1F8FF),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .height(55.dp)
-                        .onGloballyPositioned { coordinates ->
-                            mTextFieldSize = coordinates.size.toSize()
-                        },
-                    label = { Text("Assign") },
-                    trailingIcon = {
-                        Icon(
-                            icon,
-                            "contentDescription",
-                            Modifier.clickable { mExpanded = !mExpanded }
-                        )
-                    }
-                )
-
-                DropdownMenu(
-                    expanded = mExpanded,
-                    onDismissRequest = { mExpanded = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
-                ) {
-                    mCities.forEach { label ->
-//                        DropdownMenuItem(onClick = {
-//                            mSelectedText = label
-//                            mExpanded = false
-//                        })
-//                        {
-//                            Text(text = label)
+//                OutlinedTextField(
+//                    value = selectedMemberName,
+//                    onValueChange = { selectedMemberName = it },
+//                    colors = TextFieldDefaults.textFieldColors(
+//                        containerColor = Color(0xFFF1F8FF),
+//                        cursorColor = Color.Black,
+//                        disabledLabelColor = Color(0xFFF1F8FF),
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent
+//                    ),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp, bottom = 5.dp)
+//                        .height(55.dp)
+//                        .onGloballyPositioned { coordinates ->
+//                            mTextFieldSize = coordinates.size.toSize()
+//                        },
+//                    label = { Text("Assign") },
+//                    trailingIcon = {
+//                        Icon(
+//                            icon,
+//                            "contentDescription",
+//                            Modifier.clickable { mExpanded = !mExpanded }
+//                        )
+//                    }
+//                )
+//
+//                DropdownMenu(
+//                    expanded = mExpanded,
+//                    onDismissRequest = { mExpanded = false },
+//                    modifier = Modifier
+//                        .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
+//                ) {
+//                    members?.forEach { member ->
+//                        if (member != null) {
+//                            DropdownMenuItem(onClick = {
+//                                selectedMemberName = member.nama
+//                                selectedMemberId = member._id
+//                                mExpanded = false
+//                            }) {
+//                                Text(text = member.nama)
+//                            }
 //                        }
+//                    }
+//                }
+
+                ExposedDropdownMenuBox(
+                    expanded = isExpanded, 
+                    onExpandedChange = {isExpanded = it}
+                ) {
+                    TextField(
+                        value = selectedMemberName,
+                        onValueChange = {},
+                        readOnly = true,
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color(0xFFF1F8FF),
+                            cursorColor = Color.Black,
+                            disabledLabelColor = Color(0xFFF1F8FF),
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        modifier = Modifier.menuAnchor()
+                    )
+                    
+                    ExposedDropdownMenu(
+                        expanded = isExpanded,
+                        onDismissRequest = { isExpanded = false }
+                    ) {
+                        members?.forEach { member ->
+                            if(member != null)
+                                DropdownMenuItem(
+                                    text = { Text(text = member!!.nama) },
+                                    onClick = {
+                                        selectedMemberName = member!!.nama
+                                        selectedMemberId = member!!._id
+                                        isExpanded = false
+                                    }
+                                )
+                        }
+
                     }
                 }
-
-
-
-
-
-
             }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp)
-                        .height(55.dp),
-                    border = BorderStroke(2.dp, Color(0xFF47A7FF)),
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        contentColor = Color.White
-                    ),
-                    onClick = { /* Isi disini */ }
-                ) {
-                    Text(
-                        "Add Fine",
-                        fontSize = 16.sp,
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        color = Color.DarkGray,
-                    )
-                }
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp)
+                    .height(55.dp),
+                border = BorderStroke(2.dp, Color(0xFF47A7FF)),
+                colors = ButtonDefaults.elevatedButtonColors(
+                    contentColor = Color.White
+                ),
+                onClick = { /* Isi disini */ }
+            ) {
+                Text(
+                    "Add Fine",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = Color.DarkGray
+                )
             }
         }
     }
+}
 
 
 //@Composable

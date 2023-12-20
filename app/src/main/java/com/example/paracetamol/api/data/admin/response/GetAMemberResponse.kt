@@ -11,5 +11,16 @@ data class GetAMemberResponse(
 ): Serializable
 
 data class GetAMemberResponseData(
-    val data: Profile
+    val data: AMember
 ): Serializable
+
+data class AMember(
+    val angkatan: String,
+    val email: String,
+    val nama: String,
+    val nim: String,
+    val prodi: String,
+    val _id: String
+): Serializable
+
+
