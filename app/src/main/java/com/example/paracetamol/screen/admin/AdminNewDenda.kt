@@ -79,7 +79,8 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 fun AdminNewDendaScreen(
     navController: NavController,
     titleA: String,
-    refKey: String
+    refKey: String,
+    groupID: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -103,6 +104,11 @@ fun AdminNewDendaScreen(
     val membersData by adminViewModel.groupMembersData.observeAsState()
     membersData?.let{
         members = membersData
+    }
+
+    val createDendaSuccess by adminViewModel.createDendaSuccess.observeAsState()
+    createDendaSuccess?.let {
+        showToast(context, "Fines added to this user.")
     }
 
     val errorMessage by adminViewModel.errorMessage.observeAsState()
@@ -237,6 +243,7 @@ fun AdminNewDendaScreen(
                     ),
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 )
 
 
@@ -347,7 +354,16 @@ fun AdminNewDendaScreen(
                 colors = ButtonDefaults.elevatedButtonColors(
                     contentColor = Color.White
                 ),
-                onClick = { /* Isi disini */ }
+                onClick = {
+                    if (title.isNotBlank() && description.isNotBlank() && nominal.isNotBlank() && due.isNotBlank() && selectedMemberId.isNotBlank()){
+                        if(nominal.toIntOrNull() == null || nominal.toIntOrNull() == 0)
+                            showToast(context, "Please input valid total number.")
+                        else
+                            adminViewModel.createDenda(title, description, due, nominal.toInt(), selectedMemberId, groupID)
+                    }else{
+                        showToast(context, "Please fill all fields.")
+                    }
+                }
             ) {
                 Text(
                     "Add Fine",
@@ -363,14 +379,14 @@ fun AdminNewDendaScreen(
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun AdminNewDendaScreenPreview() {
-    val navController = rememberNavController()
-    AdminNewDendaScreen(
-        navController = navController,
-        titleA = "MAXIMA 2023",
-        refKey = "Reach New Potentials"
-    )
-}
-
+//@Composable
+//@Preview(showBackground = true)
+//fun AdminNewDendaScreenPreview() {
+//    val navController = rememberNavController()
+//    AdminNewDendaScreen(
+//        navController = navController,
+//        titleA = "MAXIMA 2023",
+//        refKey = "Reach New Potentials"
+//    )
+//}
+//

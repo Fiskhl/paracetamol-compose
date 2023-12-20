@@ -6,7 +6,6 @@ data class CreateDendaRequest(
     val title: String,
     val hari: String,
     val nominal: Int,
-    val path: String,
     val desc: String,
     val is_paid: Boolean,
 )

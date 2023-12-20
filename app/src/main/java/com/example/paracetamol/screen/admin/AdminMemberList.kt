@@ -325,7 +325,7 @@ fun AdminMemberListScreen(
             MemberScrollContentAdmin(id = id, refKey = refKey, innerPadding = PaddingValues(16.dp), navController = navController, globalViewModel = globalViewModel, title = title)
 
             FloatingActionButton(
-                onClick = { navController.navigate("${Screen.AdminNewDendaScreen.route}/$title/$refKey")},
+                onClick = { navController.navigate("${Screen.AdminNewDendaScreen.route}/$title/$refKey/$id")},
                 modifier = Modifier
                     .padding(fabMargin)
                     .size(fabSize)

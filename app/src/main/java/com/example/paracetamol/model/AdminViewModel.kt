@@ -10,6 +10,7 @@ import com.example.paracetamol.api.ApiService
 import com.example.paracetamol.api.data.admin.request.MemberSettingRequest
 import com.example.paracetamol.api.data.admin.response.AMember
 import com.example.paracetamol.api.data.admin.response.MemberDataAdmin
+import com.example.paracetamol.api.data.denda.request.CreateDendaRequest
 import com.example.paracetamol.api.data.group.response.Member
 import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.api.data.profile.Profile
@@ -47,6 +48,9 @@ class AdminViewModel(private val context: Context): ViewModel() {
 
     private val _demoteAdminSuccess = MutableLiveData<Boolean?>()
     val demoteAdminSuccess: LiveData<Boolean?> get() = _demoteAdminSuccess
+
+    private val _createDendaSuccess = MutableLiveData<Boolean?>()
+    val createDendaSuccess: LiveData<Boolean?> get() = _createDendaSuccess
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -91,6 +95,9 @@ class AdminViewModel(private val context: Context): ViewModel() {
         _demoteAdminSuccess.postValue(true)
     }
 
+    private fun setCreateDendaSuccess(){
+        _createDendaSuccess.postValue(true)
+    }
 
     private fun clearErrorMessage(){
         if (_errorMessage.value != null) {
@@ -291,6 +298,27 @@ class AdminViewModel(private val context: Context): ViewModel() {
             }
         }
     }
+
+    fun createDenda(title: String, desc: String, due: String, nominal: Int, memberID: String, groupID: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val token = PreferenceManager.getToken(context)
+                val createDendaRequest = CreateDendaRequest(groupID, memberID, title, due, nominal, desc, false)
+                val response = ApiService.create().createDenda("Bearer $token", createDendaRequest)
+                Log.d(model_ref, response.toString())
+                if (response.isSuccessful) {
+                    clearErrorMessage()
+                    setCreateDendaSuccess()
+                } else {
+                    handleErrorResponse(response.code())
+                }
+            } catch (e: Exception) {
+                Log.d(model_ref, e.toString())
+                _errorMessage.postValue("Failed to demote admin.")
+            }
+        }
+    }
+
 
     private fun handleErrorResponse(responseCode: Int) {
         when (responseCode) {
