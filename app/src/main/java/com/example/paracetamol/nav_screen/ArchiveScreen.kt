@@ -35,6 +35,12 @@ import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.component.showToast
 import com.example.paracetamol.screen.Screen
 
+/**
+ * Composable function to display a card item representing an archive of a group.
+ *
+ * @param group The GroupItem to be displayed in the card.
+ * @param navController The NavController for navigating to other screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardArchiveItem(group: GroupItem?, navController: NavController) {
@@ -80,18 +86,23 @@ fun CardArchiveItem(group: GroupItem?, navController: NavController) {
     }
 }
 
-
-
-
-
+/**
+ * Composable function to display archived groups in a LazyColumn.
+ *
+ * @param innerPadding Padding values for the content.
+ * @param navController NavController for navigating to other screens.
+ */
 @Composable
 fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavController) {
     val context = LocalContext.current
 
+    // ViewModel for user-related operations
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
+    // Mutable state to hold the list of archived groups
     var groupList by rememberSaveable { mutableStateOf<List<GroupItem?>?>(null) }
 
+    // Fetch the joined groups when the composable is launched
     LaunchedEffect(userViewModel) {
         userViewModel.getJoinedGroup()
     }
@@ -101,22 +112,26 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
         groupList = it
     }
 
+    // Observe the error message and display a toast if it is not null
     val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
     }
 
+    // Display the list of archived groups in a LazyColumn
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
         if (groupList != null) {
+            // Filter out archived groups
             val filteredGroupList = groupList!!.filter { it?.status == false }
 
             items(filteredGroupList) { item ->
                 CardArchiveItem(group = item, navController = navController)
             }
         } else {
+            // Display a message when there are no archived groups
             item {
                 Column(
                     modifier = Modifier
@@ -142,16 +157,19 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
     }
 }
 
-
-
-
+/**
+ * Composable function for the Archive screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @Composable
 fun ArchiveScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F1FA)) //
+            .background(Color(0xFFF2F1FA)) // Background color of the screen
     ) {
+        // Title text for the Archive screen
         Text(
             "Archive",
             overflow = TextOverflow.Ellipsis,
@@ -161,6 +179,7 @@ fun ArchiveScreen(navController: NavController) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
+        // Display archived groups using ArchiveScrollContent composable
         ArchiveScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)
     }
 }

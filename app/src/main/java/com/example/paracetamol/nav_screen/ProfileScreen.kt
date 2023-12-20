@@ -41,11 +41,16 @@ import com.example.paracetamol.api.data.profile.Profile
 import com.example.paracetamol.component.showToast
 import com.example.paracetamol.model.UserViewModel
 
-
+/**
+ * Composable function for rendering the profile screen.
+ *
+ * @param onLoggedOut Callback for when the user logs out.
+ */
 @Composable
 fun ProfileScreen(onLoggedOut:() -> Unit) {
     val context = LocalContext.current
 
+    // Create an instance of the UserViewModel
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
     // Local variable to store profile data
@@ -155,6 +160,14 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
     }
 }
 
+/**
+ * Composable function for rendering a profile item.
+ *
+ * @param name Name of the user.
+ * @param nim NIM of the user.
+ * @param major Major of the user.
+ * @param email Email of the user.
+ */
 @Composable
 fun ProfileItem(name: String, nim: String, major: String, email: String) {
     Column(
@@ -195,10 +208,6 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
         )
     }
 }
-
-
-
-
 
 //@Composable
 //@Preview(showBackground = true)
