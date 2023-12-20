@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -72,6 +73,7 @@ import com.example.paracetamol.model.AdminViewModel
 import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.screen.AdminMemberListScreen
 import com.example.paracetamol.screen.Screen
+import com.example.paracetamol.screen.SwitchButton
 import com.example.paracetamol.ui.theme.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,15 +81,19 @@ import com.example.paracetamol.ui.theme.poppinsFamily
 fun AdminUpdateDendaScreen(
     navController: NavController,
     titleA: String,
-    refKey: String
+    refKey: String,
+    title: String,
+    description: String,
+    dueDate: String,
+    nominal: Int,
+    memberName: String
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var due by remember { mutableStateOf("") }
-    var nominal by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(title) }
+    var description by remember { mutableStateOf(description) }
+    var due by remember { mutableStateOf(dueDate) }
+    var nominal by remember { mutableStateOf(nominal) }
     var selectedMemberId by rememberSaveable { mutableStateOf("") }
     var selectedMemberName by remember { mutableStateOf("") }
-//    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
     val context = LocalContext.current
 
@@ -164,17 +170,37 @@ fun AdminUpdateDendaScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
+                    value = memberName,
+                    onValueChange = {  },
+                    label = { Text("Member") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 35.dp, bottom = 5.dp)
                         .height(55.dp),
+                    enabled = false, // Disable editing
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFF1F8FF),
                         cursorColor = Color.Black,
-                        disabledLabelColor = Color(0xFFF1F8FF),
+                        disabledLabelColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    singleLine = true,
+                )
+                TextField(
+                    value = title,
+                    onValueChange = {  },
+                    label = { Text("Title") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp, bottom = 5.dp)
+                        .height(55.dp),
+                    enabled = false, // Disable editing
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFF1F8FF),
+                        cursorColor = Color.Black,
+                        disabledLabelColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -184,16 +210,17 @@ fun AdminUpdateDendaScreen(
 
                 TextField(
                     value = description,
-                    onValueChange = { description = it },
+                    onValueChange = {  },
                     label = { Text("Description") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(55.dp),
+                    enabled = false, // Disable editing
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFF1F8FF),
                         cursorColor = Color.Black,
-                        disabledLabelColor = Color(0xFFF1F8FF),
+                        disabledLabelColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -203,16 +230,17 @@ fun AdminUpdateDendaScreen(
 
                 TextField(
                     value = due,
-                    onValueChange = { due = it },
+                    onValueChange = {  },
                     label = { Text("Due Date") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp, bottom = 5.dp)
                         .height(55.dp),
+                    enabled = false, // Disable editing
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFF1F8FF),
                         cursorColor = Color.Black,
-                        disabledLabelColor = Color(0xFFF1F8FF),
+                        disabledLabelColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -221,8 +249,11 @@ fun AdminUpdateDendaScreen(
                 )
 
                 TextField(
-                    value = nominal,
-                    onValueChange = { nominal = it },
+                    value = nominal.toString(), // Ubah nilai Int menjadi String
+                    onValueChange = { newValue ->
+                        // Konversi nilai String ke Int dan simpan kembali ke variabel nominal
+                        nominal = newValue.toIntOrNull() ?: nominal // Nilai default jika konversi gagal
+                    },
                     label = { Text("Total") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -239,6 +270,21 @@ fun AdminUpdateDendaScreen(
                     singleLine = true,
                 )
 
+//                PaidCard(member = memberName, isPaid = , onPaidToggle = )
+
+//                if(groupData != null)
+//                    com.example.paracetamol.screen.ArchiveCard(
+//                        title = namaGroup,
+//                        isArchived = groupData!!.status,
+//                        onArchiveToggle = {
+//                            if (groupData!!.status)
+//                                adminViewModel.archiveGroup(refKey)
+//                            else
+//                                adminViewModel.reactivateGroup(refKey)
+//                        }
+//                    )
+
+
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -251,7 +297,7 @@ fun AdminUpdateDendaScreen(
                     onClick = { /* Isi disini */ }
                 ) {
                     Text(
-                        "Add Fine",
+                        "Update Fine",
                         fontSize = 16.sp,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
@@ -266,6 +312,51 @@ fun AdminUpdateDendaScreen(
     }
 }
 
+@Composable
+fun PaidCard(
+    member: String,
+    isPaid: Boolean,
+    onPaidToggle: (Boolean) -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 25.dp, vertical = 10.dp),
+        border = BorderStroke(1.5f.dp, Color.Red),
+        shape = RoundedCornerShape(10.dp),
+        color = Color.White
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = "Paid?",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = member,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+
+            SwitchButton(
+                checked = isPaid,
+                onCheckedChange = onPaidToggle,
+                modifier = Modifier.size(50.dp)
+            )
+        }
+    }
+}
+
+
 
 @Composable
 @Preview(showBackground = true)
@@ -274,7 +365,13 @@ fun AdminUpdateDendaScreenPreview() {
     AdminUpdateDendaScreen(
         navController = navController,
         titleA = "MAXIMA 2023",
-        refKey = "Reach New Potentials"
+        refKey = "Reach New Potentials",
+        title = "Your Ass",
+        description = "What's up my n",
+        dueDate = "Due Date",
+        nominal = 10000,
+        memberName = "Brianiga"
+
     )
 }
 
