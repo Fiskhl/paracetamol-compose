@@ -2,6 +2,7 @@ package com.example.paracetamol.nav_screen
 
 import kotlinx.coroutines.MainScope
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,7 +84,7 @@ fun CardItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 4.dp, start = 20.dp),
-                color = Color.Black,
+                color = Color(0xFF15104D),
                 textAlign = TextAlign.Start,
             )
             Text(
@@ -171,6 +172,7 @@ fun HomeScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
     ) {
         Text(
             "Home",
@@ -179,7 +181,8 @@ fun HomeScreen(navController: NavController) {
                 .padding(vertical = 30.dp),
             fontSize = 25.sp,
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF15104D),
         )
 //        AppToolbar(navController = navController)
         ScrollContent(innerPadding = PaddingValues(16.dp), navController = navController)

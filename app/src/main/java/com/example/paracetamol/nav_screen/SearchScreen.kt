@@ -34,7 +34,7 @@ fun SearchScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .background(Color(0xFFF2F1FA)) //
             .padding(horizontal =  48.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -44,14 +44,14 @@ fun SearchScreen(navController: NavController){
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = Color.Black,
+            color = Color(0xFF15104D),
         )
         Text("Come get your room to your organization",
             fontSize = 18.sp,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
-            color = Color.Black,
+            color = Color(0xFF15104D),
         )
 //        Button(
 //            modifier = Modifier
@@ -90,7 +90,7 @@ fun SearchScreen(navController: NavController){
             ),
         ) {
             Text("Join Organization",
-                color = Color.DarkGray,
+                color = Color(0xFF15104D),
                 fontSize = 16.sp,
                 fontFamily = poppinsFamily,)
         }
@@ -111,7 +111,7 @@ fun SearchScreen(navController: NavController){
             ),
         ) {
             Text("Create Organization",
-                color = Color.DarkGray,
+                color = Color(0xFF15104D),
                 fontSize = 16.sp,
                 fontFamily = poppinsFamily,)
         }

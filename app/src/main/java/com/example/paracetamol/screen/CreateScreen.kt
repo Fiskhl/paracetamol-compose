@@ -81,7 +81,7 @@ fun CreateScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .width(100.dp)
-            .background(Color(0xFFFFFFFF))
+            .background(Color(0xFFF2F1FA)) //
             .padding(horizontal = 16.dp)
             .padding(top = 23.dp)
     ) {
@@ -106,7 +106,6 @@ fun CreateScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFFFFFF))
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -117,7 +116,7 @@ fun CreateScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
             )
             Text(
                 "You can create your room and share it to your group",
@@ -125,7 +124,7 @@ fun CreateScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(bottom = 30.dp)
             )
             TextField(
@@ -143,11 +142,11 @@ fun CreateScreen(navController: NavController) {
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF4B4B4B),
+                        color = Color(0xFF15104D),
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
+                    containerColor = Color.White,
                     cursorColor = Color.Black,
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
@@ -172,11 +171,11 @@ fun CreateScreen(navController: NavController) {
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF4B4B4B),
+                        color = Color(0xFF15104D),
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
+                    containerColor = Color.White,
                     cursorColor = Color.Black,
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
@@ -202,11 +201,11 @@ fun CreateScreen(navController: NavController) {
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF4B4B4B),
+                        color = Color(0xFF15104D),
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
+                    containerColor = Color.White,
                     cursorColor = Color.Black,
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
@@ -237,7 +236,7 @@ fun CreateScreen(navController: NavController) {
             ) {
                 Text(
                     "Create Room",
-                    color = Color.DarkGray,
+                    color = Color(0xFF15104D),
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                 )

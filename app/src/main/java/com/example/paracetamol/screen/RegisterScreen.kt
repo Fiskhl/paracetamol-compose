@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,11 +78,12 @@ fun RegisterScreen(navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(Color(0xFFF2F1FA)) //
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFF2F1FA)) //
                 .padding(horizontal = 25.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +94,7 @@ fun RegisterScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
             )
             Text("Register",
                 modifier = Modifier
@@ -101,7 +103,7 @@ fun RegisterScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
             )
             Text("Register your Champberlain account",
                 modifier = Modifier
@@ -110,7 +112,7 @@ fun RegisterScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
             )
             // TextFields for user input
             TextField(
@@ -122,8 +124,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -141,8 +143,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -160,8 +162,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -179,8 +181,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -198,8 +200,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -219,8 +221,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -262,8 +264,8 @@ fun RegisterScreen(navController: NavController) {
                     .padding(top = 5.dp, bottom = 5.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFF1F8FF),
-                    cursorColor = Color.Black,
+                    containerColor = Color.White,
+                    cursorColor = Color(0xFF15104D),
                     disabledLabelColor = Color(0xFFF1F8FF),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
@@ -301,7 +303,7 @@ fun RegisterScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 16.dp)
                     .height(55.dp),
-                border = BorderStroke(2.dp, Color(0xFF47A7FF)),
+                border = BorderStroke(2.dp, Color.Black),
                 colors = ButtonDefaults.elevatedButtonColors(
                     contentColor = Color.White
                 ),
@@ -322,7 +324,7 @@ fun RegisterScreen(navController: NavController) {
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
-                    color = Color.DarkGray,
+                    color = Color(0xFF15104D),
                 )
             }
 
@@ -337,7 +339,7 @@ fun RegisterScreen(navController: NavController) {
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF000000),
+                    color = Color(0xFF15104D),
                 )
                 TextButton(
                     modifier = Modifier,
@@ -348,7 +350,8 @@ fun RegisterScreen(navController: NavController) {
                         fontSize = 16.sp,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF47A7FF),
+                        color = Color(0xFF15104D),
+                        textDecoration = TextDecoration.Underline
                     )
                 }
             }

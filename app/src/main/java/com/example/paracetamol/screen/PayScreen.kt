@@ -1,6 +1,7 @@
 package com.example.paracetamol.screen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -76,6 +77,7 @@ fun PayScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -94,6 +96,7 @@ fun PayScreen(
         Text(
             text = titleA,
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             fontWeight = FontWeight.Bold
         )
         Row(
@@ -103,6 +106,7 @@ fun PayScreen(
         ) {
             Text(
                 text = "Send Proof",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -117,7 +121,7 @@ fun PayScreen(
                 .padding(horizontal = 35.dp)
                 .height(55.dp),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF1F8FF),
+                containerColor = Color.White,
                 cursorColor = Color.Black,
                 disabledLabelColor = Color(0xFFF1F8FF),
                 focusedIndicatorColor = Color.Transparent,
@@ -140,14 +144,14 @@ fun PayScreen(
                 .padding(top = 25.dp, bottom = 16.dp)
                 .padding(horizontal = 35.dp)
                 .height(55.dp),
-            border = BorderStroke(2.dp, Color.Red),
+            border = BorderStroke(2.dp, Color.Black),
             colors = ButtonDefaults.elevatedButtonColors(
                 contentColor = Color.White
             ),
         ) {
             Text(
                 "Send",
-                color = Color.DarkGray,
+                color = Color(0xFF15104D),
                 fontSize = 16.sp,
                 fontFamily = poppinsFamily,
             )

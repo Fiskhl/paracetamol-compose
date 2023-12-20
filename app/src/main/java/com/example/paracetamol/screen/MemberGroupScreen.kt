@@ -67,7 +67,7 @@ fun CardMember(member: Member?, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(1.5f.dp, Color.Red),
+        border = BorderStroke(1.5f.dp, Color.Black),
         shape = RoundedCornerShape(10.dp),
     ) {
         Row(
@@ -86,7 +86,7 @@ fun CardMember(member: Member?, navController: NavController) {
                     text = member!!.nama,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.Start,
                 )
             }
@@ -108,7 +108,7 @@ fun CardMember(member: Member?, navController: NavController) {
                 Text(
                     text = memberOrAdmin,
                     fontSize = 10.sp,
-                    color = Color.Black,
+                    color = Color(0xFF15104D),
                     textAlign = TextAlign.End,
                 )
             }
@@ -189,6 +189,7 @@ fun MemberGroupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
 //            .padding(horizontal = 16.dp)
             .padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -216,6 +217,7 @@ fun MemberGroupScreen(
         Text(
             text = title,
             fontSize = 25.sp,
+            color = Color(0xFF15104D),
             fontWeight = FontWeight.Bold
         )
         Row(
@@ -225,6 +227,7 @@ fun MemberGroupScreen(
         ) {
             Text(
                 text = refKey,
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )
@@ -237,6 +240,7 @@ fun MemberGroupScreen(
         ) {
             Text(
                 text = "Member",
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(top = 4.dp),
                 fontSize = 12.sp
             )

@@ -68,12 +68,14 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFFF2F1FA)),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(Color(0xFFF2F1FA)) //
                 .padding(top = 35.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -82,6 +84,7 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
                 "Profile",
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
+                color = Color(0xFF15104D),
                 fontSize = 25.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
@@ -90,6 +93,7 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color(0xFFF2F1FA)) //
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -97,6 +101,7 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
+                        .background(Color(0xFFF2F1FA)) //
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_profile),
@@ -110,6 +115,7 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
                         text = "Biodata",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
+                        color = Color(0xFF15104D),
                         modifier = Modifier
                             .padding(top = 8.dp, bottom = 8.dp)
                             .padding(horizontal = 4.dp)
@@ -135,14 +141,14 @@ fun ProfileScreen(onLoggedOut:() -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(25.dp),
-                border = BorderStroke(1.dp, Color.Red),
+                border = BorderStroke(1.dp, Color.Black),
                 colors = ButtonDefaults.elevatedButtonColors(
                     contentColor = Color.White
                 ),
             ) {
                 Text(
                     text = "Logout",
-                    color = Color.Black
+                    color = Color(0xFF15104D)
                 )
             }
         }
@@ -163,24 +169,28 @@ fun ProfileItem(name: String, nim: String, major: String, email: String) {
         Text(
             text = name,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = nim,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = major,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
         Divider(color = Color.Gray.copy(alpha = 0.8f), thickness = 1.dp)
         Text(
             text = email,
             fontSize = 16.sp,
+            color = Color(0xFF15104D),
             modifier = Modifier.padding(6.dp)
         )
     }

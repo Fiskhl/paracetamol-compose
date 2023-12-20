@@ -2,6 +2,7 @@ package com.example.paracetamol.nav_screen
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -41,9 +42,9 @@ fun CardArchiveItem(group: GroupItem?, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 7.dp),
-        border = BorderStroke(2.dp, Color(0xFF8E99A2)),
+        border = BorderStroke(2.dp, Color(0xFFEAEAEA)),
         shape = RoundedCornerShape(12.dp),
-        color = Color.White.copy(alpha = 0.7f),
+        color = Color(0xFFF7F7FC),
         onClick = {
             navController.navigate("${Screen.AdminViewMemberScreen.route}/${group!!._id}/${group!!.namaGroup}/${group!!.refKey}")
         }
@@ -63,7 +64,7 @@ fun CardArchiveItem(group: GroupItem?, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 4.dp, start = 20.dp),
-                color = Color.Black.copy(alpha = 0.7f),
+                color = Color(0xFF919196),
                 textAlign = TextAlign.Start,
             )
             Text(
@@ -72,7 +73,7 @@ fun CardArchiveItem(group: GroupItem?, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp),
-                color = Color.Black.copy(alpha = 0.7f),
+                color = Color(0xFFBEBEC3),
                 textAlign = TextAlign.Start,
             )
         }
@@ -132,7 +133,7 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        color = Color.Black,
+                        color = Color(0xFF15104D),
                     )
                 }
 
@@ -149,6 +150,7 @@ fun ArchiveScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF2F1FA)) //
     ) {
         Text(
             "Archive",

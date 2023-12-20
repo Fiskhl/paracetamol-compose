@@ -76,7 +76,7 @@ fun JoinScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .width(100.dp)
-            .background(Color(0xFFFFFFFF))
+            .background(Color(0xFFF2F1FA)) //
             .padding(horizontal = 16.dp)
             .padding(top = 23.dp)
     ) {
@@ -100,7 +100,6 @@ fun JoinScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFFFFFF))
                 .padding(horizontal = 48.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -111,7 +110,7 @@ fun JoinScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
             )
             Text(
                 "Give me your code and i will give your group",
@@ -119,7 +118,7 @@ fun JoinScreen(navController: NavController) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = Color(0xFF15104D),
                 modifier = Modifier.padding(bottom = 30.dp)
             )
 
@@ -139,11 +138,11 @@ fun JoinScreen(navController: NavController) {
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF4B4B4B),
+                        color = Color(0xFF15104D),
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFFFF1F1),
+                    containerColor = Color.White,
                     cursorColor = Color.Black,
                     disabledLabelColor = Color(0xFFFFF1F1),
                     focusedIndicatorColor = Color.Transparent,
@@ -173,7 +172,7 @@ fun JoinScreen(navController: NavController) {
             ) {
                 Text(
                     "Join Room",
-                    color = Color.DarkGray,
+                    color = Color(0xFF15104D),
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                 )

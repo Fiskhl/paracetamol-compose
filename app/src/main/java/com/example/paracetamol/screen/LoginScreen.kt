@@ -49,6 +49,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.paracetamol.R
 import com.example.paracetamol.model.UserViewModel
@@ -84,7 +85,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .background(Color(0xFFF2F1FA)) //
             .padding(horizontal = 48.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -94,7 +95,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = Color.Black,
+            color = Color(0xFF15104D),
         )
         Image(
             modifier = Modifier
@@ -110,7 +111,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
-            color = Color.Black,
+            color = Color(0xFF15104D),
         )
         TextField(
             modifier = Modifier
@@ -127,11 +128,11 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF4B4B4B),
+                    color = Color(0xFF15104D),
                 )
             },
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF1F8FF),
+                containerColor = Color.White,
                 cursorColor = Color.Black,
                 disabledLabelColor = Color(0xFFF1F8FF),
                 focusedIndicatorColor = Color.Transparent,
@@ -167,11 +168,11 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF4B4B4B),
+                    color = Color(0xFF15104D),
                 )
             },
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF1F8FF),
+                containerColor = Color.White,
                 cursorColor = Color.Black,
                 disabledLabelColor = Color(0xFFF1F8FF),
                 focusedIndicatorColor = Color.Transparent,
@@ -211,7 +212,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                 .fillMaxWidth()
                 .padding(top = 16.dp, bottom = 16.dp)
                 .height(55.dp),
-            border = BorderStroke(2.dp, Color(0xFF47A7FF)),
+            border = BorderStroke(2.dp, Color.Black),
             colors = ButtonDefaults.elevatedButtonColors(
                 contentColor = Color.White
             ),
@@ -224,7 +225,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
             }
         ) {
             Text("Sign in",
-                color = Color.DarkGray,
+                color = Color(0xFF15104D),
                 fontSize = 16.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
@@ -242,7 +243,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color(0xFF000000),
+                color = Color(0xFF15104D),
             )
             TextButton(
                 modifier = Modifier,
@@ -253,7 +254,8 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
                     fontSize = 14.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF47A7FF),
+                    color = Color(0xFF15104D),
+                    textDecoration = TextDecoration.Underline
                 )
             }
         }
