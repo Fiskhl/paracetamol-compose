@@ -5,6 +5,11 @@ Champberlain adalah aplikasi manajemen denda yang dikembangkan oleh kelompok Par
 Aplikasi ini dirancang untuk memberikan kemudahan dalam mengelola dan memonitor denda untuk berbagai keperluan organisasi atau kepanitiaan. 
 Aplikasi ini menyediakan fitur-fitur seperti pembuatan grup, manajemen anggota, serta pencatatan dan pelacakan denda dengan antarmuka pengguna yang ramah.
 
+### Link Github
+
+### Link Google Play Store
+https://play.google.com/store/apps/details?id=com.champerlain.paracetamol
+
 ### Anggota Kelompok Paracetamol
 - Bryan Richie Irawan
 - Gregory Kurniawan
@@ -26,8 +31,6 @@ Untuk menggunakan Champberlain, pengguna perlu membuat akun dan dapat langsung m
 ### Hubungi Kami
 Jika Anda memiliki pertanyaan, masukan, atau melaporkan masalah, jangan ragu untuk menghubungi tim pengembang kami melalui teamchampberlain@gmail.com.
 
-### Link Github
 
-### Link Google Play Store
 
 Terima kasih telah menggunakan Champberlain!
