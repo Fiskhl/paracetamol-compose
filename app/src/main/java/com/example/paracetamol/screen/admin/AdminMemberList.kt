@@ -135,12 +135,6 @@ fun CardMemberAdmin(
     groupID: String,
     globalViewModel: GlobalViewModel
 ) {
-
-    DisposableEffect(member){
-        globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + member!!.nominal)
-        onDispose {  }
-    }
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,7 +198,7 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
 
     val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
 
-    var members by remember { mutableStateOf<List<MemberWithDenda?>?>(null) }
+    var members by rememberSaveable { mutableStateOf<List<MemberWithDenda?>?>(null) }
 
 
     LaunchedEffect(adminViewModel) {
@@ -215,6 +209,15 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
     val groupMemberWithDenda by adminViewModel.groupMemberWithDenda.observeAsState()
     groupMemberWithDenda?.let{
         members = it
+    }
+
+    LaunchedEffect(groupMemberWithDenda) {
+        groupMemberWithDenda?.let {
+            globalViewModel.updateTotalDendaGroup(0) // Clear the total before recomputing
+            it.forEach { item ->
+                globalViewModel.updateTotalDendaGroup(globalViewModel.totalDendaGroup + item!!.nominal)
+            }
+        }
     }
 
     val errorMessage by adminViewModel.errorMessage.observeAsState()
@@ -262,8 +265,10 @@ fun AdminMemberListScreen(
     id: String,
     refKey: String,
     title: String,
-    globalViewModel: GlobalViewModel
 ) {
+    // Use viewModel to create or retrieve the GlobalViewModel
+    val globalViewModel: GlobalViewModel = viewModel()
+
     Surface(
         modifier = Modifier
             .fillMaxSize()

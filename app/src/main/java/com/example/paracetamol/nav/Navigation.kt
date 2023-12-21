@@ -140,8 +140,7 @@ fun Navigation() {
                 val id = navBackStackEntry.arguments?.getString("id") ?: ""
                 val refKey = navBackStackEntry.arguments?.getString("refKey") ?: ""
                 val title = navBackStackEntry.arguments?.getString("title") ?: ""
-                val globalViewModel = GlobalViewModel()
-                AdminMemberListScreen(navController = navController, id = id, refKey = refKey, title = title, globalViewModel = globalViewModel)
+                AdminMemberListScreen(navController = navController, id = id, refKey = refKey, title = title)
             }
             composable(route = Screen.CreateScreen.route){
                 CreateScreen(navController = navController)

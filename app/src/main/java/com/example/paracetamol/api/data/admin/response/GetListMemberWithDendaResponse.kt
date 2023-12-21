@@ -1,5 +1,6 @@
 package com.example.paracetamol.api.data.admin.response
 
+import java.io.Serializable
 /**
  * Data class representing the response for getting a list of members with associated fines.
  * @property status The HTTP status code of the response.
@@ -10,7 +11,7 @@ data class GetListMemberWithDendaResponse(
     val status: Int,
     val message: String,
     val data: GetListMemberWithDendaResponseData
-)
+): Serializable
 
 /**
  * Data class representing the data structure for the response.
@@ -18,7 +19,7 @@ data class GetListMemberWithDendaResponse(
  */
 data class GetListMemberWithDendaResponseData(
     val members: List<MemberWithDenda>
-)
+): Serializable
 
 /**
  * Data class representing detailed information about a member with associated fine.
@@ -30,4 +31,4 @@ data class MemberWithDenda(
     val id: String,
     val name: String,
     val nominal: Int
-)
+): Serializable
