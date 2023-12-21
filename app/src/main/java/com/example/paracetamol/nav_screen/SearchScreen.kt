@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.paracetamol.screen.Screen
 import com.example.paracetamol.ui.theme.poppinsFamily
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavController){
@@ -122,7 +121,6 @@ fun SearchScreen(navController: NavController){
         }
 
 }
-
 
 //@Composable
 //@Preview(showBackground = true)

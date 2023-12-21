@@ -48,6 +48,11 @@ import com.example.paracetamol.component.showToast
 import com.example.paracetamol.model.UserViewModel
 import com.example.paracetamol.ui.theme.poppinsFamily
 
+/**
+ * Composable function for rendering the join screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

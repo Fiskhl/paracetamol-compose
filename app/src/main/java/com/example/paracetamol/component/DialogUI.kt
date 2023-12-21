@@ -14,24 +14,33 @@ import com.example.paracetamol.R
 
 @Composable
 fun DialogUI(title: String, desc: String) {
+    // A mutable state to track whether the dialog should be shown or not
     val shouldShowDialog = remember { mutableStateOf(true) }
 
-    if(shouldShowDialog.value) {
+    // Display the AlertDialog only if shouldShowDialog is true
+    if (shouldShowDialog.value) {
         AlertDialog(
+            // Callback for when the dialog is dismissed
             onDismissRequest = {
                 shouldShowDialog.value = false
             },
+            // Title of the dialog
             title = {
                 Text(text = title)
             },
+            // Description or content of the dialog
             text = {
                 Text(text = desc)
             },
+            // Confirm button with a "Close" label
             confirmButton = {
                 Button(
-                    onClick = { shouldShowDialog.value = false },
+                    onClick = {
+                        // Close button clicked, set shouldShowDialog to false
+                        shouldShowDialog.value = false
+                    },
                     modifier = Modifier.background(color = colorResource(id = R.color.purple_200))
-                ){
+                ) {
                     Text(text = "Close")
                 }
             }

@@ -42,6 +42,13 @@ import com.example.paracetamol.screen.admin.AdminPaidScreen
 import com.example.paracetamol.screen.admin.AdminProfileUserScreen
 import com.example.paracetamol.screen.admin.AdminUpdateDendaScreen
 
+/**
+ * Data class representing a navigation item.
+ *
+ * @param label The label to be displayed.
+ * @param icon The icon to be displayed.
+ * @param route The route to navigate to.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation() {

@@ -36,7 +36,13 @@ import com.example.paracetamol.api.data.group.response.GroupItem
 import com.example.paracetamol.component.showToast
 import kotlinx.coroutines.launch
 
-
+/**
+ * Composable function for rendering a card item representing a group.
+ *
+ * @param userViewModel UserViewModel for handling user-related data and actions.
+ * @param group GroupItem representing the group to be displayed.
+ * @param navController NavController for navigating to other screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardItem(
@@ -46,11 +52,13 @@ fun CardItem(
 ) {
     val context = LocalContext.current
 
+    // Observe error messages and show a toast if there's an error
     val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
     }
 
+    // Surface composable representing the card item
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,6 +68,7 @@ fun CardItem(
         onClick = {
             userViewModel.getInGroupStatus(group!!.refKey) { isAdmin ->
                 MainScope().launch{
+                    // Navigate to different screens based on user's admin status
                     if (isAdmin) {
                         navController.navigate("${Screen.AdminMemberListScreen.route}/${group!!._id}/${group.refKey}/${group.namaGroup}")
                     } else {
@@ -70,6 +79,7 @@ fun CardItem(
         }
 
     ) {
+        // Column composable for arranging child composables vertically
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,19 +110,24 @@ fun CardItem(
     }
 }
 
-
-
-
-
+/**
+ * Composable function for rendering a scrollable list of group items.
+ *
+ * @param innerPadding Padding values for the content.
+ * @param navController NavController for navigating to other screens.
+ */
 @Composable
 fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
+    // Access the local context
     val context = LocalContext.current
 
+    // Initialize the UserViewModel using the viewModel composable
     val userViewModel: UserViewModel = viewModel { UserViewModel(context) }
 
+    // Mutable state to hold the list of groups
     var groupList by rememberSaveable { mutableStateOf<List<GroupItem?>?>(null) }
 
-
+    // Fetch the joined groups when the composable is launched
     LaunchedEffect(userViewModel) {
         userViewModel.getMemberID()
         userViewModel.getJoinedGroup()
@@ -123,11 +138,13 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
         groupList = it
     }
 
+    // Observe the error message and display a toast if it is not null
     val errorMessage by userViewModel.errorMessage.observeAsState()
     errorMessage?.let {
         showToast(context, it)
     }
 
+    // Display the list of groups in a LazyColumn
     LazyColumn(
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
@@ -164,11 +181,14 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
     }
 }
 
-
-
-
+/**
+ * Composable function for rendering the home screen.
+ *
+ * @param navController NavController for navigating to other screens.
+ */
 @Composable
 fun HomeScreen(navController: NavController) {
+    // Column composable for arranging child composables vertically
     Column(
         modifier = Modifier
             .fillMaxSize()
