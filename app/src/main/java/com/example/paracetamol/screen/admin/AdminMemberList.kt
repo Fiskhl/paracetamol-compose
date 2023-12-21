@@ -204,7 +204,7 @@ fun MemberScrollContentAdmin(id: String, refKey: String, innerPadding: PaddingVa
 
     val adminViewModel: AdminViewModel = viewModel { AdminViewModel(context) }
 
-    var members by rememberSaveable { mutableStateOf<List<MemberWithDenda?>?>(null) }
+    var members by remember { mutableStateOf<List<MemberWithDenda?>?>(null) }
 
 
     LaunchedEffect(adminViewModel) {
