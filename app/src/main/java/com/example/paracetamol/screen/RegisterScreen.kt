@@ -89,13 +89,13 @@ fun RegisterScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFFF2F1FA)) //
-                .padding(horizontal = 25.dp),
+                .padding(horizontal = 35.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 "CHAMPBERLAIN",
-                fontSize = 20.sp,
+                fontSize = 15.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -104,7 +104,7 @@ fun RegisterScreen(navController: NavController) {
             Text("Register",
                 modifier = Modifier
                     .padding(bottom = 5.dp),
-                fontSize = 25.sp,
+                fontSize = 20.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
@@ -112,8 +112,8 @@ fun RegisterScreen(navController: NavController) {
             )
             Text("Register your Champberlain account",
                 modifier = Modifier
-                    .padding(bottom = 30.dp),
-                fontSize = 16.sp,
+                    .padding(bottom = 22.dp),
+                fontSize = 12.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -306,7 +306,7 @@ fun RegisterScreen(navController: NavController) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 16.dp)
+                    .padding(top = 16.dp, bottom = 10.dp)
                     .height(55.dp),
                 border = BorderStroke(2.dp, Color.Black),
                 colors = ButtonDefaults.elevatedButtonColors(
@@ -340,7 +340,7 @@ fun RegisterScreen(navController: NavController) {
             ) {
                 Text(
                     "Already have an account?",
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -352,7 +352,7 @@ fun RegisterScreen(navController: NavController) {
                 ) {
                     Text(
                         "Sign In",
-                        fontSize = 16.sp,
+                        fontSize = 12.sp,
                         fontFamily = poppinsFamily,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF15104D),
