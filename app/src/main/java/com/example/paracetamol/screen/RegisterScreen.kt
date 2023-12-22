@@ -103,7 +103,7 @@ fun RegisterScreen(navController: NavController) {
             )
             Text("Register",
                 modifier = Modifier
-                    .padding(bottom = 5.dp),
+                    .padding(bottom = 2.dp),
                 fontSize = 20.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
@@ -112,7 +112,7 @@ fun RegisterScreen(navController: NavController) {
             )
             Text("Register your Champberlain account",
                 modifier = Modifier
-                    .padding(bottom = 22.dp),
+                    .padding(bottom = 15.dp),
                 fontSize = 12.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Medium,
@@ -126,7 +126,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Your Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 2.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -145,7 +145,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("NIM") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -164,7 +164,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Major") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -183,7 +183,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Class Of Year") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -202,7 +202,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -223,7 +223,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -266,7 +266,7 @@ fun RegisterScreen(navController: NavController) {
                 label = { Text("Re-enter Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(top = 5.dp, bottom = 2.dp)
                     .height(55.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.White,
@@ -306,7 +306,7 @@ fun RegisterScreen(navController: NavController) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 10.dp)
+                    .padding(top = 12.dp, bottom = 8.dp)
                     .height(55.dp),
                 border = BorderStroke(2.dp, Color.Black),
                 colors = ButtonDefaults.elevatedButtonColors(
@@ -325,7 +325,7 @@ fun RegisterScreen(navController: NavController) {
             ) {
                 Text(
                     "Sign up",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,

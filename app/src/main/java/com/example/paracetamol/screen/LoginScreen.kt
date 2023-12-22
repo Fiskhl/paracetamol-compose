@@ -230,7 +230,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         ) {
             Text("Sign in",
                 color = Color(0xFF15104D),
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
