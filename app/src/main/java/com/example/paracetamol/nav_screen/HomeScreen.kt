@@ -149,7 +149,7 @@ fun ScrollContent(innerPadding: PaddingValues, navController: NavController) {
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (groupList != null) {
+        if (groupList != null && groupList?.any { it?.status == true } == true) {
             val filteredGroupList = groupList!!.filter { it?.status == true }
 
             items(filteredGroupList) { item ->
