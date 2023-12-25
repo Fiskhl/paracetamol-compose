@@ -1,6 +1,7 @@
 package com.example.paracetamol.nav_screen
 
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -123,10 +124,9 @@ fun ArchiveScrollContent(innerPadding: PaddingValues, navController: NavControll
         contentPadding = innerPadding,
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (groupList != null) {
+        if (groupList != null && groupList?.any { it?.status == false } == true) {
             // Filter out archived groups
             val filteredGroupList = groupList!!.filter { it?.status == false }
-
             items(filteredGroupList) { item ->
                 CardArchiveItem(group = item, navController = navController)
             }
