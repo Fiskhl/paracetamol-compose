@@ -144,16 +144,16 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
             ),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
-            trailingIcon = {
-                if (emailTextState.isNotEmpty()) {
-                    IconButton(onClick = { emailTextState = "" }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
+//            trailingIcon = {
+//                if (emailTextState.isNotEmpty()) {
+//                    IconButton(onClick = { emailTextState = "" }) {
+//                        Icon(
+//                            imageVector = Icons.Outlined.Close,
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
+//            }
         )
 
         var showPassword by remember { mutableStateOf(value = false) }
@@ -230,7 +230,7 @@ fun LoginScreen(navController: NavController, onLoggedIn: () -> Unit) {
         ) {
             Text("Sign in",
                 color = Color(0xFF15104D),
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
